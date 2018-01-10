@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>RestAPI</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>
+		<description>Apache CXF Endpoint For Rest</description>
+		<display-name>cxfsoap</display-name>
+		<servlet-name>cxfsoap</servlet-name>
+		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+		<init-param>
+			<param-name>config-location</param-name>
+			<param-value>/WEB-INF/soapservice.xml</param-value>
+		</init-param>
+
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>cxfsoap</servlet-name>
+		<url-pattern>/soap/*</url-pattern>
+	</servlet-mapping>
+		
+	<servlet>
+		<description>Apache CXF Endpoint For Rest</description>
+		<display-name>cxfrest</display-name>
+		<servlet-name>cxfrest</servlet-name>
+		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+		<init-param>
+			<param-name>config-location</param-name>
+			<param-value>/WEB-INF/restservice.xml</param-value>
+		</init-param>
+
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>cxfrest</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+	
+	<listener>
+	<listener-class>com.test.ws.utils.ContextListener</listener-class>
+	</listener>
+	
+	<context-param>
+		<param-name>log4jFileName</param-name>
+		<param-value>/WEB-INF/log4j-config.xml</param-value>
+	</context-param>
+	
+</web-app>

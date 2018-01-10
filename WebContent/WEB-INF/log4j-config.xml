@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//log4j/log4j Configuration//EN" "log4j.dtd">
+ 
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+ 
+    <appender name="RollingAppender" class="org.apache.log4j.DailyRollingFileAppender">
+       <param name="File" value="app.log" />
+       <param name="DatePattern" value="'.'yyyy-MM-dd" />
+       <layout class="org.apache.log4j.PatternLayout">
+          <param name="ConversionPattern" value="[%p] %d %c %M - %m%n"/>          
+       </layout>
+    </appender>
+     <root>
+        <priority value="DEBUG"/>
+        <appender-ref ref="RollingAppender" />
+    </root>
+     
+</log4j:configuration>  
+
+
+<!-- 
+
+org.hibernate.SQL           Log all SQL DML statements as they are executed
+org.hibernate.type          Log all JDBC parameters
+org.hibernate.tool.hbm2ddl  Log all SQL DDL statements as they are executed
+org.hibernate.pretty        Log the state of all entities (max 20 entities) associated with the session at flush time
+org.hibernate.cache         Log all second-level cache activity
+org.hibernate.transaction   Log transaction related activity
+org.hibernate.jdbc          Log all JDBC resource acquisition
+org.hibernate.hql.ast.AST   Log HQL and SQL ASTs during query parsing
+org.hibernate.secure        Log all JAAS authorization requests
+org.hibernate               Log everything (a lot of information, but very useful for troubleshooting)
+ 
+-->

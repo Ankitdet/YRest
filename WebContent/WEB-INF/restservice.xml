@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xmlns:bean="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+    <bean class="com.test.ws.services.rest.RestServices" id="RestPerson" />
+    <bean id='jacksonProvider' class='com.test.ws.utils.JacksonJaxbJsonProvider'></bean>
+    <bean id="MyInterceptor" class="com.test.ws.utils.WebServiceRequestInterceptor"/>
+    <bean id="dataManagerExceptionMapper" class="com.test.ws.utils.BusinessExceptionMapper"/>
+    <bean id="jaxbProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider" />
+    <bean id="jsonResolver" class="com.test.ws.utils.JSONResolver" />
+
+
+    <jaxrs:server address="/restful/">
+        <jaxrs:serviceBeans>
+            <ref bean="RestPerson" />
+        </jaxrs:serviceBeans>
+         <jaxrs:extensionMappings>
+                        <entry key="json" value="application/json" />
+                        <entry key="xml" value="application/xml" />
+        </jaxrs:extensionMappings>
+        <jaxrs:providers>
+                        <ref bean="jsonResolver"/>
+                        <ref bean='jacksonProvider' />
+                        <ref bean="MyInterceptor"/>
+                        <ref bean="dataManagerExceptionMapper"/>
+                        <ref bean="jaxbProvider"/>
+
+        </jaxrs:providers>
+    </jaxrs:server>
+
+</beans>
