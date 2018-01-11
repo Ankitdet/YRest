@@ -5,8 +5,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.BatchUpdateException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -21,12 +28,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionImplementor;
 
 import com.test.ws.constant.ResultCode;
 import com.test.ws.exception.CommandException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
 import com.test.ws.service.impl.LoginServiceImpl;
+import com.test.ws.utils.HibernateUtil;
 
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.MULTIPART_FORM_DATA})
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -171,7 +186,7 @@ public class RestServices {
     public Response getBirthday(@QueryParam("id") String cakeId) {
         LoginServiceImpl blManager = new LoginServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called getBirthday() of ");
+        Logger.logInfo(MODULE, "Method called getBirthday() of "+CLASS);
 
         try {
             if (cakeId == null || cakeId.trim() == "") {
@@ -245,8 +260,8 @@ public class RestServices {
         return response;
     }
 
-    @POST
-    @Path("/getSabhaDetails")
+/*    @POST
+    @Path("/")
     public Response getSabhaDetails() {
         LoginServiceImpl blManager = new LoginServiceImpl();
         Response response = null;
@@ -257,5 +272,112 @@ public class RestServices {
             return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
         }
         return response;
+    }*/
+    
+    /** 
+     * To demonstrate Accept Object and convert Into LinkedHashMap<?,?>
+     * 
+     * */
+    @POST
+    @Path("/takeSimpleObject")
+    public Response takeRequest(Object obj) {
+        LoginServiceImpl blManager = new LoginServiceImpl();
+        Response response = null;
+        Logger.logInfo(MODULE, "Method called getSabhaDetails() of " + CLASS);
+        try {
+           // response = blManager.getSabhaDetails();
+        	ObjectMapper mapper = new ObjectMapper();
+			try {
+				String mapToJson = mapper.writeValueAsString(obj);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map = mapper.readValue(mapToJson, new TypeReference<Map<String, String>>(){});
+				System.out.println(map);
+			} catch (JsonGenerationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        } catch (NumberFormatException ne) {
+            return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
+        }
+        return response;
     }
+    
+    @POST
+    @Path("/uplodaData")
+    public String uploadTranslationCSV() {
+		
+    	Session session = HibernateUtil.getSessionFactory().openSession();
+		PreparedStatement ps = null;
+		Statement st = null;
+		int failedDataConunt = 0;
+		int successDataCount = 0;
+
+		try {
+			SessionImplementor sessImpl = (SessionImplementor) session;
+			Connection connection = sessImpl.connection();
+			connection.setAutoCommit(false);
+			st = connection.createStatement();
+
+			// batch insert
+
+			String sql = "INSERT INTO USERS(ID,ROLE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME,USERNAME,EMAIL,PASSWORD,PHONE,WHATSAPP_NUMBER,EMAIL_VERIFIED,BIRTH_DATE,USER_IMAGE,LATITUDE,LONGITUDE,ADDRESS,AREA_ID,MANDAL_ID,AUTH_TOKEN,RELATIONSHIP_STATUS,CREATED_AT,UPDATED_AT,STATUS,DEVICE_TYPE,DEVICE_TOKEN,BADGE_COUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			ps = connection.prepareStatement(sql);
+			/*for (TranslationData newTranslationData : translationData) {
+				if (newTranslationData != null) {
+					if (newTranslationData.getTranslationString() == null) {
+						failedDataConunt++;
+						continue;
+					} else {
+						ps.setString(1, newTranslationData.getTranslationString());
+					}
+					if (newTranslationData.getEmailAddress() != null) {
+						ps.setString(2, newTranslationData.getEmailAddress());
+					} else {
+						ps.setNull(2, java.sql.Types.NULL);
+					}
+					if (newTranslationData.getPin() != null) {
+						ps.setString(3, newTranslationData.getPin());
+					} else {
+						ps.setNull(3, java.sql.Types.NULL);
+					}
+					if (newTranslationData.getPhoneNumber() != null) {
+						ps.setString(4, newTranslationData.getPhoneNumber());
+					} else {
+						ps.setNull(4, java.sql.Types.NULL);
+					}
+
+					ps.addBatch();
+					successDataCount++;
+					if (successDataCount % 100 == 0) {
+						ps.executeBatch();
+					}
+				}
+			}*/
+			ps.executeBatch();
+		} catch (BatchUpdateException e) {
+			int[] updateCounts = e.getUpdateCounts();
+			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
+			//throw new DataManagerException("Upload Translation Mapping Data Failed, Reason " + e.getMessage());
+		} catch (HibernateException hExp) {
+			//throw new DataManagerException(hExp.getMessage(), hExp);
+		} catch (Exception exp) {
+			//throw new DataManagerException(exp.getMessage(), exp);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (st != null)
+					st.close();
+			} catch (SQLException sExp) {
+				//throw new DataManagerException(sExp.getMessage(), sExp);
+			}
+		}
+		return "Inserted Record:" +successDataCount + "\nSkipped Record:" +failedDataConunt;
+	}
 }
