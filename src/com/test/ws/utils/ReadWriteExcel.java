@@ -17,33 +17,34 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadWriteExcel {
-	
-	// 200 at time 
-	public static List<Object[]> arrayList = new ArrayList<Object[]>(500);
 
-	
-	public static void main(String[] args) {
+	// 500 at time
+	public static List<Object[]> getExcelSheetData() {
+		List<Object[]> arrayList = new ArrayList<Object[]>(500);
 		try {
-			
-			
-			FileInputStream file = new FileInputStream(new File("/home/elitecore/Downloads/yuvak_list.xlsx"));
+			FileInputStream file = new FileInputStream(new File("/home/elitecore/backup/y_list.xlsx"));
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
 
 			// Get the Desired sheet
 			XSSFSheet sheet = workbook.getSheetAt(0);
 
 			// Increment over rows
-			for (int j= 2 ;j<=500;j++) {
-				Object[]  obj = new Object[15];
+			for (Row row : sheet) {
+				Object[] obj = new Object[25];
 				// get ROW
-				Row row = sheet.getRow(j);
 				// Iterate and get the cells from the row
 				Iterator cellIterator = row.cellIterator();
 				// Loop till you read all the data
-				for (int z = 0; z <= 20; z++) {
-						Cell cell = (Cell) cellIterator.next();
-						Object newObject = getCellValueAsString(cell);
-						if (newObject != null) obj[z] = newObject;
+				int z = 0;
+				while (cellIterator.hasNext()) {
+					if(z == 25) break;
+					Cell cell = (Cell) cellIterator.next();
+					Object object = getCellValueAsString(cell);
+					
+					if(object == null)
+						obj[z++] = "";
+					else
+						obj[z++] = object;
 				}
 				arrayList.add(obj);
 			}
@@ -53,6 +54,7 @@ public class ReadWriteExcel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return arrayList;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -77,9 +79,9 @@ public class ReadWriteExcel {
 			case Cell.CELL_TYPE_BOOLEAN:
 				strCellValue = new String(new Boolean(cell.getBooleanCellValue()).toString());
 				break;
-			/*case Cell.CELL_TYPE_BLANK:
-				strCellValue = "";
-				break;*/
+			/*
+			 * case Cell.CELL_TYPE_BLANK: strCellValue = ""; break;
+			 */
 			}
 		}
 		return strCellValue;
