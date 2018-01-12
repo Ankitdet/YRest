@@ -27,7 +27,7 @@ public class ReadWriteExcel {
 
 			// Get the Desired sheet
 			XSSFSheet sheet = workbook.getSheetAt(0);
-
+			int i = sheet.getPhysicalNumberOfRows();
 			// Increment over rows
 			for (Row row : sheet) {
 				Object[] obj = new Object[25];
