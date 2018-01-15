@@ -23,4 +23,10 @@ public interface LoginDao {
 	Response doCreateSabha();
 
 	Response getSabhaDetails();
+
+	public Response uploadDataByExcel(List<Object[]> list);
+
+	public List<UsersFieldData> getMandalYuvakList(Integer mandal_id);
+
+	public List<UsersFieldData> getYuvakProfile(Integer user_id);
 }

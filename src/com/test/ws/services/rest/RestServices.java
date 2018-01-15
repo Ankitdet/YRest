@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,6 +37,8 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -48,6 +51,7 @@ import com.test.ws.requestobject.Response;
 import com.test.ws.service.impl.LoginServiceImpl;
 import com.test.ws.utils.HibernateUtil;
 import com.test.ws.utils.ReadWriteExcel;
+import com.test.ws.utils.TokenGenerator;
 
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.MULTIPART_FORM_DATA})
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -266,7 +270,7 @@ public class RestServices {
         return response;
     }
 
-/*    @POST
+    @POST
     @Path("/")
     public Response getSabhaDetails() {
         LoginServiceImpl blManager = new LoginServiceImpl();
@@ -278,7 +282,7 @@ public class RestServices {
             return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
         }
         return response;
-    }*/
+    }
     
     /** 
      * To demonstrate Accept Object and convert Into LinkedHashMap<?,?>
@@ -315,101 +319,48 @@ public class RestServices {
     }
     
     @POST
-    @Path("/uplodaData")
-    public String uploadTranslationCSV() {
-		
-    	List<Object[]> list = ReadWriteExcel.getExcelSheetData();
-    	
-    	Session session = HibernateUtil.getSessionFactory().openSession();
-		PreparedStatement ps = null;
-		Statement st = null;
-		int failedDataConunt = 0;
-		int successDataCount = 0;
-
-		try {
-			SessionImplementor sessImpl = (SessionImplementor) session;
-			Connection connection = sessImpl.connection();
-			connection.setAutoCommit(false);
-			st = connection.createStatement();
-
-
-			// batch insert
-
-			String sql = "INSERT INTO users(ROLE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME,USERNAME,EMAIL,PASSWORD,PHONE,WHATSAPP_NUMBER,EMAIL_VERIFIED,BIRTH_DATE,USER_IMAGE,LATITUDE,LONGITUDE,ADDRESS,AREA_ID,MANDAL_ID,AUTH_TOKEN,RELATIONSHIP_STATUS,CREATED_AT,UPDATED_AT,STATUS,DEVICE_TYPE,DEVICE_TOKEN,BADGE_COUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			ps = connection.prepareStatement(sql);
-			for (Object[] newData : list) {
-				if (newData != null) {
-					
-					ps.setInt(1, 3);
-					ps.setString(2, (String)newData[0]);
-					ps.setString(3, "");
-					ps.setString(4, "");
-					ps.setString(5, ((String)newData[0]).toLowerCase());
-					ps.setString(6, ((String)newData[0]).toLowerCase() + "@gmail.com");
-					ps.setString(7, ((String)newData[0]).toLowerCase());
-					
-					String phno = String.valueOf((String)newData[2]).replace("+", "");
-					ps.setString(8, phno);
-					
-					String Whatsapp = String.valueOf((String)newData[3]).replace("+", "");
-					ps.setString(9, Whatsapp);
-					ps.setInt(10, 1);
-					
-					String str = (String)newData[5];
-					ps.setTimestamp(11,simpleDateFormat(newData[5]));
-					
-					ps.setInt(12, 0);
-					ps.setInt(13, 0);
-					ps.setInt(14, 0);
-					ps.setString(15, (String)newData[6]);
-					ps.setInt(16, 5);
-					ps.setInt(17, 6);
-					ps.setString(18, "c6afb0c3d6da4caea486f3df36a9436a");
-					ps.setInt(19, 0);
-					ps.setTimestamp(20, getFormatedDate());
-					ps.setTimestamp(21, getFormatedDate());
-					ps.setInt(22, 0);
-					ps.setInt(23, 0);
-					ps.setInt(24, 0);
-					ps.setInt(25, 0);
-					
-					ps.addBatch();
-					successDataCount++;
-					if (successDataCount % 100 == 0) {
-						ps.executeBatch();
-					}
-				}
-			}
-			ps.executeBatch();
-		} catch (BatchUpdateException e) {
-			int[] updateCounts = e.getUpdateCounts();
-			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
-			throw new BusinessException("Upload Translation Mapping Data Failed, Reason " + e.getMessage());
-		} catch (HibernateException hExp) {
-			throw new BusinessException(hExp.getMessage(), hExp);
-		} catch (Exception exp) {
-			throw new BusinessException(exp.getMessage(), exp);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-				if (st != null)
-					st.close();
-			} catch (SQLException sExp) {
-				//throw new DataManagerException(sExp.getMessage(), sExp);
-			}
-		}
-		return "Inserted Record:" +successDataCount + "\nSkipped Record:" +failedDataConunt;
+    @Path("/uploadData")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadDataByExcel(@FormDataParam("file") InputStream uploadStream,
+    		@FormDataParam("file") FormDataContentDisposition fileDetails) {
+    	  LoginServiceImpl blManager = new LoginServiceImpl();
+          Response response = null;
+          Logger.logInfo(MODULE, "Method called uploadDataByExcel() of " + CLASS);
+          try {
+              response = blManager.uploadDataByExcel();
+          } catch (NumberFormatException ne) {
+              return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
+          }
+          return response;
 	}
     
-    private Timestamp getFormatedDate() {
-        java.util.Date date = new java.util.Date();
-        return new Timestamp(date.getTime());
-    }
-    private Timestamp simpleDateFormat(Object obj) throws ParseException{
-		DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
-		Timestamp ts = new Timestamp(((java.util.Date)df.parse((String)obj)).getTime());
-		return ts;
-    }
+    @POST
+    @Path("/getMandalYuvakList")
+    public Response getMandalYuvakList(@QueryParam("mandal_id") Integer mandal_id) {
+    	  LoginServiceImpl blManager = new LoginServiceImpl();
+          Response response = null;
+          Logger.logInfo(MODULE, "Method called uploadDataByExcel() of " + CLASS);
+          try {
+              response = blManager.getMandalYuvakList(mandal_id);
+          } catch (NumberFormatException ne) {
+              return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
+          }
+          return response;
+	}
     
+    @POST
+    @Path("/getYuvakProfile")
+    public Response getYuvakProfile(@QueryParam("user_id") Integer user_id) {
+    	  LoginServiceImpl blManager = new LoginServiceImpl();
+          Response response = null;
+          Logger.logInfo(MODULE, "Method called uploadDataByExcel() of " + CLASS);
+          try {
+              response = blManager.getYuvakProfile(user_id);
+          } catch (NumberFormatException ne) {
+              return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
+          }
+          return response;
+	}
+    
+     
 }

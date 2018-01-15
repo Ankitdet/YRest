@@ -2,30 +2,48 @@ package com.test.ws.datamanager.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.BatchUpdateException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.test.ws.constant.ResultCode;
-import com.test.ws.entities.*;
-import com.test.ws.logger.Logger;
-import com.test.ws.requestobject.LoginResponse;
-import com.test.ws.requestobject.Response;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.engine.spi.SessionImplementor;
 
+import com.test.ws.constant.ResultCode;
 import com.test.ws.datamanager.intrf.LoginDao;
+import com.test.ws.entities.Areas;
+import com.test.ws.entities.Mandals;
+import com.test.ws.entities.Ssp;
+import com.test.ws.entities.Users;
+import com.test.ws.entities.UsersFieldData;
 import com.test.ws.exception.BusinessException;
 import com.test.ws.exception.CommandException;
 import com.test.ws.exception.InfrastructureException;
+import com.test.ws.logger.Logger;
+import com.test.ws.requestobject.LoginResponse;
+import com.test.ws.requestobject.Response;
 import com.test.ws.utils.HibernateUtil;
 import com.test.ws.utils.TokenGenerator;
 
 public class LoginDaoImpl implements LoginDao {
 
-    public static  final String userDataQuery = "select u.id,u.role_id,u.first_name,u.middle_name,u.last_name," +
+	public static final String CLASS = LoginDaoImpl.class.getName();
+	public static final String MODULE = LoginDaoImpl.class.getSimpleName();
+	
+    public static  final String userDataQuery = 
+    		"select u.id,u.role_id,u.user_name," +
             "u.username,u.email,u.password,u.phone," +
             "u.whatsapp_number,u.email_verified,u.birth_date" +
             ",u.user_image,u.latitude,u.longitude,u.address," +
@@ -112,7 +130,6 @@ public class LoginDaoImpl implements LoginDao {
             Query crt = session.createSQLQuery(userDataQuery);
             list = crt.list();
             usersFieldDataList = fillUserTablePojo(list);
-            System.out.println("get Contact List data : " + usersFieldDataList.toString());
 
         } catch (InfrastructureException ex) {
             throw new InfrastructureException(ex);
@@ -264,31 +281,29 @@ public class LoginDaoImpl implements LoginDao {
             UsersFieldData usersFieldData = new UsersFieldData();
             usersFieldData.setId(((BigInteger) obj[0]).longValue());
             usersFieldData.setRole_id((Integer) obj[1]);
-            usersFieldData.setFirst_name((String) obj[2]);
-            usersFieldData.setMiddle_name((String) obj[3]);
-            usersFieldData.setLast_name((String) obj[4]);
-            usersFieldData.setUsername((String) obj[5]);
-            usersFieldData.setEmail((String) obj[6]);
-            usersFieldData.setPassword((String) obj[7]);
-            usersFieldData.setPhone((String) obj[8]);
-            usersFieldData.setWhatsapp_number((String) obj[9]);
-            usersFieldData.setEmail_verified((Boolean) obj[10]);
-            usersFieldData.setBirth_date((Date) setObject(obj[11]));
-            usersFieldData.setUser_image((String) obj[12]);
-            usersFieldData.setLatitude(((BigDecimal) obj[13]).doubleValue());
-            usersFieldData.setLongitude(((BigDecimal) obj[14]).doubleValue());
-            usersFieldData.setAddress((String) obj[15]);
-            usersFieldData.setAuth_token((String) obj[16]);
-            usersFieldData.setRelationship_status((String) obj[17]);
-            usersFieldData.setCreated_at((Date) setObject(obj[18]));
-            usersFieldData.setUpdated_at((Date) setObject(obj[19]));
-            usersFieldData.setStatus((Boolean) obj[20]);
-            usersFieldData.setDevice_type((Integer) obj[21]);
-            usersFieldData.setDevice_token((String) obj[22]);
-            usersFieldData.setBadge_count((Integer) obj[23]);
-            usersFieldData.setRole_name((String) obj[24]);
-            usersFieldData.setArea_title((String) obj[25]);
-            usersFieldData.setMandal_title((String) obj[26]);
+            usersFieldData.setUser_name((String) obj[2]);
+            usersFieldData.setUsername((String) obj[3]);
+            usersFieldData.setEmail((String) obj[4]);
+            usersFieldData.setPassword((String) obj[5]);
+            usersFieldData.setPhone((String) obj[6]);
+            usersFieldData.setWhatsapp_number((String) obj[7]);
+            usersFieldData.setEmail_verified((Boolean) obj[8]);
+            usersFieldData.setBirth_date((Date) setObject(obj[9]));
+            usersFieldData.setUser_image((String) obj[10]);
+            usersFieldData.setLatitude(((BigDecimal) obj[11]).doubleValue());
+            usersFieldData.setLongitude(((BigDecimal) obj[12]).doubleValue());
+            usersFieldData.setAddress((String) obj[13]);
+            usersFieldData.setAuth_token((String) obj[14]);
+            usersFieldData.setRelationship_status((String) obj[15]);
+            usersFieldData.setCreated_at((Date) setObject(obj[16]));
+            usersFieldData.setUpdated_at((Date) setObject(obj[17]));
+            usersFieldData.setStatus((Boolean) obj[18]);
+            usersFieldData.setDevice_type((Integer) obj[19]);
+            usersFieldData.setDevice_token((String) obj[20]);
+            usersFieldData.setBadge_count((Integer) obj[21]);
+            usersFieldData.setRole_name((String) obj[22]);
+            usersFieldData.setArea_title((String) obj[23]);
+            usersFieldData.setMandal_title((String) obj[24]);
             usersFieldDataList.add(usersFieldData);
         }
         return usersFieldDataList;
@@ -317,4 +332,145 @@ public class LoginDaoImpl implements LoginDao {
     public Response getSabhaDetails() {
         return null;
     }
+
+	@Override
+	public Response uploadDataByExcel(List<Object[]> list) {
+
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		PreparedStatement ps = null;
+		Statement st = null;
+		int failedDataConunt = 0;
+		int successDataCount = 0;
+
+		try {
+			SessionImplementor sessImpl = (SessionImplementor) session;
+			Connection connection = sessImpl.connection();
+			connection.setAutoCommit(true);
+			st = connection.createStatement();
+
+			// batch insert
+			String sql = "INSERT INTO USERS(ROLE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME,USERNAME,EMAIL,PASSWORD,PHONE,WHATSAPP_NUMBER,EMAIL_VERIFIED,BIRTH_DATE,USER_IMAGE,LATITUDE,LONGITUDE,ADDRESS,AREA_ID,MANDAL_ID,AUTH_TOKEN,RELATIONSHIP_STATUS,CREATED_AT,UPDATED_AT,STATUS,DEVICE_TYPE,DEVICE_TOKEN,BADGE_COUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			ps = connection.prepareStatement(sql);
+			int i =0 ;
+			for (Object[] newData : list) {
+				if (newData != null) {
+					
+					if(i == 0){
+						i++;
+						continue;
+					}
+					ps.setInt(1, 3);
+					
+					if("".equals(newData[0])) break;
+					ps.setString(2, (String)newData[0]);
+					ps.setString(3, "");
+					ps.setString(4, "");
+					ps.setString(5, ((String)newData[0]).toLowerCase());
+					ps.setString(6, ((String)newData[0]).toLowerCase() + "@gmail.com");
+					ps.setString(7, ((String)newData[0]).toLowerCase());
+					
+					String phno = String.valueOf((String)newData[2]).replace("+", "");
+					ps.setString(8, phno);
+					
+					String Whatsapp = String.valueOf((String)newData[3]).replace("+", "");
+					ps.setString(9, Whatsapp);
+					ps.setInt(10, 1);
+					
+					String str = (String)newData[5];
+					if(!"".equals(str)){
+						ps.setTimestamp(11,simpleDateFormat(newData[5]));	
+					}
+					ps.setInt(12, 0);
+					ps.setInt(13, 0);
+					ps.setInt(14, 0);
+					ps.setString(15, (String)newData[6]);
+					ps.setInt(16, 5);
+					ps.setInt(17, 6);
+					ps.setString(18, TokenGenerator.uniqueUUID());
+					ps.setInt(19, 0);
+					ps.setTimestamp(20, getFormatedDate());
+					ps.setTimestamp(21, getFormatedDate());
+					ps.setInt(22, 0);
+					ps.setInt(23, 0);
+					ps.setInt(24, 0);
+					ps.setInt(25, 0);
+					
+					ps.addBatch();
+					successDataCount++;
+					if (successDataCount % 100 == 0) {
+						ps.executeBatch();
+					}
+				}
+			}
+			ps.executeBatch();
+		} catch (BatchUpdateException e) {
+			int[] updateCounts = e.getUpdateCounts();
+			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
+			throw new BusinessException("Upload Translation Mapping Data Failed, Reason " + e.getMessage());
+		} catch (HibernateException hExp) {
+			throw new BusinessException(hExp.getMessage(), hExp);
+		} catch (Exception exp) {
+			throw new BusinessException(exp.getMessage(), exp);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (st != null)
+					st.close();
+			} catch (SQLException sExp) {
+				throw new BusinessException(sExp.getMessage(), sExp);
+			}
+		}
+		return new Response(ResultCode.SUCCESS_200.code,ResultCode.SUCCESS_200.name,"Inserted Record:" +successDataCount + "\nSkipped Record:" +failedDataConunt,null,null);
+	}
+	
+    private Timestamp simpleDateFormat(Object obj) throws ParseException{
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		Timestamp ts = new Timestamp(((java.util.Date)df.parse((String)obj)).getTime());
+		return ts;
+	}
+
+	@Override
+	public List<UsersFieldData> getMandalYuvakList(Integer mandal_id) {
+
+		String queryString = "";
+		Session session = HibernateUtil.getSessionFactory().openSession();
+        List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
+
+		try {
+			queryString =userDataQuery + " WHERE U.MANDAL_ID="+mandal_id;
+			Query query = session.createSQLQuery(queryString);
+            usersFieldDataList = fillUserTablePojo(query.list());
+			
+		}catch (InfrastructureException ex) {
+            throw new InfrastructureException(ex);
+        } catch (BusinessException ex) {
+            throw new BusinessException(ex);
+        } finally {
+            session.close();
+        }
+		return usersFieldDataList;
+	}
+
+	@Override
+	public List<UsersFieldData> getYuvakProfile(Integer user_id) {
+		
+		String queryString = "";
+		Session session = HibernateUtil.getSessionFactory().openSession();
+        List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
+
+		try {
+			queryString =userDataQuery + " WHERE U.ID="+user_id;
+			Query query = session.createSQLQuery(queryString);
+            usersFieldDataList = fillUserTablePojo(query.list());
+			
+		}catch (InfrastructureException ex) {
+            throw new InfrastructureException(ex);
+        } catch (BusinessException ex) {
+            throw new BusinessException(ex);
+        } finally {
+            session.close();
+        }
+		return usersFieldDataList;
+	}
 }

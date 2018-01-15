@@ -2,6 +2,7 @@ package com.test.ws.service.impl;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.test.ws.constant.ResultCode;
@@ -16,6 +17,8 @@ import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
 import com.test.ws.service.intrf.LoginService;
+import com.test.ws.utils.ReadWriteExcel;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -184,4 +187,55 @@ public class LoginServiceImpl implements LoginService {
 		return response;
 	}
 
+	public Response uploadDataByExcel() {
+		
+		LoginDao loginDao = new LoginDaoImpl();
+		Response response = new Response();
+		Logger.logDebug("Test", "Enter into uploadDataByExcel() method of "+CLASS);
+
+		try {
+			List<Object[]> list = ReadWriteExcel.getExcelSheetData();
+			response = loginDao.uploadDataByExcel(list);
+		} catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} catch (BusinessException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} finally {
+		}
+		return response;
+	}
+
+	public Response getMandalYuvakList(Integer mandal_id) {
+		
+		LoginDao loginDao = new LoginDaoImpl();
+		Logger.logDebug("Test", "Enter into getMandalYuvakList() method of "+CLASS);
+		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
+		
+		try {
+			list = loginDao.getMandalYuvakList(mandal_id);
+		} catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} catch (BusinessException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} finally {
+		}
+		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
+	}
+
+	public Response getYuvakProfile(Integer user_id) {
+	
+		LoginDao loginDao = new LoginDaoImpl();
+		Logger.logDebug("Test", "Enter into getYuvakProfile() method of "+CLASS);
+		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
+		
+		try {
+			list = loginDao.getYuvakProfile(user_id);
+		} catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} catch (BusinessException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} finally {
+		}
+		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
+	}
 }
