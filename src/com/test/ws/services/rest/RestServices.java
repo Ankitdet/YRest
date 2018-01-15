@@ -5,16 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.BatchUpdateException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +13,6 @@ import java.util.Map;
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -39,19 +29,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.engine.spi.SessionImplementor;
 
 import com.test.ws.constant.ResultCode;
-import com.test.ws.exception.BusinessException;
 import com.test.ws.exception.CommandException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
 import com.test.ws.service.impl.LoginServiceImpl;
-import com.test.ws.utils.HibernateUtil;
-import com.test.ws.utils.ReadWriteExcel;
-import com.test.ws.utils.TokenGenerator;
 
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.MULTIPART_FORM_DATA})
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -320,9 +303,8 @@ public class RestServices {
     
     @POST
     @Path("/uploadData")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadDataByExcel(@FormDataParam("file") InputStream uploadStream,
-    		@FormDataParam("file") FormDataContentDisposition fileDetails) {
+ //   @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadDataByExcel() {
     	  LoginServiceImpl blManager = new LoginServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called uploadDataByExcel() of " + CLASS);
@@ -334,7 +316,7 @@ public class RestServices {
           return response;
 	}
     
-    @POST
+    @GET
     @Path("/getMandalYuvakList")
     public Response getMandalYuvakList(@QueryParam("mandal_id") Integer mandal_id) {
     	  LoginServiceImpl blManager = new LoginServiceImpl();
@@ -348,12 +330,12 @@ public class RestServices {
           return response;
 	}
     
-    @POST
+    @GET
     @Path("/getYuvakProfile")
     public Response getYuvakProfile(@QueryParam("user_id") Integer user_id) {
     	  LoginServiceImpl blManager = new LoginServiceImpl();
           Response response = null;
-          Logger.logInfo(MODULE, "Method called uploadDataByExcel() of " + CLASS);
+          Logger.logInfo(MODULE, "Method called " +getMethodName()+" of " + CLASS);
           try {
               response = blManager.getYuvakProfile(user_id);
           } catch (NumberFormatException ne) {
@@ -362,5 +344,4 @@ public class RestServices {
           return response;
 	}
     
-     
 }
