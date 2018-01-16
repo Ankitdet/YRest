@@ -39,5 +39,5 @@ public interface LoginDao {
 
 	public List<UsersFieldData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id);
 
-	public List<UsersFieldData> createYuvakSabhaAttendance(AttendanceRequest request);
+	public Response createYuvakSabhaAttendance(AttendanceRequest request);
 }

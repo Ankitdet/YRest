@@ -30,6 +30,7 @@ import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.Ssp;
 import com.test.ws.entities.Users;
 import com.test.ws.entities.UsersFieldData;
+import com.test.ws.entities.YuAttendance;
 import com.test.ws.exception.BusinessException;
 import com.test.ws.exception.CommandException;
 import com.test.ws.exception.InfrastructureException;
@@ -555,27 +556,55 @@ public class LoginDaoImpl implements LoginDao {
 	}
 
 	@Override
-	public List<UsersFieldData> createYuvakSabhaAttendance(AttendanceRequest request) {
-	
-		
-		return null;
+	public Response createYuvakSabhaAttendance(AttendanceRequest request) {
+
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		PreparedStatement ps = null;
+		Statement st = null;
+		int count = 0;
+
+		try {
+			SessionImplementor sessImpl = (SessionImplementor) session;
+			Connection connection = sessImpl.connection();
+			connection.setAutoCommit(true);
+			st = connection.createStatement();
+
+			String sql = "INSERT INTO YUVA_ATTENDANCE(SABHA_ID,MANDAL_ID,USER_ID,IS_ATTENDED) VALUES(?,?,?,?)";
+			ps = connection.prepareStatement(sql);
+			ps.setLong(1, request.getSabha_id());
+			ps.setLong(2, request.getMandal_id());
+			for (YuAttendance yAttendance : request.getListOfAttendance()) {
+				ps.setLong(3, yAttendance.getYuvak_id());
+				ps.setBoolean(4, yAttendance.isIs_attended());
+				ps.addBatch();
+				if (count % 100 == 0) {
+					ps.executeBatch();
+				}
+				count++;
+			}
+			ps.executeBatch();
+		} catch (BatchUpdateException e) {
+			int[] updateCounts = e.getUpdateCounts();
+			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
+			throw new BusinessException(
+					"Upload Translation Mapping Data Failed, Reason "
+							+ e.getMessage());
+		} catch (HibernateException hExp) {
+			throw new BusinessException(hExp.getMessage(), hExp);
+		} catch (Exception exp) {
+			throw new BusinessException(exp.getMessage(), exp);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (st != null)
+					st.close();
+			} catch (SQLException sExp) {
+				throw new BusinessException(sExp.getMessage(), sExp);
+			}
+		}
+		return new Response(ResultCode.SUCCESS_200.code,
+				ResultCode.SUCCESS_200.name, "Insert record successfully",
+				null, null);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,9 +1,12 @@
 package com.test.ws.service.impl;
 
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import com.test.ws.constant.ResultCode;
 import com.test.ws.datamanager.impl.LoginDaoImpl;
@@ -11,7 +14,6 @@ import com.test.ws.datamanager.intrf.LoginDao;
 import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
-import com.test.ws.entities.Users;
 import com.test.ws.entities.UsersFieldData;
 import com.test.ws.exception.BusinessException;
 import com.test.ws.exception.CommandException;
@@ -21,10 +23,6 @@ import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
 import com.test.ws.service.intrf.LoginService;
 import com.test.ws.utils.ReadWriteExcel;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 public class LoginServiceImpl implements LoginService {
 
@@ -297,17 +295,16 @@ public class LoginServiceImpl implements LoginService {
 
 		LoginDao loginDao = new LoginDaoImpl();
 		Logger.logDebug("Test", "Enter into createYuvakSabhaAttendance() method of "+CLASS);
-		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
-
+		Response response = null;
+		
 		try {
-			list = loginDao.createYuvakSabhaAttendance(request);
+			response = loginDao.createYuvakSabhaAttendance(request);
 		} catch (InfrastructureException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
 		} catch (BusinessException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
 		} finally {
 		}
-		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
-
+		return response;
 	}
 }
