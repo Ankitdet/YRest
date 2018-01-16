@@ -27,10 +27,9 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.test.ws.constant.ResultCode;
+import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.exception.CommandException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
@@ -240,7 +239,7 @@ public class RestServices {
     }
 
     @POST
-    @Path("/createSabha")
+    @Path("/doCreateSabha")
     public Response doCreateSabha() {
         LoginServiceImpl blManager = new LoginServiceImpl();
         Response response = null;
@@ -302,7 +301,7 @@ public class RestServices {
     }
     
     @POST
-    @Path("/uploadData")
+    @Path("/uploadUserData")
  //   @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadDataByExcel() {
     	  LoginServiceImpl blManager = new LoginServiceImpl();
@@ -331,17 +330,61 @@ public class RestServices {
 	}
     
     @GET
-    @Path("/getYuvakProfile")
-    public Response getYuvakProfile(@QueryParam("user_id") Integer user_id) {
+    @Path("/getSabhaList")
+    public Response getSabhaList() {
     	  LoginServiceImpl blManager = new LoginServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called " +getMethodName()+" of " + CLASS);
           try {
-              response = blManager.getYuvakProfile(user_id);
+              response = blManager.getSabhaList();
           } catch (NumberFormatException ne) {
               return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
           }
           return response;
 	}
     
+    @GET
+    @Path("/getSabhaMandalList")
+    public Response getSabhaMandalList(@QueryParam("sabha_id") Integer sabha_id) {
+    	  LoginServiceImpl blManager = new LoginServiceImpl();
+          Response response = null;
+          Logger.logInfo(MODULE, "Method called " +getMethodName()+" of " + CLASS);
+          try {
+              response = blManager.getSabhaMandalList(sabha_id);
+          } catch (NumberFormatException ne) {
+              return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
+          }
+          return response;
+	}
+    
+    @GET
+    @Path("/getSabhaYuvakList")
+    public Response getSabhaYuvakList(@QueryParam("sabha_id") Integer sabha_id
+    		,@QueryParam("mandal_id") Integer mandal_id) {
+    	  
+    	LoginServiceImpl blManager = new LoginServiceImpl();
+        Response response = null;
+        Logger.logInfo(MODULE, "Method called " +getMethodName()+" of " + CLASS);
+        
+        try {
+              response = blManager.getSabhaYuvakList(sabha_id,mandal_id);
+          } catch (NumberFormatException ne) {
+              return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
+          }
+          return response;
+	}
+    
+    @POST
+    @Path("/createYuvakSabhaAttendance")
+    public Response createYuvakSabhaAttendance(AttendanceRequest request) {
+    	  LoginServiceImpl blManager = new LoginServiceImpl();
+          Response response = null;
+          Logger.logInfo(MODULE, "Method called " +getMethodName()+" of " + CLASS);
+          try {
+              response = blManager.createYuvakSabhaAttendance(request);
+          } catch (NumberFormatException ne) {
+              return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
+          }
+          return response;
+	}
 }

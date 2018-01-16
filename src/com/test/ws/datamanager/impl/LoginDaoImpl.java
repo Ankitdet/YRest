@@ -24,7 +24,9 @@ import org.hibernate.engine.spi.SessionImplementor;
 import com.test.ws.constant.ResultCode;
 import com.test.ws.datamanager.intrf.LoginDao;
 import com.test.ws.entities.Areas;
+import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.Mandals;
+import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.Ssp;
 import com.test.ws.entities.Users;
 import com.test.ws.entities.UsersFieldData;
@@ -473,4 +475,107 @@ public class LoginDaoImpl implements LoginDao {
         }
 		return usersFieldDataList;
 	}
+
+	@Override
+	public List<SabhaData> getSabhaList() {
+		
+		String queryString = "";
+		Session session = HibernateUtil.getSessionFactory().openSession();
+        List<SabhaData> sabhaList = new ArrayList<SabhaData>();
+
+		try {
+			queryString = "SELECT SABHA_TITLE,DATE,SABHA_ID FROM SABHAS";
+			Query query = session.createSQLQuery(queryString);
+			List<Object[]> list = query.list();
+ 			
+			for(Object[] obj : list){
+				SabhaData sabhaData = new SabhaData();
+				sabhaData.setSabha_title((String)obj[0]);
+				sabhaData.setSabha_date((Date)obj[1]);
+				sabhaData.setMandal_id((Long)obj[2]);
+				sabhaList.add(sabhaData);
+			}
+		}catch (InfrastructureException ex) {
+            throw new InfrastructureException(ex);
+        } catch (BusinessException ex) {
+            throw new BusinessException(ex);
+        } finally {
+            session.close();
+        }
+		return sabhaList;
+	}
+
+	@Override
+	public List<Mandals> getSabhaMandalList(Integer sabha_id) {
+		String queryString = "";
+		Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Mandals> mandalList = new ArrayList<Mandals>();
+
+		try {
+			queryString = "SELECT MANDAL_ID,MANDAL_TITLE FROM MANDALS WHERE MANDAL_ID = (SELECT MANDAL_ID FROM SABHAS WHERE SABHA_ID="+sabha_id+")";
+			Query query = session.createSQLQuery(queryString);
+			List<Object[]> list = query.list();
+ 			
+			for(Object[] obj : list){
+				Mandals mandals = new Mandals();
+				mandals.setMandalId((Integer)obj[0]);
+				mandals.setMandalTitle((String)obj[1]);
+				mandalList.add(mandals);
+			}
+		}catch (InfrastructureException ex) {
+            throw new InfrastructureException(ex);
+        } catch (BusinessException ex) {
+            throw new BusinessException(ex);
+        } finally {
+            session.close();
+        }
+		return mandalList;
+	}
+
+	@Override
+	public List<UsersFieldData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
+		String queryString = "";
+		Session session = HibernateUtil.getSessionFactory().openSession();
+        List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
+        
+        try {
+			queryString = userDataQuery + " where u.mandal_id="+mandal_id ;
+			Query query = session.createSQLQuery(queryString);
+			List<Object[]> list = query.list();
+            usersFieldDataList = fillUserTablePojo(list);
+
+        }catch (InfrastructureException ex) {
+            throw new InfrastructureException(ex);
+        } catch (BusinessException ex) {
+            throw new BusinessException(ex);
+        } finally {
+            session.close();
+        }
+		return usersFieldDataList;
+	}
+
+	@Override
+	public List<UsersFieldData> createYuvakSabhaAttendance(AttendanceRequest request) {
+	
+		
+		return null;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,6 +2,9 @@ package com.test.ws.datamanager.intrf;
 
 import java.util.List;
 
+import com.test.ws.entities.AttendanceRequest;
+import com.test.ws.entities.Mandals;
+import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.UsersFieldData;
 import com.test.ws.exception.CommandException;
 import com.test.ws.requestobject.LoginResponse;
@@ -29,4 +32,12 @@ public interface LoginDao {
 	public List<UsersFieldData> getMandalYuvakList(Integer mandal_id);
 
 	public List<UsersFieldData> getYuvakProfile(Integer user_id);
+
+	public List<SabhaData> getSabhaList();
+
+	public List<Mandals> getSabhaMandalList(Integer sabha_id);
+
+	public List<UsersFieldData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id);
+
+	public List<UsersFieldData> createYuvakSabhaAttendance(AttendanceRequest request);
 }

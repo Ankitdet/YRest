@@ -869,3 +869,24 @@ ALTER TABLE `user_rules_menu`
 -- Some important queries
 -- USE xboxlive_akdm; 
 -- SELECT FOUND_ROWS(); // To know how many tables are available in Database
+
+insert into mandals values(6,'sector 1');
+insert into mandals values(7,'sector 2');
+insert into mandals values(8,'sector 3');
+insert into mandals values(9,'sector 4');
+insert into mandals values(10,'sector 10');
+insert into mandals values(11,'sector 11');
+insert into mandals values(12,'sector 12');
+
+
+CREATE TABLE YUVA_ATTENDANCE (
+    sabha_id int NOT NULL,
+    user_id bigint NOT NULL,
+    mandal_id int NOT NULL,
+    is_attended TINYINT
+);
+
+
+-- FOREIGN KEY (sabha_id) REFERENCES sabhas(sabha_id) ON DELETE SET NULL,
+-- FOREIGN KEY (user_id) REFERENCES users(id)  ON DELETE SET NULL ,
+-- FOREIGN KEY (mandal_id) REFERENCES mandals(mandal_id)   ON DELETE SET NULL

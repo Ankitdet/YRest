@@ -8,6 +8,9 @@ import java.util.List;
 import com.test.ws.constant.ResultCode;
 import com.test.ws.datamanager.impl.LoginDaoImpl;
 import com.test.ws.datamanager.intrf.LoginDao;
+import com.test.ws.entities.AttendanceRequest;
+import com.test.ws.entities.Mandals;
+import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.Users;
 import com.test.ws.entities.UsersFieldData;
 import com.test.ws.exception.BusinessException;
@@ -237,5 +240,74 @@ public class LoginServiceImpl implements LoginService {
 		} finally {
 		}
 		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
+	}
+
+	public Response getSabhaList() {
+		
+		LoginDao loginDao = new LoginDaoImpl();
+		Logger.logDebug("Test", "Enter into getSabhaList() method of "+CLASS);
+		List<SabhaData> list = new ArrayList<SabhaData>();
+		
+		try {
+			list = loginDao.getSabhaList();
+		} catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} catch (BusinessException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} finally {
+		}
+		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
+	}
+
+	public Response getSabhaMandalList(Integer sabha_id) {
+		LoginDao loginDao = new LoginDaoImpl();
+		Logger.logDebug("Test", "Enter into getSabhaList() method of "+CLASS);
+		List<Mandals> list = new ArrayList<Mandals>();
+		
+		try {
+			list = loginDao.getSabhaMandalList(sabha_id);
+		} catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} catch (BusinessException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} finally {
+		}
+		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
+	}
+
+	public Response getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
+		
+		LoginDao loginDao = new LoginDaoImpl();
+		Logger.logDebug("Test", "Enter into getSabhaYuvakList() method of "+CLASS);
+		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
+
+		try {
+			list = loginDao.getSabhaYuvakList(sabha_id,mandal_id);
+		} catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} catch (BusinessException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} finally {
+		}
+		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
+
+	}
+
+	public Response createYuvakSabhaAttendance(AttendanceRequest request) {
+
+		LoginDao loginDao = new LoginDaoImpl();
+		Logger.logDebug("Test", "Enter into createYuvakSabhaAttendance() method of "+CLASS);
+		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
+
+		try {
+			list = loginDao.createYuvakSabhaAttendance(request);
+		} catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} catch (BusinessException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+		} finally {
+		}
+		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
+
 	}
 }
