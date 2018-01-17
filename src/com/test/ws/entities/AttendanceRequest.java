@@ -2,12 +2,14 @@ package com.test.ws.entities;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElementWrapper;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 public class AttendanceRequest {
 
 	private Long sabha_id;
 	private Long mandal_id;
+	
+	@JsonProperty(value="data")
 	private List<YuAttendance> data;
 	
 	public Long getSabha_id() {

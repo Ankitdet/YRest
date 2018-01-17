@@ -3,6 +3,7 @@ package com.test.ws.datamanager.intrf;
 import java.util.List;
 
 import com.test.ws.entities.AttendanceRequest;
+import com.test.ws.entities.CreateSabhaData;
 import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.UsersFieldData;
@@ -37,7 +38,7 @@ public interface LoginDao {
 
 	public List<Mandals> getSabhaMandalList(Integer sabha_id);
 
-	public List<UsersFieldData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id);
+	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id);
 
 	public Response createYuvakSabhaAttendance(AttendanceRequest request);
 }

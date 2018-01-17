@@ -12,6 +12,7 @@ import com.test.ws.constant.ResultCode;
 import com.test.ws.datamanager.impl.LoginDaoImpl;
 import com.test.ws.datamanager.intrf.LoginDao;
 import com.test.ws.entities.AttendanceRequest;
+import com.test.ws.entities.CreateSabhaData;
 import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.UsersFieldData;
@@ -277,7 +278,7 @@ public class LoginServiceImpl implements LoginService {
 		
 		LoginDao loginDao = new LoginDaoImpl();
 		Logger.logDebug("Test", "Enter into getSabhaYuvakList() method of "+CLASS);
-		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
+		List<CreateSabhaData> list = new ArrayList<CreateSabhaData>();
 
 		try {
 			list = loginDao.getSabhaYuvakList(sabha_id,mandal_id);

@@ -25,6 +25,7 @@ import com.test.ws.constant.ResultCode;
 import com.test.ws.datamanager.intrf.LoginDao;
 import com.test.ws.entities.Areas;
 import com.test.ws.entities.AttendanceRequest;
+import com.test.ws.entities.CreateSabhaData;
 import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.Ssp;
@@ -534,17 +535,25 @@ public class LoginDaoImpl implements LoginDao {
 	}
 
 	@Override
-	public List<UsersFieldData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
+	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
-        List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
+        List<CreateSabhaData> userSabhaList = new ArrayList<CreateSabhaData>();
         
         try {
-			queryString = userDataQuery + " where u.mandal_id="+mandal_id ;
+			queryString = "SELECT U.ID,U.USER_NAME,U.USER_UNIQUEID FORM USERS U WHERE U.MANDAL_ID="+mandal_id ;
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> list = query.list();
-            usersFieldDataList = fillUserTablePojo(list);
 
+			for(Object[] object : list){
+				CreateSabhaData createSabhaData = new CreateSabhaData();
+				createSabhaData.setUser_id((Long)object[0]);
+				createSabhaData.setUser_name((String)object[1]);
+				createSabhaData.setUser_uniqueid((String)object[2]);
+				createSabhaData.setIs_Attended(false);
+				userSabhaList.add(createSabhaData);
+			}
+			
         }catch (InfrastructureException ex) {
             throw new InfrastructureException(ex);
         } catch (BusinessException ex) {
@@ -552,7 +561,7 @@ public class LoginDaoImpl implements LoginDao {
         } finally {
             session.close();
         }
-		return usersFieldDataList;
+		return userSabhaList;
 	}
 
 	@Override
