@@ -14,9 +14,7 @@ public class LoginResponse {
 	private String uTypeName;
 	private String token;
 	private String email;
-	private String firstName;
-	private String middleName;
-	private String lastName;
+	private String user_name;
 
 
 	public String getuId() {
@@ -50,28 +48,11 @@ public class LoginResponse {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	public String getFirstName() {
-		return firstName;
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getMiddleName() {
-		return middleName;
-	}
-
-	public void setMiddleName(String middleName) {
-		this.middleName = middleName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
 }

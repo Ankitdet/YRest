@@ -61,8 +61,8 @@ public class RestServices {
         LoginServiceImpl blManager = new LoginServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called login() of "+CLASS);
-        Logger.logInfo(MODULE, "Method called login() with LogLin request: "
-                + email + "and " + password);
+        Logger.logInfo(MODULE, "Method called login() with Login request: email :"
+                + email + "and password:" + password);
 
         try {
             if (email == null || email.trim() == "") {

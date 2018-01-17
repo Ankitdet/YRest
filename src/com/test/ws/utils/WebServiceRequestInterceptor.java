@@ -1,13 +1,14 @@
 package com.test.ws.utils;
 
-import com.test.ws.exception.BusinessException;
-import com.test.ws.logger.Logger;
+import java.io.IOException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
+
+import com.test.ws.exception.BusinessException;
+import com.test.ws.logger.Logger;
 
 @Provider
 @PreMatching

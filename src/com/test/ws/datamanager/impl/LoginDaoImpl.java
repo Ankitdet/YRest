@@ -48,7 +48,7 @@ public class LoginDaoImpl implements LoginDao {
 	
     public static  final String userDataQuery = 
     		"select u.id,u.role_id,u.user_name," +
-            "u.username,u.email,u.password,u.phone," +
+            "u.email,u.password,u.phone," +
             "u.whatsapp_number,u.email_verified,u.birth_date" +
             ",u.user_image,u.latitude,u.longitude,u.address," +
             "u.auth_token,u.relationship_status,u.created_at," +
@@ -86,18 +86,16 @@ public class LoginDaoImpl implements LoginDao {
                 query = session.createSQLQuery(queryString);
                 query.executeUpdate();
 
-                queryString = "select u.first_name,u.middle_name,u.last_name,email,u.auth_token,ur.role_name,ur.id from users u left join user_roles ur on ur.id=u.role_id  where u.id='" + user_id + "'";
+                queryString = "select u.user_name,email,u.auth_token,ur.role_name,ur.id from users u left join user_roles ur on ur.id=u.role_id  where u.id='" + user_id + "'";
                 query = session.createSQLQuery(queryString);
                 List<Object[]> testuser = query.list();
 
                 for (Object[] ob : testuser) {
-                    loginResponse.setFirstName((String) ob[0]);
-                    loginResponse.setMiddleName((String) ob[1]);
-                    loginResponse.setLastName((String) ob[2]);
-                    loginResponse.setEmail((String) ob[3]);
-                    loginResponse.setToken((String) ob[4]);
-                    loginResponse.setuTypeName((String) ob[5]);
-                    loginResponse.setuType(String.valueOf((Integer) ob[6]));
+                    loginResponse.setUser_name((String) ob[0]);
+                    loginResponse.setEmail((String) ob[1]);
+                    loginResponse.setToken((String) ob[2]);
+                    loginResponse.setuTypeName((String) ob[3]);
+                    loginResponse.setuType(String.valueOf((Integer) ob[4]));
                     loginResponse.setuId(String.valueOf(user_id));
                 }
                 TokenGenerator.tokenMap.put(loginResponse.getToken(),loginResponse.getToken());
@@ -286,28 +284,27 @@ public class LoginDaoImpl implements LoginDao {
             usersFieldData.setId(((BigInteger) obj[0]).longValue());
             usersFieldData.setRole_id((Integer) obj[1]);
             usersFieldData.setUser_name((String) obj[2]);
-            usersFieldData.setUsername((String) obj[3]);
-            usersFieldData.setEmail((String) obj[4]);
-            usersFieldData.setPassword((String) obj[5]);
-            usersFieldData.setPhone((String) obj[6]);
-            usersFieldData.setWhatsapp_number((String) obj[7]);
-            usersFieldData.setEmail_verified((Boolean) obj[8]);
-            usersFieldData.setBirth_date((Date) setObject(obj[9]));
-            usersFieldData.setUser_image((String) obj[10]);
-            usersFieldData.setLatitude(((BigDecimal) obj[11]).doubleValue());
-            usersFieldData.setLongitude(((BigDecimal) obj[12]).doubleValue());
-            usersFieldData.setAddress((String) obj[13]);
-            usersFieldData.setAuth_token((String) obj[14]);
-            usersFieldData.setRelationship_status((String) obj[15]);
-            usersFieldData.setCreated_at((Date) setObject(obj[16]));
-            usersFieldData.setUpdated_at((Date) setObject(obj[17]));
-            usersFieldData.setStatus((Boolean) obj[18]);
-            usersFieldData.setDevice_type((Integer) obj[19]);
-            usersFieldData.setDevice_token((String) obj[20]);
-            usersFieldData.setBadge_count((Integer) obj[21]);
-            usersFieldData.setRole_name((String) obj[22]);
-            usersFieldData.setArea_title((String) obj[23]);
-            usersFieldData.setMandal_title((String) obj[24]);
+            usersFieldData.setEmail((String) obj[3]);
+            usersFieldData.setPassword((String) obj[4]);
+            usersFieldData.setPhone((String) obj[5]);
+            usersFieldData.setWhatsapp_number((String) obj[6]);
+            usersFieldData.setEmail_verified((Boolean) obj[7]);
+            usersFieldData.setBirth_date((Date) setObject(obj[8]));
+            usersFieldData.setUser_image((String) obj[9]);
+            usersFieldData.setLatitude(((BigDecimal) obj[10]).doubleValue());
+            usersFieldData.setLongitude(((BigDecimal) obj[11]).doubleValue());
+            usersFieldData.setAddress((String) obj[12]);
+            usersFieldData.setAuth_token((String) obj[13]);
+            usersFieldData.setRelationship_status((String) obj[14]);
+            usersFieldData.setCreated_at((Date) setObject(obj[15]));
+            usersFieldData.setUpdated_at((Date) setObject(obj[16]));
+            usersFieldData.setStatus((Boolean) obj[17]);
+            usersFieldData.setDevice_type((Integer) obj[18]);
+            usersFieldData.setDevice_token((String) obj[19]);
+            usersFieldData.setBadge_count((Integer) obj[20]);
+            usersFieldData.setRole_name((String) obj[21]);
+            usersFieldData.setArea_title((String) obj[22]);
+            usersFieldData.setMandal_title((String) obj[23]);
             usersFieldDataList.add(usersFieldData);
         }
         return usersFieldDataList;
@@ -494,7 +491,7 @@ public class LoginDaoImpl implements LoginDao {
 				SabhaData sabhaData = new SabhaData();
 				sabhaData.setSabha_title((String)obj[0]);
 				sabhaData.setSabha_date((Date)obj[1]);
-				sabhaData.setMandal_id((Long)obj[2]);
+				sabhaData.setMandal_id((Integer)obj[2]);
 				sabhaList.add(sabhaData);
 			}
 		}catch (InfrastructureException ex) {
@@ -541,13 +538,13 @@ public class LoginDaoImpl implements LoginDao {
         List<CreateSabhaData> userSabhaList = new ArrayList<CreateSabhaData>();
         
         try {
-			queryString = "SELECT U.ID,U.USER_NAME,U.USER_UNIQUEID FORM USERS U WHERE U.MANDAL_ID="+mandal_id ;
+			queryString = "select id,user_name,user_uniqueid from users where mandal_id="+mandal_id+"" ;
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> list = query.list();
 
 			for(Object[] object : list){
 				CreateSabhaData createSabhaData = new CreateSabhaData();
-				createSabhaData.setUser_id((Long)object[0]);
+				createSabhaData.setUser_id(((BigInteger) object[0]).longValue());
 				createSabhaData.setUser_name((String)object[1]);
 				createSabhaData.setUser_uniqueid((String)object[2]);
 				createSabhaData.setIs_Attended(false);

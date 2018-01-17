@@ -11,6 +11,7 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.jaxrs.Annotations;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializerProvider;
@@ -28,6 +29,7 @@ public class JacksonJaxbJsonProvider extends JacksonJsonProvider {
 		objectMapper = new ObjectMapper();
 		objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+		objectMapper.enable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		/*objectMapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);*/
 		StdSerializerProvider sp = new StdSerializerProvider();
 		sp.setNullValueSerializer(new NullSerializer());

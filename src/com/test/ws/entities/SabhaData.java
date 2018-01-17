@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 public class SabhaData {
 	
 	private Long id;
-	private Long mandal_id;
+	private Integer mandal_id;
 	private Date sabha_date;
 	private String sabha_title;
 	private Timestamp start_time;
@@ -20,10 +20,10 @@ public class SabhaData {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getMandal_id() {
+	public Integer getMandal_id() {
 		return mandal_id;
 	}
-	public void setMandal_id(Long mandal_id) {
+	public void setMandal_id(Integer mandal_id) {
 		this.mandal_id = mandal_id;
 	}
 	public Date getSabha_date() {
