@@ -152,13 +152,13 @@ public class LoginDaoImpl implements LoginDao {
             if (myBirthdayDigit == 0) {
                 queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY U.USER_NAME";
             } else if (myBirthdayDigit == 1) {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.birth_date";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+")";
             } else if (myBirthdayDigit == 2) {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.birth_date";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+")";
             } else if (myBirthdayDigit == 3) {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.birth_date";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+")";
             } else if (myBirthdayDigit == 4) {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.birth_date";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+")";
             }
             Query queryNew = session.createSQLQuery(queryString);
             list = queryNew.list();
@@ -665,7 +665,7 @@ public class LoginDaoImpl implements LoginDao {
 			end_day = c.get(Calendar.DATE);
 			end_month = c.get(Calendar.MONTH);
 			
-			for(int i = 1;i<=3;i++){
+			for(int i = 1;i<=4;i++){
 				if(start_month == 12) {
 					start_month = 1;
 					sb.append(start_month).append(",");
@@ -683,7 +683,7 @@ public class LoginDaoImpl implements LoginDao {
 			c.add(Calendar.MONTH, 6); 
 			end_day = c.get(Calendar.DATE);
 			end_month = c.get(Calendar.MONTH);
-			for(int i = 1;i<= 6;i++){
+			for(int i = 1;i<= 7;i++){
 				if(start_month == 12) {
 					start_month = 1;
 					sb.append(start_month).append(",");
