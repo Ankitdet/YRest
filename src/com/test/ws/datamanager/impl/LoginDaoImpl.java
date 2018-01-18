@@ -150,16 +150,10 @@ public class LoginDaoImpl implements LoginDao {
 		try {
             Long myBirthdayDigit = Long.parseLong(cakeId);
             if (myBirthdayDigit == 0) {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY U.USER_NAME";
-            } else if (myBirthdayDigit == 1) {
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.USER_NAME";
+            } else  {
                 queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+")";
-            } else if (myBirthdayDigit == 2) {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+")";
-            } else if (myBirthdayDigit == 3) {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+")";
-            } else if (myBirthdayDigit == 4) {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+")";
-            }
+            } 
             Query queryNew = session.createSQLQuery(queryString);
             list = queryNew.list();
             usersFieldDataList = fillUserTablePojo(list);
