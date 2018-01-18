@@ -23,6 +23,7 @@ import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
 import com.test.ws.service.intrf.LoginService;
+import com.test.ws.utils.AkdmUtils;
 import com.test.ws.utils.ReadWriteExcel;
 
 public class LoginServiceImpl implements LoginService {
@@ -35,8 +36,7 @@ public class LoginServiceImpl implements LoginService {
 		
 		LoginResponse loginResponse = null;
 		LoginDao loginDao = new LoginDaoImpl();
-		Logger.logDebug("Test", "Enter into create method of "+CLASS);
-		
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		try {
 			 loginResponse = loginDao.validateLogin(email,password);
 			 if(loginResponse == null){
@@ -56,11 +56,10 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public Response getBirthday(String cakeId) throws CommandException {
-		String message = "";
-		LoginResponse loginResponse = null;
+
 		LoginDao loginDao = new LoginDaoImpl();
 		List<UsersFieldData> list = null;
-		Logger.logDebug("Test", "Enter into create method of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 
 		try {
 			Long myBirthdayDigit = Long.valueOf(cakeId);
@@ -83,7 +82,8 @@ public class LoginServiceImpl implements LoginService {
 	public Response getUserContactList() throws CommandException, ParseException {
 		LoginDao loginDao = new LoginDaoImpl();
 		List<UsersFieldData> list = null;
-		Logger.logDebug("Test", "Enter into getUserContactList() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+
 	
 		try {
 			 list = loginDao.getUserContactList();
@@ -98,24 +98,19 @@ public class LoginServiceImpl implements LoginService {
 		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
 	}
 
-	public void getData(){
-		DateTime dt = new DateTime();
-		DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("YYYY-MM-DD HH:mm:ss");
-		System.out.println("dateTimeFormatter:" +dateTimeFormatter);
-	}
-
 	@Override
 	public Response getSSP() {
 		LoginDao loginDao = new LoginDaoImpl();
 		Response response = new Response();
-		Logger.logDebug("Test", "Enter into getSSP() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+
 
 		try {
 			response = loginDao.getSSP();
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return response;
@@ -125,14 +120,15 @@ public class LoginServiceImpl implements LoginService {
 	public Response getManadal() {
 		LoginDao loginDao = new LoginDaoImpl();
 		Response response = new Response();
-		Logger.logDebug("Test", "Enter into getSSP() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+
 
 		try {
 			response = loginDao.getManadal();
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return response;
@@ -142,14 +138,15 @@ public class LoginServiceImpl implements LoginService {
 	public Response getArea() {
 		LoginDao loginDao = new LoginDaoImpl();
 		Response response = new Response();
-		Logger.logDebug("Test", "Enter into getSSP() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+
 
 		try {
 			response = loginDao.getArea();
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return response;
@@ -159,14 +156,15 @@ public class LoginServiceImpl implements LoginService {
 	public Response doCreateSabha() {
 		LoginDao loginDao = new LoginDaoImpl();
 		Response response = new Response();
-		Logger.logDebug("Test", "Enter into getSSP() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+
 
 		try {
 			response = loginDao.doCreateSabha();
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return response;
@@ -176,14 +174,15 @@ public class LoginServiceImpl implements LoginService {
 	public Response getSabhaDetails() {
 		LoginDao loginDao = new LoginDaoImpl();
 		Response response = new Response();
-		Logger.logDebug("Test", "Enter into getSabhaDetails() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+
 
 		try {
 			response = loginDao.getSabhaDetails();
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return response;
@@ -193,15 +192,16 @@ public class LoginServiceImpl implements LoginService {
 		
 		LoginDao loginDao = new LoginDaoImpl();
 		Response response = new Response();
-		Logger.logDebug("Test", "Enter into uploadDataByExcel() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+;
 
 		try {
 			List<Object[]> list = ReadWriteExcel.getExcelSheetData();
 			response = loginDao.uploadDataByExcel(list);
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return response;
@@ -210,15 +210,15 @@ public class LoginServiceImpl implements LoginService {
 	public Response getMandalYuvakList(Integer mandal_id) {
 		
 		LoginDao loginDao = new LoginDaoImpl();
-		Logger.logDebug("Test", "Enter into getMandalYuvakList() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
 		
 		try {
 			list = loginDao.getMandalYuvakList(mandal_id);
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
@@ -227,15 +227,15 @@ public class LoginServiceImpl implements LoginService {
 	public Response getYuvakProfile(Integer user_id) {
 	
 		LoginDao loginDao = new LoginDaoImpl();
-		Logger.logDebug("Test", "Enter into getYuvakProfile() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
 		
 		try {
 			list = loginDao.getYuvakProfile(user_id);
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
@@ -244,15 +244,15 @@ public class LoginServiceImpl implements LoginService {
 	public Response getSabhaList() {
 		
 		LoginDao loginDao = new LoginDaoImpl();
-		Logger.logDebug("Test", "Enter into getSabhaList() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<SabhaData> list = new ArrayList<SabhaData>();
 		
 		try {
 			list = loginDao.getSabhaList();
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
@@ -260,15 +260,15 @@ public class LoginServiceImpl implements LoginService {
 
 	public Response getSabhaMandalList(Integer sabha_id) {
 		LoginDao loginDao = new LoginDaoImpl();
-		Logger.logDebug("Test", "Enter into getSabhaList() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<Mandals> list = new ArrayList<Mandals>();
 		
 		try {
 			list = loginDao.getSabhaMandalList(sabha_id);
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
@@ -277,15 +277,15 @@ public class LoginServiceImpl implements LoginService {
 	public Response getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
 		
 		LoginDao loginDao = new LoginDaoImpl();
-		Logger.logDebug("Test", "Enter into getSabhaYuvakList() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<CreateSabhaData> list = new ArrayList<CreateSabhaData>();
 
 		try {
 			list = loginDao.getSabhaYuvakList(sabha_id,mandal_id);
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
@@ -295,15 +295,15 @@ public class LoginServiceImpl implements LoginService {
 	public Response createYuvakSabhaAttendance(AttendanceRequest request) {
 
 		LoginDao loginDao = new LoginDaoImpl();
-		Logger.logDebug("Test", "Enter into createYuvakSabhaAttendance() method of "+CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		Response response = null;
 		
 		try {
 			response = loginDao.createYuvakSabhaAttendance(request);
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
 		return response;

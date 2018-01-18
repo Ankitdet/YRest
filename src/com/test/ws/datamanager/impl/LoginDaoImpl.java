@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -29,7 +30,6 @@ import com.test.ws.entities.CreateSabhaData;
 import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.Ssp;
-import com.test.ws.entities.Users;
 import com.test.ws.entities.UsersFieldData;
 import com.test.ws.entities.YuAttendance;
 import com.test.ws.exception.BusinessException;
@@ -38,6 +38,7 @@ import com.test.ws.exception.InfrastructureException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
+import com.test.ws.utils.AkdmUtils;
 import com.test.ws.utils.HibernateUtil;
 import com.test.ws.utils.TokenGenerator;
 
@@ -60,10 +61,10 @@ public class LoginDaoImpl implements LoginDao {
     @Override
     public LoginResponse validateLogin(String email, String password) throws CommandException {
 
+        Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         Long user_id = 0l;
         List<Object[]> list = null;
         String queryString = "";
-        Users user = new Users();
         LoginResponse loginResponse = new LoginResponse();
 
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -71,7 +72,6 @@ public class LoginDaoImpl implements LoginDao {
 
         try {
 
-            String token = TokenGenerator.uniqueUUID();
 
             queryString = "select * from users where email='" + email + "' and password='" + password + "'";
             Query query = session.createSQLQuery(queryString);
@@ -82,7 +82,7 @@ public class LoginDaoImpl implements LoginDao {
                     user_id = ((BigInteger) o[0]).longValue();
                 }
 
-                queryString = "update users set auth_token='" + token + "',updated_at='" + getFormatedDate() + "' where id='" + user_id + "'";
+                queryString = "update users set auth_token='" + TokenGenerator.uniqueUUID() + "',updated_at='" + AkdmUtils.getFormatedDate() + "' where id='" + user_id + "'";
                 query = session.createSQLQuery(queryString);
                 query.executeUpdate();
 
@@ -115,17 +115,12 @@ public class LoginDaoImpl implements LoginDao {
         return loginResponse;
     }
 
-    private Timestamp getFormatedDate() {
-        java.util.Date date = new java.util.Date();
-        return new Timestamp(date.getTime());
-    }
-
     @Override
     public List<UsersFieldData> getUserContactList() throws CommandException {
 
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> list = null;
-        UsersFieldData usersFieldData = new UsersFieldData();
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
 
         try {
@@ -146,31 +141,24 @@ public class LoginDaoImpl implements LoginDao {
     @Override
     public List<UsersFieldData> getBirthday(String cakeId) throws CommandException {
 
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> list = null;
-        UsersFieldData usersFieldData = null;
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
 
-        /**
-         *  0 = today's
-         *  1 =  Week
-         *  2 = 1 Months
-         *  3 = 3 Months
-         *  4 = 6 months
-         */
-        try {
+		try {
             Long myBirthdayDigit = Long.parseLong(cakeId);
             if (myBirthdayDigit == 0) {
-                queryString = userDataQuery + " WHERE u.birth_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 0 DAY) ORDER BY u.first_name";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY U.USER_NAME";
             } else if (myBirthdayDigit == 1) {
-                queryString = userDataQuery + " WHERE u.birth_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) ORDER BY u.birth_date";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.birth_date";
             } else if (myBirthdayDigit == 2) {
-                queryString = userDataQuery + " WHERE u.birth_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 MONTH) ORDER BY u.birth_date";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.birth_date";
             } else if (myBirthdayDigit == 3) {
-                queryString = userDataQuery + " WHERE u.birth_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 MONTH) ORDER BY u.birth_date";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.birth_date";
             } else if (myBirthdayDigit == 4) {
-                queryString = userDataQuery + " WHERE u.birth_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 MONTH) ORDER BY u.birth_date";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.birth_date";
             }
             Query queryNew = session.createSQLQuery(queryString);
             list = queryNew.list();
@@ -188,6 +176,8 @@ public class LoginDaoImpl implements LoginDao {
 
     @Override
     public Response getSSP() {
+
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
 
@@ -215,6 +205,7 @@ public class LoginDaoImpl implements LoginDao {
     @Override
     public Response getArea() {
 
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Areas> areasArrayList = new ArrayList<Areas>();
@@ -241,6 +232,8 @@ public class LoginDaoImpl implements LoginDao {
 
     @Override
     public Response getManadal() {
+    	
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Mandals> mandalsArrayList = new ArrayList<Mandals>();
@@ -265,19 +258,10 @@ public class LoginDaoImpl implements LoginDao {
         return new Response(ResultCode.SUCCESS_200.code, ResultCode.SUCCESS_200.name, null, null, mandalsArrayList);
     }
 
-    public Object setObject(Object obj) {
-
-        if (obj instanceof BigInteger) {
-            return String.valueOf(((BigInteger) obj).intValue());
-        } else if (obj instanceof BigDecimal) {
-            return String.valueOf(((BigDecimal) obj).intValue());
-        } else if (obj instanceof Timestamp) {
-            return new Date(((Timestamp) obj).getTime());
-        }
-        return obj;
-    }
-
     private List<UsersFieldData> fillUserTablePojo(List<Object[]> list){
+    	
+        Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
         for (Object[] obj : list) {
             UsersFieldData usersFieldData = new UsersFieldData();
@@ -289,15 +273,15 @@ public class LoginDaoImpl implements LoginDao {
             usersFieldData.setPhone((String) obj[5]);
             usersFieldData.setWhatsapp_number((String) obj[6]);
             usersFieldData.setEmail_verified((Boolean) obj[7]);
-            usersFieldData.setBirth_date((Date) setObject(obj[8]));
+            usersFieldData.setBirth_date((Date) AkdmUtils.setObject(obj[8]));
             usersFieldData.setUser_image((String) obj[9]);
             usersFieldData.setLatitude(((BigDecimal) obj[10]).doubleValue());
             usersFieldData.setLongitude(((BigDecimal) obj[11]).doubleValue());
             usersFieldData.setAddress((String) obj[12]);
             usersFieldData.setAuth_token((String) obj[13]);
             usersFieldData.setRelationship_status((String) obj[14]);
-            usersFieldData.setCreated_at((Date) setObject(obj[15]));
-            usersFieldData.setUpdated_at((Date) setObject(obj[16]));
+            usersFieldData.setCreated_at((Date) AkdmUtils.setObject(obj[15]));
+            usersFieldData.setUpdated_at((Date) AkdmUtils.setObject(obj[16]));
             usersFieldData.setStatus((Boolean) obj[17]);
             usersFieldData.setDevice_type((Integer) obj[18]);
             usersFieldData.setDevice_token((String) obj[19]);
@@ -312,6 +296,8 @@ public class LoginDaoImpl implements LoginDao {
 
     @Override
     public Response doCreateSabha() {
+    	
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Mandals> mandalsArrayList = new ArrayList<Mandals>();
@@ -337,6 +323,7 @@ public class LoginDaoImpl implements LoginDao {
 	@Override
 	public Response uploadDataByExcel(List<Object[]> list) {
 
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		PreparedStatement ps = null;
 		Statement st = null;
@@ -350,7 +337,7 @@ public class LoginDaoImpl implements LoginDao {
 			st = connection.createStatement();
 
 			// batch insert
-			String sql = "INSERT INTO USERS(ROLE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME,USERNAME,EMAIL,PASSWORD,PHONE,WHATSAPP_NUMBER,EMAIL_VERIFIED,BIRTH_DATE,USER_IMAGE,LATITUDE,LONGITUDE,ADDRESS,AREA_ID,MANDAL_ID,AUTH_TOKEN,RELATIONSHIP_STATUS,CREATED_AT,UPDATED_AT,STATUS,DEVICE_TYPE,DEVICE_TOKEN,BADGE_COUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO users(ROLE_ID,USER_NAME,USER_UNIQUEID,EMAIL,PASSWORD,PHONE,WHATSAPP_NUMBER,EMAIL_VERIFIED,BIRTH_DATE,USER_IMAGE,LATITUDE,LONGITUDE,ADDRESS,AREA_ID,MANDAL_ID,AUTH_TOKEN,RELATIONSHIP_STATUS,CREATED_AT,UPDATED_AT,STATUS,DEVICE_TYPE,DEVICE_TOKEN,BADGE_COUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			ps = connection.prepareStatement(sql);
 			int i =0 ;
 			for (Object[] newData : list) {
@@ -364,37 +351,35 @@ public class LoginDaoImpl implements LoginDao {
 					
 					if("".equals(newData[0])) break;
 					ps.setString(2, (String)newData[0]);
-					ps.setString(3, "");
-					ps.setString(4, "");
+					ps.setString(3, (String)newData[0] + "_Y_");
+					ps.setString(4, ((String)newData[0]).toLowerCase() + "@gmail.com");
 					ps.setString(5, ((String)newData[0]).toLowerCase());
-					ps.setString(6, ((String)newData[0]).toLowerCase() + "@gmail.com");
-					ps.setString(7, ((String)newData[0]).toLowerCase());
 					
 					String phno = String.valueOf((String)newData[2]).replace("+", "");
-					ps.setString(8, phno);
+					ps.setString(6, phno);
 					
 					String Whatsapp = String.valueOf((String)newData[3]).replace("+", "");
-					ps.setString(9, Whatsapp);
-					ps.setInt(10, 1);
+					ps.setString(7, Whatsapp);
+					ps.setInt(8,1);
 					
 					String str = (String)newData[5];
 					if(!"".equals(str)){
-						ps.setTimestamp(11,simpleDateFormat(newData[5]));	
+						ps.setDate(9,simpleDateFormat(newData[5]));	
 					}
+					ps.setInt(10, 0);
+					ps.setInt(11, 0);
 					ps.setInt(12, 0);
-					ps.setInt(13, 0);
-					ps.setInt(14, 0);
-					ps.setString(15, (String)newData[6]);
-					ps.setInt(16, 5);
-					ps.setInt(17, 6);
-					ps.setString(18, TokenGenerator.uniqueUUID());
-					ps.setInt(19, 0);
-					ps.setTimestamp(20, getFormatedDate());
-					ps.setTimestamp(21, getFormatedDate());
+					ps.setString(13, (String)newData[6]);
+					ps.setInt(14, 5);
+					ps.setInt(15, 6);
+					ps.setString(16, TokenGenerator.uniqueUUID());
+					ps.setInt(17, 0);
+					ps.setTimestamp(18, AkdmUtils.getFormatedDate());
+					ps.setTimestamp(19, AkdmUtils.getFormatedDate());
+					ps.setInt(20, 0);
+					ps.setInt(21, 0);
 					ps.setInt(22, 0);
 					ps.setInt(23, 0);
-					ps.setInt(24, 0);
-					ps.setInt(25, 0);
 					
 					ps.addBatch();
 					successDataCount++;
@@ -409,9 +394,9 @@ public class LoginDaoImpl implements LoginDao {
 			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
 			throw new BusinessException("Upload Translation Mapping Data Failed, Reason " + e.getMessage());
 		} catch (HibernateException hExp) {
-			throw new BusinessException(hExp.getMessage(), hExp);
+			Logger.logError(MODULE, hExp.getMessage());
 		} catch (Exception exp) {
-			throw new BusinessException(exp.getMessage(), exp);
+			Logger.logError(MODULE, exp.getMessage());
 		} finally {
 			try {
 				if (ps != null)
@@ -425,15 +410,16 @@ public class LoginDaoImpl implements LoginDao {
 		return new Response(ResultCode.SUCCESS_200.code,ResultCode.SUCCESS_200.name,"Inserted Record:" +successDataCount + "\nSkipped Record:" +failedDataConunt,null,null);
 	}
 	
-    private Timestamp simpleDateFormat(Object obj) throws ParseException{
+    private Date simpleDateFormat(Object obj) throws ParseException{
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		Timestamp ts = new Timestamp(((java.util.Date)df.parse((String)obj)).getTime());
-		return ts;
+		Date dt = new Date((df.parse((String)obj)).getTime());
+		return dt;
 	}
 
 	@Override
 	public List<UsersFieldData> getMandalYuvakList(Integer mandal_id) {
 
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
@@ -455,7 +441,8 @@ public class LoginDaoImpl implements LoginDao {
 
 	@Override
 	public List<UsersFieldData> getYuvakProfile(Integer user_id) {
-		
+    	
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
@@ -478,6 +465,7 @@ public class LoginDaoImpl implements LoginDao {
 	@Override
 	public List<SabhaData> getSabhaList() {
 		
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<SabhaData> sabhaList = new ArrayList<SabhaData>();
@@ -506,6 +494,8 @@ public class LoginDaoImpl implements LoginDao {
 
 	@Override
 	public List<Mandals> getSabhaMandalList(Integer sabha_id) {
+		
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<Mandals> mandalList = new ArrayList<Mandals>();
@@ -533,6 +523,8 @@ public class LoginDaoImpl implements LoginDao {
 
 	@Override
 	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
+		
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<CreateSabhaData> userSabhaList = new ArrayList<CreateSabhaData>();
@@ -564,6 +556,7 @@ public class LoginDaoImpl implements LoginDao {
 	@Override
 	public Response createYuvakSabhaAttendance(AttendanceRequest request) {
 
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		PreparedStatement ps = null;
 		Statement st = null;
@@ -612,5 +605,101 @@ public class LoginDaoImpl implements LoginDao {
 		return new Response(ResultCode.SUCCESS_200.code,
 				ResultCode.SUCCESS_200.name, "Insert record successfully",
 				null, null);
+	}
+	
+	private String getBirthFilterQuery(String id){
+
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+
+		  /**
+         *  default 0 = today's
+         *  if id 1 = 1 Week
+         *  if id 2 = 1 Months
+         *  if id 3 = 3 Months
+         *  if id 4 = 6 months
+         */
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date date = null;
+		try {
+			date = dateFormat.parse(dateFormat.format(new java.util.Date()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		
+		int start_month = c.get(Calendar.MONTH);
+		int start_day =c.get(Calendar.DATE);
+		int end_month = 0;
+		int end_day = 0;
+
+		StringBuffer sb = new StringBuffer();
+		
+		switch (id) {
+		case "1":
+			// Next 7 days
+			c.add(Calendar.DATE, 7); 
+			end_day = c.get(Calendar.DATE);
+			end_month = c.get(Calendar.MONTH);
+			
+			if(start_month == end_month){
+				sb.append(++start_month);
+			}else{
+				sb.append(++start_month).append(",").append(++end_month);
+			}
+			break;
+			
+		case "2" :
+			// Next 1 month
+			c.add(Calendar.MONTH, 1); 
+			end_day = c.get(Calendar.DATE);
+			end_month = c.get(Calendar.MONTH);
+			sb.append(++start_month).append(",").append(++end_month);
+			break;
+		
+		case "3" :
+			// Next 3 month
+			c.add(Calendar.MONTH, 3); 
+			end_day = c.get(Calendar.DATE);
+			end_month = c.get(Calendar.MONTH);
+			
+			for(int i = 1;i<=3;i++){
+				if(start_month == 12) {
+					start_month = 1;
+					sb.append(start_month).append(",");
+					continue;
+				}
+				sb.append(++start_month).append(",");
+			}
+			sb.replace(sb.length()-1,sb.length(), "");
+			
+			break;
+		
+		case "4" :
+			
+			// Next 6 month
+			c.add(Calendar.MONTH, 6); 
+			end_day = c.get(Calendar.DATE);
+			end_month = c.get(Calendar.MONTH);
+			for(int i = 1;i<= 6;i++){
+				if(start_month == 12) {
+					start_month = 1;
+					sb.append(start_month).append(",");
+					continue;
+				}
+				sb.append(++start_month).append(",");
+			}
+			sb.replace(sb.length()-1,sb.length(), "");
+			break;
+			
+		default:
+			// current date
+			end_day = start_day;
+			sb.append(++start_month);
+			break;
+		}
+		return "MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+") In ("+sb+") and DAY("+com.test.ws.constant.Constants.BIRTH_DATE+")>="+start_day+" and DAY("+com.test.ws.constant.Constants.BIRTH_DATE+")<="+end_day+"";
 	}
 }

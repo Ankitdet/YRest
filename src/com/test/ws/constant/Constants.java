@@ -6,6 +6,6 @@ public class Constants {
 	public static final String REPLACE = "REPLACE";
 	public static final String SUCCESS = "SUCCESS";
 	public static final String ERROR = "ERROR"; 
-
+	public static final String BIRTH_DATE = "birth_date";
 	public  static  final String USER_SELECT = "";
 }
