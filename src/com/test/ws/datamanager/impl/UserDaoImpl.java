@@ -20,7 +20,7 @@ import org.hibernate.Transaction;
 import org.hibernate.engine.spi.SessionImplementor;
 
 import com.test.ws.constant.ResultCode;
-import com.test.ws.datamanager.intrf.LoginDao;
+import com.test.ws.datamanager.intrf.UserDao;
 import com.test.ws.entities.Areas;
 import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.CreateSabhaData;
@@ -39,10 +39,10 @@ import com.test.ws.utils.AkdmUtils;
 import com.test.ws.utils.HibernateUtil;
 import com.test.ws.utils.TokenGenerator;
 
-public class LoginDaoImpl implements LoginDao {
+public class UserDaoImpl implements UserDao {
 
-	public static final String CLASS = LoginDaoImpl.class.getName();
-	public static final String MODULE = LoginDaoImpl.class.getSimpleName();
+	public static final String CLASS = UserDaoImpl.class.getName();
+	public static final String MODULE = UserDaoImpl.class.getSimpleName();
 	
 	/**
 	 * Initialize counter variable for get COLUMN values

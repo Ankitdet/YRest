@@ -15,15 +15,15 @@ import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.exception.CommandException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
-import com.test.ws.service.impl.LoginServiceImpl;
+import com.test.ws.service.impl.UserServiceImpl;
 import com.test.ws.utils.AkdmUtils;
 
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.MULTIPART_FORM_DATA})
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-public class RestServices {
+public class UserRestWS {
 
     private static final String MODULE = "RestServices";
-    public static final String CLASS = RestServices.class.getSimpleName();
+    public static final String CLASS = UserRestWS.class.getSimpleName();
 
     @POST
     @Path("/login")
@@ -31,7 +31,7 @@ public class RestServices {
                           @QueryParam("password") String password)
             throws NumberFormatException, ParseException, CommandException {
 
-        LoginServiceImpl blManager = new LoginServiceImpl();
+        UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
         Logger.logInfo(MODULE, "Parameters are : email-" + email + ",password-" + password);
@@ -70,7 +70,7 @@ public class RestServices {
     @Path("/getContactList")
     public Response getContactList() throws ParseException {
 
-        LoginServiceImpl blManager = new LoginServiceImpl();
+        UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
 
@@ -88,7 +88,7 @@ public class RestServices {
     @GET
     @Path("/getBirthday")
     public Response getBirthday(@QueryParam("id") String cakeId) {
-        LoginServiceImpl blManager = new LoginServiceImpl();
+        UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
         Logger.logInfo(MODULE, "Parameters are : Id-" + cakeId);
@@ -111,7 +111,7 @@ public class RestServices {
     @Path("/getSSP")
     public  Response getSSP() {
 
-        LoginServiceImpl blManager = new LoginServiceImpl();
+        UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
         try {
@@ -125,7 +125,7 @@ public class RestServices {
     @GET
     @Path("/getMandal")
     public  Response getManadal() {
-        LoginServiceImpl blManager = new LoginServiceImpl();
+        UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
         try {
@@ -139,7 +139,7 @@ public class RestServices {
     @GET
     @Path("/getArea")
     public Response getArea() {
-        LoginServiceImpl blManager = new LoginServiceImpl();
+        UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
         try {
@@ -153,7 +153,7 @@ public class RestServices {
     @POST
     @Path("/createSabha")
     public Response doCreateSabha() {
-        LoginServiceImpl blManager = new LoginServiceImpl();
+        UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
 
@@ -168,7 +168,7 @@ public class RestServices {
     @GET
     @Path("/getSabhaDetails")
     public Response getSabhaDetails() {
-        LoginServiceImpl blManager = new LoginServiceImpl();
+        UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
 
@@ -183,7 +183,7 @@ public class RestServices {
     @POST
     @Path("/uploadUserData")
     public Response uploadDataByExcel() {
-    	  LoginServiceImpl blManager = new LoginServiceImpl();
+    	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
 
@@ -198,7 +198,7 @@ public class RestServices {
     @GET
     @Path("/getMandalYuvakList")
     public Response getMandalYuvakList(@QueryParam("mandal_id") Integer mandal_id) {
-    	  LoginServiceImpl blManager = new LoginServiceImpl();
+    	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
           Logger.logInfo(MODULE, "Parameters are : mandal_id-"+mandal_id);
@@ -214,7 +214,7 @@ public class RestServices {
     @GET
     @Path("/getSabhaList")
     public Response getSabhaList() {
-    	  LoginServiceImpl blManager = new LoginServiceImpl();
+    	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
           try {
@@ -228,7 +228,7 @@ public class RestServices {
     @GET
     @Path("/getSabhaMandalList")
     public Response getSabhaMandalList(@QueryParam("sabha_id") Integer sabha_id) {
-    	  LoginServiceImpl blManager = new LoginServiceImpl();
+    	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
           Logger.logInfo(MODULE, "Parameters are : sabha_id-"+sabha_id);
@@ -246,7 +246,7 @@ public class RestServices {
     public Response getSabhaYuvakList(@QueryParam("sabha_id") Integer sabha_id
     		,@QueryParam("mandal_id") Integer mandal_id) {
     	  
-    	LoginServiceImpl blManager = new LoginServiceImpl();
+    	UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         Logger.logInfo(MODULE, "Parameters are : sabha_id-"+sabha_id+",mandal_id-"+mandal_id);
@@ -262,7 +262,7 @@ public class RestServices {
     @POST
     @Path("/createYuvakSabhaAttendance")
     public Response createYuvakSabhaAttendance(AttendanceRequest request) {
-    	  LoginServiceImpl blManager = new LoginServiceImpl();
+    	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
           try {

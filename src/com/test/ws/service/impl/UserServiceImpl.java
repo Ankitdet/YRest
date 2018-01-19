@@ -9,8 +9,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import com.test.ws.constant.ResultCode;
-import com.test.ws.datamanager.impl.LoginDaoImpl;
-import com.test.ws.datamanager.intrf.LoginDao;
+import com.test.ws.datamanager.impl.UserDaoImpl;
+import com.test.ws.datamanager.intrf.UserDao;
 import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.CreateSabhaData;
 import com.test.ws.entities.Mandals;
@@ -22,20 +22,20 @@ import com.test.ws.exception.InfrastructureException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
-import com.test.ws.service.intrf.LoginService;
+import com.test.ws.service.intrf.UserService;
 import com.test.ws.utils.AkdmUtils;
 import com.test.ws.utils.ReadWriteExcel;
 
-public class LoginServiceImpl implements LoginService {
+public class UserServiceImpl implements UserService {
 
-	public static final String CLASS = LoginServiceImpl.class.getName();
-	public static final String MODULE = LoginServiceImpl.class.getSimpleName();
+	public static final String CLASS = UserServiceImpl.class.getName();
+	public static final String MODULE = UserServiceImpl.class.getSimpleName();
 	
 	@Override
 	public Response validateLogin(String email,String password) throws CommandException, ParseException {
 		
 		LoginResponse loginResponse = null;
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		try {
 			 loginResponse = loginDao.validateLogin(email,password);
@@ -57,7 +57,7 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public Response getBirthday(String cakeId) throws CommandException {
 
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		List<UsersFieldData> list = null;
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 
@@ -80,7 +80,7 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	public Response getUserContactList() throws CommandException, ParseException {
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		List<UsersFieldData> list = null;
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 
@@ -100,7 +100,7 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public Response getSSP() {
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 
@@ -118,7 +118,7 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public Response getManadal() {
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 
@@ -136,7 +136,7 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public Response getArea() {
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 
@@ -154,7 +154,7 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public Response doCreateSabha() {
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 
@@ -172,7 +172,7 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public Response getSabhaDetails() {
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 
@@ -190,7 +190,7 @@ public class LoginServiceImpl implements LoginService {
 
 	public Response uploadDataByExcel() {
 		
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 ;
@@ -209,7 +209,7 @@ public class LoginServiceImpl implements LoginService {
 
 	public Response getMandalYuvakList(Integer mandal_id) {
 		
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
 		
@@ -226,7 +226,7 @@ public class LoginServiceImpl implements LoginService {
 
 	public Response getYuvakProfile(Integer user_id) {
 	
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
 		
@@ -243,7 +243,7 @@ public class LoginServiceImpl implements LoginService {
 
 	public Response getSabhaList() {
 		
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<SabhaData> list = new ArrayList<SabhaData>();
 		
@@ -259,7 +259,7 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	public Response getSabhaMandalList(Integer sabha_id) {
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<Mandals> list = new ArrayList<Mandals>();
 		
@@ -276,7 +276,7 @@ public class LoginServiceImpl implements LoginService {
 
 	public Response getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
 		
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		List<CreateSabhaData> list = new ArrayList<CreateSabhaData>();
 
@@ -294,7 +294,7 @@ public class LoginServiceImpl implements LoginService {
 
 	public Response createYuvakSabhaAttendance(AttendanceRequest request) {
 
-		LoginDao loginDao = new LoginDaoImpl();
+		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		Response response = null;
 		

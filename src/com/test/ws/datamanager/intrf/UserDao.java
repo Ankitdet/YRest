@@ -11,7 +11,7 @@ import com.test.ws.exception.CommandException;
 import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
 
-public interface LoginDao {
+public interface UserDao {
 	public LoginResponse validateLogin(String email, String password) throws CommandException;
 
 	public List<UsersFieldData> getUserContactList() throws CommandException;

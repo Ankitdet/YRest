@@ -29,7 +29,7 @@ import org.codehaus.jackson.type.TypeReference;
 import com.test.ws.constant.ResultCode;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
-import com.test.ws.service.impl.LoginServiceImpl;
+import com.test.ws.service.impl.UserServiceImpl;
 import com.test.ws.utils.AkdmUtils;
 
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.MULTIPART_FORM_DATA})
@@ -37,7 +37,7 @@ import com.test.ws.utils.AkdmUtils;
 public class ExampleRestServices {
 
     private static final String MODULE = "RestServices";
-    public static final String CLASS = RestServices.class.getSimpleName();
+    public static final String CLASS = UserRestWS.class.getSimpleName();
     
 	   /** 
      * To demonstrate Accept Object and convert Into LinkedHashMap<?,?>
@@ -46,7 +46,7 @@ public class ExampleRestServices {
     @POST
     @Path("/takeSimpleObject")
     public Response takeRequest(Object obj) {
-        LoginServiceImpl blManager = new LoginServiceImpl();
+        UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
 

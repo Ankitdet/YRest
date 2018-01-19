@@ -6,13 +6,13 @@ import javax.jws.WebService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.test.ws.services.rest.RestServices;
+import com.test.ws.services.rest.UserRestWS;
 
 @WebService(name="PersonWS")
 public class SOAPPersonServices {
 
 	private static final String MODULE = "PERSON-SOAP-WS";
-	protected final Logger logger = LoggerFactory.getLogger(RestServices.class);
+	protected final Logger logger = LoggerFactory.getLogger(UserRestWS.class);
 
 	/*@WebMethod(operationName = "methodName")
 	public PersonWSResponse wsConfigureVoIPAccount(PersonWSRequest personRequest){
