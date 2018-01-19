@@ -8,6 +8,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.joda.time.DateTime;
+
 public class AkdmUtils {
 
 	public static String getMethodName() {
@@ -45,18 +47,14 @@ public class AkdmUtils {
         			o = ((BigInteger) o).floatValue();
         		}
         	}
-        	
-        	if(o instanceof Date){
-        		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-        		o = new Date((df.parse((String)o)).getTime());
+        	if(o instanceof Timestamp){
+        		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        		o = dateFormat.format(new Date(((Timestamp) o).getTime()));
         	}
-        	
-           return clazz.cast(o);
+
+        	return clazz.cast(o);
         } catch(ClassCastException e) {
             return null;
-        } catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
+        } 
     }
 }

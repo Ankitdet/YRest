@@ -33,7 +33,6 @@ import com.test.ws.exception.BusinessException;
 import com.test.ws.exception.CommandException;
 import com.test.ws.exception.InfrastructureException;
 import com.test.ws.logger.Logger;
-import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
 import com.test.ws.utils.AkdmUtils;
 import com.test.ws.utils.HibernateUtil;
@@ -41,8 +40,7 @@ import com.test.ws.utils.TokenGenerator;
 
 public class UserDaoImpl implements UserDao {
 
-	public static final String CLASS = UserDaoImpl.class.getName();
-	public static final String MODULE = UserDaoImpl.class.getSimpleName();
+	public static final String MODULE = UserDaoImpl.class.getName();
 	
 	/**
 	 * Initialize counter variable for get COLUMN values
@@ -63,7 +61,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<UsersFieldData> validateLogin(String email, String password) throws CommandException {
-        Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+        Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         Long user_id = 0l;
         List<Object[]> list = null;
         String queryString = "";
@@ -115,7 +113,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<UsersFieldData> getUserContactList() throws CommandException {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> list = null;
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
@@ -138,7 +136,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<UsersFieldData> getBirthday(String cakeId) throws CommandException {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> list = null;
@@ -146,6 +144,9 @@ public class UserDaoImpl implements UserDao {
 
 		try {
             Long myBirthdayDigit = Long.parseLong(cakeId);
+            
+            
+            if(myBirthdayDigit > 4) return null;
             if (myBirthdayDigit == 0) {
                 queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.USER_NAME";
             } else  {
@@ -168,7 +169,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Response getSSP() {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
 
@@ -196,7 +197,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Response getArea() {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Areas> areasArrayList = new ArrayList<Areas>();
@@ -224,7 +225,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Response getManadal() {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Mandals> mandalsArrayList = new ArrayList<Mandals>();
@@ -251,7 +252,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     private List<UsersFieldData> fillUserTablePojo(List<Object[]> list){
-        Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+        Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
         for (Object[] obj : list) {
         	counter = 0;
@@ -271,8 +272,8 @@ public class UserDaoImpl implements UserDao {
             usersFieldData.setAddress(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldData.setAuth_token(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldData.setRelationship_status(AkdmUtils.getObject(obj[counter++],String.class));
-            usersFieldData.setCreated_at(AkdmUtils.getObject(obj[counter++],Date.class));
-            usersFieldData.setUpdated_at(AkdmUtils.getObject(obj[counter++],Date.class));
+            usersFieldData.setCreated_at(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setUpdated_at(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldData.setStatus(AkdmUtils.getObject(obj[counter++],Boolean.class));
             usersFieldData.setDevice_type(AkdmUtils.getObject(obj[counter++],Integer.class));
             usersFieldData.setDevice_token(AkdmUtils.getObject(obj[counter++],String.class));
@@ -288,7 +289,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Response doCreateSabha() {
     	
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Mandals> mandalsArrayList = new ArrayList<Mandals>();
@@ -314,7 +315,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public Response uploadDataByExcel(List<Object[]> list) {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		PreparedStatement ps = null;
 		Statement st = null;
@@ -404,7 +405,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<UsersFieldData> getMandalYuvakList(Integer mandal_id) {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
@@ -427,7 +428,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<UsersFieldData> getYuvakProfile(Integer user_id) {
     	
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
@@ -449,7 +450,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<SabhaData> getSabhaList() {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<SabhaData> sabhaList = new ArrayList<SabhaData>();
@@ -479,7 +480,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<Mandals> getSabhaMandalList(Integer sabha_id) {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<Mandals> mandalList = new ArrayList<Mandals>();
@@ -508,7 +509,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<CreateSabhaData> userSabhaList = new ArrayList<CreateSabhaData>();
@@ -541,7 +542,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public Response createYuvakSabhaAttendance(AttendanceRequest request) {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		PreparedStatement ps = null;
 		Statement st = null;
@@ -594,7 +595,7 @@ public class UserDaoImpl implements UserDao {
 	
 	private String getBirthFilterQuery(String id){
 
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 		  /**
          *  default 0 = today's

@@ -28,15 +28,14 @@ import com.test.ws.utils.ReadWriteExcel;
 
 public class UserServiceImpl implements UserService {
 
-	public static final String CLASS = UserServiceImpl.class.getName();
-	public static final String MODULE = UserServiceImpl.class.getSimpleName();
+	public static final String MODULE = UserServiceImpl.class.getName();
 	
 	@Override
 	public Response validateLogin(String email,String password) throws CommandException, ParseException {
 		
 		List<UsersFieldData> usersFieldDatas = new ArrayList<UsersFieldData>();
 		UserDao loginDao = new UserDaoImpl();
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		try {
 			usersFieldDatas = loginDao.validateLogin(email,password);
 			 if(usersFieldDatas == null){
@@ -59,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
 		UserDao loginDao = new UserDaoImpl();
 		List<UsersFieldData> list = null;
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 		try {
 			Long myBirthdayDigit = Long.valueOf(cakeId);
@@ -71,6 +70,10 @@ public class UserServiceImpl implements UserService {
 		} finally {
 
 		}
+		
+		if(list == null)
+			return new Response(ResultCode.NOT_FOUND_404.code, "Invalid value passed " +cakeId, null, null, list);
+		
 		if(!list.isEmpty()){
 			return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
 		}else{
@@ -82,7 +85,7 @@ public class UserServiceImpl implements UserService {
 	public Response getUserContactList() throws CommandException, ParseException {
 		UserDao loginDao = new UserDaoImpl();
 		List<UsersFieldData> list = null;
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 	
 		try {
@@ -102,7 +105,7 @@ public class UserServiceImpl implements UserService {
 	public Response getSSP() {
 		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 
 		try {
@@ -120,7 +123,7 @@ public class UserServiceImpl implements UserService {
 	public Response getManadal() {
 		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 
 		try {
@@ -138,7 +141,7 @@ public class UserServiceImpl implements UserService {
 	public Response getArea() {
 		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 
 		try {
@@ -156,7 +159,7 @@ public class UserServiceImpl implements UserService {
 	public Response doCreateSabha() {
 		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 
 		try {
@@ -174,7 +177,7 @@ public class UserServiceImpl implements UserService {
 	public Response getSabhaDetails() {
 		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 
 		try {
@@ -192,7 +195,7 @@ public class UserServiceImpl implements UserService {
 		
 		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 ;
 
 		try {
@@ -210,7 +213,7 @@ public class UserServiceImpl implements UserService {
 	public Response getMandalYuvakList(Integer mandal_id) {
 		
 		UserDao loginDao = new UserDaoImpl();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
 		
 		try {
@@ -227,7 +230,7 @@ public class UserServiceImpl implements UserService {
 	public Response getYuvakProfile(Integer user_id) {
 	
 		UserDao loginDao = new UserDaoImpl();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
 		
 		try {
@@ -244,7 +247,7 @@ public class UserServiceImpl implements UserService {
 	public Response getSabhaList() {
 		
 		UserDao loginDao = new UserDaoImpl();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		List<SabhaData> list = new ArrayList<SabhaData>();
 		
 		try {
@@ -260,7 +263,7 @@ public class UserServiceImpl implements UserService {
 
 	public Response getSabhaMandalList(Integer sabha_id) {
 		UserDao loginDao = new UserDaoImpl();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		List<Mandals> list = new ArrayList<Mandals>();
 		
 		try {
@@ -277,7 +280,7 @@ public class UserServiceImpl implements UserService {
 	public Response getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
 		
 		UserDao loginDao = new UserDaoImpl();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		List<CreateSabhaData> list = new ArrayList<CreateSabhaData>();
 
 		try {
@@ -295,7 +298,7 @@ public class UserServiceImpl implements UserService {
 	public Response createYuvakSabhaAttendance(AttendanceRequest request) {
 
 		UserDao loginDao = new UserDaoImpl();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
+		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		Response response = null;
 		
 		try {

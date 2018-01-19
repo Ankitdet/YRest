@@ -5,8 +5,6 @@ import java.util.Map;
 
 public class QueryUrlNameConstant {
 
-	public static Map<String,String> queryParam = new HashMap<String,String>();
-	
 	public static final String comma = ",";
 	public static final String getContactList = "/getContactList";
 	public static final String login = "/login";
@@ -39,12 +37,6 @@ public class QueryUrlNameConstant {
 	public static final String getSabhaMandalList_request_param = sabha_id;
 	public static final String getSabhaYuvakList_request_param = sabha_id + comma + mandal_id;
 	
-	static {
-		queryParam.put(login, login_request_param);
-		queryParam.put(getBirthday, getBirthday_request_param);
-		queryParam.put(getMandalYuvakList,getMandalYuvakList_request_param);
-		queryParam.put(getSabhaMandalList, getSabhaMandalList_request_param);
-		queryParam.put(getSabhaYuvakList,getSabhaYuvakList_request_param);
-	}
+	
 			
 }

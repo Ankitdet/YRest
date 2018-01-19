@@ -1,6 +1,9 @@
 package com.test.ws.entities;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+
+import org.joda.time.DateTime;
 
 public class UsersFieldData {
 
@@ -24,8 +27,8 @@ public class UsersFieldData {
     private boolean status;
     private String device_token;
     private int badge_count;
-    private Date created_at;
-    private Date updated_at;
+    private String created_at;
+    private String updated_at;
     private Date birth_date;
     private int role_id;
     private String role_name;
@@ -186,19 +189,19 @@ public class UsersFieldData {
         this.birth_date = birth_date;
     }
 
-    public Date getUpdated_at() {
+    public String getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(Date updated_at) {
+    public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
     }
 
-    public Date getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 

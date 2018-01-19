@@ -1,7 +1,6 @@
 package com.test.ws.utils;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -26,7 +25,7 @@ public class PostMatchingFilter implements ContainerResponseFilter {
 		}
 		long startTime = Long.parseLong(stTime);
 		long executionTime = System.currentTimeMillis() - startTime;
-		Logger.logInfo(MODULE, "Total execution time : ["+TimeUnit.MILLISECONDS.toSeconds(executionTime)+" sec]");
+		Logger.logInfo(MODULE, "Total execution time : ["+executionTime+" ms]");
 		// clear the context on exit
 		MDC.clear();
 	}
