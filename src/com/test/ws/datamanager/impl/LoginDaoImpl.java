@@ -1,6 +1,5 @@
 package com.test.ws.datamanager.impl;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
@@ -8,8 +7,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,6 +44,12 @@ public class LoginDaoImpl implements LoginDao {
 	public static final String CLASS = LoginDaoImpl.class.getName();
 	public static final String MODULE = LoginDaoImpl.class.getSimpleName();
 	
+	/**
+	 * Initialize counter variable for get COLUMN values
+	 * @see AkdmUtils#getMethodName()
+	 */
+	public static int counter ;
+	
     public static  final String userDataQuery = 
     		"select u.id,u.role_id,u.user_name," +
             "u.email,u.password,u.phone," +
@@ -60,7 +63,6 @@ public class LoginDaoImpl implements LoginDao {
 
     @Override
     public LoginResponse validateLogin(String email, String password) throws CommandException {
-
         Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         Long user_id = 0l;
         List<Object[]> list = null;
@@ -71,7 +73,6 @@ public class LoginDaoImpl implements LoginDao {
         Transaction tx = session.beginTransaction();
 
         try {
-
 
             queryString = "select * from users where email='" + email + "' and password='" + password + "'";
             Query query = session.createSQLQuery(queryString);
@@ -89,15 +90,16 @@ public class LoginDaoImpl implements LoginDao {
                 queryString = "select u.user_name,email,u.auth_token,ur.role_name,ur.id from users u left join user_roles ur on ur.id=u.role_id  where u.id='" + user_id + "'";
                 query = session.createSQLQuery(queryString);
                 List<Object[]> testuser = query.list();
-
+                
                 for (Object[] ob : testuser) {
-                    loginResponse.setUser_name((String) ob[0]);
-                    loginResponse.setEmail((String) ob[1]);
-                    loginResponse.setToken((String) ob[2]);
-                    loginResponse.setuTypeName((String) ob[3]);
-                    loginResponse.setuType(String.valueOf((Integer) ob[4]));
+                    loginResponse.setUser_name(AkdmUtils.getObject(ob[counter++],String.class));
+                    loginResponse.setEmail(AkdmUtils.getObject(ob[counter++],String.class));
+                    loginResponse.setToken(AkdmUtils.getObject(ob[counter++],String.class));
+                    loginResponse.setuTypeName(AkdmUtils.getObject(ob[counter++],String.class));
+                    loginResponse.setuType(AkdmUtils.getObject(ob[counter++],String.class));
                     loginResponse.setuId(String.valueOf(user_id));
                 }
+                
                 TokenGenerator.tokenMap.put(loginResponse.getToken(),loginResponse.getToken());
             } else {
                 return null;
@@ -183,8 +185,8 @@ public class LoginDaoImpl implements LoginDao {
 
             for (Object[] newList : list) {
                 Ssp ssp = new Ssp();
-                ssp.setSspId((Integer) newList[0]);
-                ssp.setSspTitle((String) newList[1]);
+                ssp.setSspId(AkdmUtils.getObject(newList[counter++],Integer.class));
+                ssp.setSspTitle(AkdmUtils.getObject(newList[counter++],String.class));
                 sspList.add(ssp);
             }
 
@@ -198,7 +200,6 @@ public class LoginDaoImpl implements LoginDao {
 
     @Override
     public Response getArea() {
-
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -211,8 +212,8 @@ public class LoginDaoImpl implements LoginDao {
 
             for (Object[] newList : list) {
                 Areas areas = new Areas();
-                areas.setAreaId((Integer) newList[0]);
-                areas.setAreaTitle((String) newList[1]);
+                areas.setAreaId(AkdmUtils.getObject(newList[counter++],Integer.class));
+                areas.setAreaTitle(AkdmUtils.getObject(newList[counter++],String.class));
                 areasArrayList.add(areas);
             }
 
@@ -226,7 +227,6 @@ public class LoginDaoImpl implements LoginDao {
 
     @Override
     public Response getManadal() {
-    	
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -239,8 +239,8 @@ public class LoginDaoImpl implements LoginDao {
 
             for (Object[] newList : list) {
                 Mandals mandals = new Mandals();
-                mandals.setMandalId((Integer) newList[0]);
-                mandals.setMandalTitle((String) newList[1]);
+                mandals.setMandalId(AkdmUtils.getObject(newList[counter++],Integer.class));
+                mandals.setMandalTitle(AkdmUtils.getObject(newList[counter++],String.class));
                 mandalsArrayList.add(mandals);
             }
 
@@ -253,36 +253,34 @@ public class LoginDaoImpl implements LoginDao {
     }
 
     private List<UsersFieldData> fillUserTablePojo(List<Object[]> list){
-    	
         Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
-
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
         for (Object[] obj : list) {
             UsersFieldData usersFieldData = new UsersFieldData();
-            usersFieldData.setId(((BigInteger) obj[0]).longValue());
-            usersFieldData.setRole_id((Integer) obj[1]);
-            usersFieldData.setUser_name((String) obj[2]);
-            usersFieldData.setEmail((String) obj[3]);
-            usersFieldData.setPassword((String) obj[4]);
-            usersFieldData.setPhone((String) obj[5]);
-            usersFieldData.setWhatsapp_number((String) obj[6]);
-            usersFieldData.setEmail_verified((Boolean) obj[7]);
-            usersFieldData.setBirth_date((Date) AkdmUtils.setObject(obj[8]));
-            usersFieldData.setUser_image((String) obj[9]);
-            usersFieldData.setLatitude(((BigDecimal) obj[10]).doubleValue());
-            usersFieldData.setLongitude(((BigDecimal) obj[11]).doubleValue());
-            usersFieldData.setAddress((String) obj[12]);
-            usersFieldData.setAuth_token((String) obj[13]);
-            usersFieldData.setRelationship_status((String) obj[14]);
-            usersFieldData.setCreated_at((Date) AkdmUtils.setObject(obj[15]));
-            usersFieldData.setUpdated_at((Date) AkdmUtils.setObject(obj[16]));
-            usersFieldData.setStatus((Boolean) obj[17]);
-            usersFieldData.setDevice_type((Integer) obj[18]);
-            usersFieldData.setDevice_token((String) obj[19]);
-            usersFieldData.setBadge_count((Integer) obj[20]);
-            usersFieldData.setRole_name((String) obj[21]);
-            usersFieldData.setArea_title((String) obj[22]);
-            usersFieldData.setMandal_title((String) obj[23]);
+            usersFieldData.setId(AkdmUtils.getObject(obj[counter++],Long.class));
+            usersFieldData.setRole_id(AkdmUtils.getObject(obj[counter++],Integer.class));
+            usersFieldData.setUser_name(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setEmail(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setPassword(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setPhone(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setWhatsapp_number(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setEmail_verified(AkdmUtils.getObject(obj[counter++],Boolean.class));
+            usersFieldData.setBirth_date(AkdmUtils.getObject(obj[counter++],Date.class));
+            usersFieldData.setUser_image(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setLatitude(AkdmUtils.getObject(obj[counter++],Double.class));
+            usersFieldData.setLongitude(AkdmUtils.getObject(obj[counter++],Double.class));
+            usersFieldData.setAddress(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setAuth_token(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setRelationship_status(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setCreated_at(AkdmUtils.getObject(obj[counter++],Date.class));
+            usersFieldData.setUpdated_at(AkdmUtils.getObject(obj[counter++],Date.class));
+            usersFieldData.setStatus(AkdmUtils.getObject(obj[counter++],Boolean.class));
+            usersFieldData.setDevice_type(AkdmUtils.getObject(obj[counter++],Integer.class));
+            usersFieldData.setDevice_token(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setBadge_count(AkdmUtils.getObject(obj[counter++],Integer.class));
+            usersFieldData.setRole_name(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setArea_title(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setMandal_title(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldDataList.add(usersFieldData);
         }
         return usersFieldDataList;
@@ -344,26 +342,26 @@ public class LoginDaoImpl implements LoginDao {
 					ps.setInt(1, 3);
 					
 					if("".equals(newData[0])) break;
-					ps.setString(2, (String)newData[0]);
-					ps.setString(3, (String)newData[0] + "_Y_");
-					ps.setString(4, ((String)newData[0]).toLowerCase() + "@gmail.com");
-					ps.setString(5, ((String)newData[0]).toLowerCase());
+					ps.setString(2, AkdmUtils.getObject(newData[0],String.class));
+					ps.setString(3, AkdmUtils.getObject(newData[0],String.class) + "_Y_");
+					ps.setString(4, (AkdmUtils.getObject(newData[0],String.class)).toLowerCase() + "@gmail.com");
+					ps.setString(5, (AkdmUtils.getObject(newData[0],String.class)).toLowerCase());
 					
-					String phno = String.valueOf((String)newData[2]).replace("+", "");
+					String phno = (AkdmUtils.getObject(newData[2],String.class)).replace("+", "");
 					ps.setString(6, phno);
 					
-					String Whatsapp = String.valueOf((String)newData[3]).replace("+", "");
+					String Whatsapp = (AkdmUtils.getObject(newData[3],String.class)).replace("+", "");
 					ps.setString(7, Whatsapp);
 					ps.setInt(8,1);
 					
-					String str = (String)newData[5];
+					String str = (AkdmUtils.getObject(newData[5],String.class));
 					if(!"".equals(str)){
-						ps.setDate(9,simpleDateFormat(newData[5]));	
+						ps.setDate(9,AkdmUtils.getObject(newData[5],Date.class));	
 					}
 					ps.setInt(10, 0);
 					ps.setInt(11, 0);
 					ps.setInt(12, 0);
-					ps.setString(13, (String)newData[6]);
+					ps.setString(13, AkdmUtils.getObject(newData[6],String.class));
 					ps.setInt(14, 5);
 					ps.setInt(15, 6);
 					ps.setString(16, TokenGenerator.uniqueUUID());
@@ -404,12 +402,6 @@ public class LoginDaoImpl implements LoginDao {
 		return new Response(ResultCode.SUCCESS_200.code,ResultCode.SUCCESS_200.name,"Inserted Record:" +successDataCount + "\nSkipped Record:" +failedDataConunt,null,null);
 	}
 	
-    private Date simpleDateFormat(Object obj) throws ParseException{
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		Date dt = new Date((df.parse((String)obj)).getTime());
-		return dt;
-	}
-
 	@Override
 	public List<UsersFieldData> getMandalYuvakList(Integer mandal_id) {
 
@@ -458,7 +450,6 @@ public class LoginDaoImpl implements LoginDao {
 
 	@Override
 	public List<SabhaData> getSabhaList() {
-		
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -471,9 +462,9 @@ public class LoginDaoImpl implements LoginDao {
  			
 			for(Object[] obj : list){
 				SabhaData sabhaData = new SabhaData();
-				sabhaData.setSabha_title((String)obj[0]);
-				sabhaData.setSabha_date((Date)obj[1]);
-				sabhaData.setMandal_id((Integer)obj[2]);
+				sabhaData.setSabha_title(AkdmUtils.getObject(obj[counter++],String.class));
+				sabhaData.setSabha_date(AkdmUtils.getObject(obj[counter++],Date.class));
+				sabhaData.setMandal_id(AkdmUtils.getObject(obj[counter++],Integer.class));
 				sabhaList.add(sabhaData);
 			}
 		}catch (InfrastructureException ex) {
@@ -488,7 +479,6 @@ public class LoginDaoImpl implements LoginDao {
 
 	@Override
 	public List<Mandals> getSabhaMandalList(Integer sabha_id) {
-		
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -501,8 +491,8 @@ public class LoginDaoImpl implements LoginDao {
  			
 			for(Object[] obj : list){
 				Mandals mandals = new Mandals();
-				mandals.setMandalId((Integer)obj[0]);
-				mandals.setMandalTitle((String)obj[1]);
+				mandals.setMandalId(AkdmUtils.getObject(obj[counter++],Integer.class));
+				mandals.setMandalTitle(AkdmUtils.getObject(obj[counter++],String.class));
 				mandalList.add(mandals);
 			}
 		}catch (InfrastructureException ex) {
@@ -517,7 +507,6 @@ public class LoginDaoImpl implements LoginDao {
 
 	@Override
 	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
-		
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -530,9 +519,9 @@ public class LoginDaoImpl implements LoginDao {
 
 			for(Object[] object : list){
 				CreateSabhaData createSabhaData = new CreateSabhaData();
-				createSabhaData.setUser_id(((BigInteger) object[0]).longValue());
-				createSabhaData.setUser_name((String)object[1]);
-				createSabhaData.setUser_uniqueid((String)object[2]);
+				createSabhaData.setUser_id((AkdmUtils.getObject(object[counter++],Long.class)));
+				createSabhaData.setUser_name(AkdmUtils.getObject(object[counter++],String.class));
+				createSabhaData.setUser_uniqueid(AkdmUtils.getObject(object[counter++],String.class));
 				createSabhaData.setIs_Attended(false);
 				userSabhaList.add(createSabhaData);
 			}
