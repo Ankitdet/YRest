@@ -3,7 +3,6 @@ package com.test.ws.services.rest;
 import java.text.ParseException;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -205,6 +204,10 @@ public class UserRestWS {
           Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
           Logger.logInfo(MODULE, "Parameters are : mandal_id-"+mandal_id);
           
+          if(mandal_id == null || mandal_id  <= 0){
+              return new Response(ResultCode.NOT_FOUND_404.code, ResultCode.NOT_FOUND_404.name, null, "mandal id not found", null);
+          }
+ 
           try {
               response = blManager.getMandalYuvakList(mandal_id);
           } catch (NumberFormatException ne) {
@@ -235,6 +238,10 @@ public class UserRestWS {
           Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
           Logger.logInfo(MODULE, "Parameters are : sabha_id-"+sabha_id);
           
+          if(sabha_id == null || sabha_id  <= 0){
+              return new Response(ResultCode.NOT_FOUND_404.code, ResultCode.NOT_FOUND_404.name, null, "sabha id not found", null);
+          }
+          
           try {
               response = blManager.getSabhaMandalList(sabha_id);
           } catch (NumberFormatException ne) {
@@ -253,6 +260,13 @@ public class UserRestWS {
         Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         Logger.logInfo(MODULE, "Parameters are : sabha_id-"+sabha_id+",mandal_id-"+mandal_id);
         
+        if(sabha_id == null || sabha_id  <= 0){
+            return new Response(ResultCode.NOT_FOUND_404.code, ResultCode.NOT_FOUND_404.name, null, "sabha id not found", null);
+        }
+        
+        if(mandal_id == null || mandal_id  <= 0){
+            return new Response(ResultCode.NOT_FOUND_404.code, ResultCode.NOT_FOUND_404.name, null, "mandal id not found", null);
+        }
         try {
               response = blManager.getSabhaYuvakList(sabha_id,mandal_id);
           } catch (NumberFormatException ne) {
