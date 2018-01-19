@@ -179,6 +179,7 @@ public class UserDaoImpl implements UserDao {
             List<Object[]> list = query.list();
 
             for (Object[] newList : list) {
+            	counter = 0;
                 Ssp ssp = new Ssp();
                 ssp.setSspId(AkdmUtils.getObject(newList[counter++],Integer.class));
                 ssp.setSspTitle(AkdmUtils.getObject(newList[counter++],String.class));
@@ -206,6 +207,7 @@ public class UserDaoImpl implements UserDao {
             List<Object[]> list = query.list();
 
             for (Object[] newList : list) {
+            	counter = 0;
                 Areas areas = new Areas();
                 areas.setAreaId(AkdmUtils.getObject(newList[counter++],Integer.class));
                 areas.setAreaTitle(AkdmUtils.getObject(newList[counter++],String.class));
@@ -234,6 +236,7 @@ public class UserDaoImpl implements UserDao {
 
             for (Object[] newList : list) {
                 Mandals mandals = new Mandals();
+                counter = 0;
                 mandals.setMandalId(AkdmUtils.getObject(newList[counter++],Integer.class));
                 mandals.setMandalTitle(AkdmUtils.getObject(newList[counter++],String.class));
                 mandalsArrayList.add(mandals);
@@ -251,6 +254,7 @@ public class UserDaoImpl implements UserDao {
         Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
         for (Object[] obj : list) {
+        	counter = 0;
             UsersFieldData usersFieldData = new UsersFieldData();
             usersFieldData.setId(AkdmUtils.getObject(obj[counter++],Long.class));
             usersFieldData.setRole_id(AkdmUtils.getObject(obj[counter++],Integer.class));
@@ -456,6 +460,7 @@ public class UserDaoImpl implements UserDao {
 			List<Object[]> list = query.list();
  			
 			for(Object[] obj : list){
+				counter = 0;
 				SabhaData sabhaData = new SabhaData();
 				sabhaData.setSabha_title(AkdmUtils.getObject(obj[counter++],String.class));
 				sabhaData.setSabha_date(AkdmUtils.getObject(obj[counter++],Date.class));
@@ -485,6 +490,7 @@ public class UserDaoImpl implements UserDao {
 			List<Object[]> list = query.list();
  			
 			for(Object[] obj : list){
+				counter = 0;
 				Mandals mandals = new Mandals();
 				mandals.setMandalId(AkdmUtils.getObject(obj[counter++],Integer.class));
 				mandals.setMandalTitle(AkdmUtils.getObject(obj[counter++],String.class));
@@ -513,6 +519,7 @@ public class UserDaoImpl implements UserDao {
 			List<Object[]> list = query.list();
 
 			for(Object[] object : list){
+				counter = 0;
 				CreateSabhaData createSabhaData = new CreateSabhaData();
 				createSabhaData.setUser_id((AkdmUtils.getObject(object[counter++],Long.class)));
 				createSabhaData.setUser_name(AkdmUtils.getObject(object[counter++],String.class));

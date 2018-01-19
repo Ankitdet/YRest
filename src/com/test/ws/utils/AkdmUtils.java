@@ -8,12 +8,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import com.test.ws.datamanager.impl.UserDaoImpl;
-
 public class AkdmUtils {
 
 	public static String getMethodName() {
-		UserDaoImpl.counter = 0;
         return Thread.currentThread().getStackTrace()[2].getMethodName() + "()";
     }
 	
