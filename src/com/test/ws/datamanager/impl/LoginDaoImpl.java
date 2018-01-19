@@ -108,10 +108,14 @@ public class LoginDaoImpl implements LoginDao {
         } catch (InfrastructureException ex) {
             tx.rollback();
             throw new CommandException(ex);
-
         } catch (BusinessException ex) {
+        	tx.rollback();
             throw new CommandException(ex);
-        } finally {
+        } catch(Exception ex){
+        	tx.rollback();
+        	throw new CommandException(ex);
+        }
+        finally {
             session.close();
         }
         return loginResponse;

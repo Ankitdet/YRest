@@ -3,7 +3,7 @@ package com.test.ws.exception;
 /**
  * This exception is used to mark (fatal) failures in infrastructure and system code.
  *
- * @author Christian Bauer <christian@hibernate.org>
+ * @author ankit.p.detroja
  */
 public class InfrastructureException
 	extends RuntimeException {

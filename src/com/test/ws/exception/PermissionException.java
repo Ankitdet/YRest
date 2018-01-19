@@ -3,7 +3,7 @@ package com.test.ws.exception;
 /**
  * This exception is used to mark access violations.
  *
- * @author Christian Bauer <christian@hibernate.org>
+ * @author ankit.p.detroja
  */
 public class PermissionException
 	extends RuntimeException {

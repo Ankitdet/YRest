@@ -3,7 +3,7 @@ package com.test.ws.exception;
 /**
  * A checked exception thrown by command execute methods, wrapping the root cause.
  *
- * @author Christian Bauer <christian@hibernate.org>
+ * @author ankit.p.detroja
  */
 public class CommandException
 	extends Exception {
