@@ -5,7 +5,7 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
   
- <!--  <servlet>
+  <servlet>
 		<description>Apache CXF Endpoint For Rest</description>
 		<display-name>cxfsoap</display-name>
 		<servlet-name>cxfsoap</servlet-name>
@@ -21,7 +21,7 @@
 	<servlet-mapping>
 		<servlet-name>cxfsoap</servlet-name>
 		<url-pattern>/soap/*</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 		
 	<servlet>
 		<description>Apache CXF Endpoint For Rest</description>
