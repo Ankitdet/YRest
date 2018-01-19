@@ -12,7 +12,7 @@ import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
 
 public interface UserDao {
-	public LoginResponse validateLogin(String email, String password) throws CommandException;
+	public List<UsersFieldData> validateLogin(String email, String password) throws CommandException;
 
 	public List<UsersFieldData> getUserContactList() throws CommandException;
 

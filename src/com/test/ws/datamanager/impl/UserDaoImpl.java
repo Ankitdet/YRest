@@ -59,21 +59,22 @@ public class UserDaoImpl implements UserDao {
             "u.updated_at,u.status,u.device_type,u.device_token," +
             "u.badge_count,ur.role_name,ar.area_title,m.mandal_title from users u " +
             "left join user_roles ur on ur.id=u.role_id left join areas ar on ar.area_id=u.area_id " +
-            "left join mandals m on m.mandal_id = u.mandal_id";
+            "left join mandals m on m.mandal_id = u.mandal_id ";
 
     @Override
-    public LoginResponse validateLogin(String email, String password) throws CommandException {
+    public List<UsersFieldData> validateLogin(String email, String password) throws CommandException {
         Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
         Long user_id = 0l;
         List<Object[]> list = null;
         String queryString = "";
-        LoginResponse loginResponse = new LoginResponse();
-
+        List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
+        
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         try {
 
+        	String token = TokenGenerator.uniqueUUID();
             queryString = "select * from users where email='" + email + "' and password='" + password + "'";
             Query query = session.createSQLQuery(queryString);
             list = query.list();
@@ -83,24 +84,14 @@ public class UserDaoImpl implements UserDao {
                     user_id = ((BigInteger) o[0]).longValue();
                 }
 
-                queryString = "update users set auth_token='" + TokenGenerator.uniqueUUID() + "',updated_at='" + AkdmUtils.getFormatedDate() + "' where id='" + user_id + "'";
+                queryString = "update users set auth_token='" + token + "',updated_at='" + AkdmUtils.getFormatedDate() + "' where id='" + user_id + "'";
                 query = session.createSQLQuery(queryString);
                 query.executeUpdate();
 
-                queryString = "select u.user_name,email,u.auth_token,ur.role_name,ur.id from users u left join user_roles ur on ur.id=u.role_id  where u.id='" + user_id + "'";
-                query = session.createSQLQuery(queryString);
-                List<Object[]> testuser = query.list();
-                
-                for (Object[] ob : testuser) {
-                    loginResponse.setUser_name(AkdmUtils.getObject(ob[counter++],String.class));
-                    loginResponse.setEmail(AkdmUtils.getObject(ob[counter++],String.class));
-                    loginResponse.setToken(AkdmUtils.getObject(ob[counter++],String.class));
-                    loginResponse.setuTypeName(AkdmUtils.getObject(ob[counter++],String.class));
-                    loginResponse.setuType(AkdmUtils.getObject(ob[counter++],String.class));
-                    loginResponse.setuId(String.valueOf(user_id));
-                }
-                
-                TokenGenerator.tokenMap.put(loginResponse.getToken(),loginResponse.getToken());
+                Query crt = session.createSQLQuery(userDataQuery + " where u.id='" + user_id + "'");
+                list = crt.list();
+                usersFieldDataList = fillUserTablePojo(list);
+                TokenGenerator.tokenMap.put(token,token);
             } else {
                 return null;
             }
@@ -118,7 +109,7 @@ public class UserDaoImpl implements UserDao {
         finally {
             session.close();
         }
-        return loginResponse;
+        return usersFieldDataList;
     }
 
     @Override

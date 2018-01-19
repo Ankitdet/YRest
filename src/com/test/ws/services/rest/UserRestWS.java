@@ -3,6 +3,7 @@ package com.test.ws.services.rest;
 import java.text.ParseException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.test.ws.constant.QueryUrlNameConstant;
 import com.test.ws.constant.ResultCode;
 import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.exception.CommandException;
@@ -22,13 +24,13 @@ import com.test.ws.utils.AkdmUtils;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class UserRestWS {
 
-    private static final String MODULE = "RestServices";
+    private static final String MODULE = UserRestWS.class.getName();
     public static final String CLASS = UserRestWS.class.getSimpleName();
 
     @POST
-    @Path("/login")
-    public Response login(@QueryParam("email") String email,
-                          @QueryParam("password") String password)
+    @Path(QueryUrlNameConstant.login)
+    public Response login(@QueryParam(QueryUrlNameConstant.email) String email,
+    		@QueryParam(QueryUrlNameConstant.password) String password)
             throws NumberFormatException, ParseException, CommandException {
 
         UserServiceImpl blManager = new UserServiceImpl();
@@ -67,7 +69,7 @@ public class UserRestWS {
     }
 
     @GET
-    @Path("/getContactList")
+    @Path(QueryUrlNameConstant.getContactList)
     public Response getContactList() throws ParseException {
 
         UserServiceImpl blManager = new UserServiceImpl();
@@ -86,8 +88,8 @@ public class UserRestWS {
 
     
     @GET
-    @Path("/getBirthday")
-    public Response getBirthday(@QueryParam("id") String cakeId) {
+    @Path(QueryUrlNameConstant.getBirthday)
+    public Response getBirthday(@QueryParam(QueryUrlNameConstant.id) String cakeId) {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
@@ -108,7 +110,7 @@ public class UserRestWS {
     }
 
     @GET
-    @Path("/getSSP")
+    @Path(QueryUrlNameConstant.getSSP)
     public  Response getSSP() {
 
         UserServiceImpl blManager = new UserServiceImpl();
@@ -123,7 +125,7 @@ public class UserRestWS {
     }
 
     @GET
-    @Path("/getMandal")
+    @Path(QueryUrlNameConstant.getMandal)
     public  Response getManadal() {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
@@ -137,7 +139,7 @@ public class UserRestWS {
     }
 
     @GET
-    @Path("/getArea")
+    @Path(QueryUrlNameConstant.getArea)
     public Response getArea() {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
@@ -151,7 +153,7 @@ public class UserRestWS {
     }
 
     @POST
-    @Path("/createSabha")
+    @Path(QueryUrlNameConstant.createSabha)
     public Response doCreateSabha() {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
@@ -166,7 +168,7 @@ public class UserRestWS {
     }
 
     @GET
-    @Path("/getSabhaDetails")
+    @Path(QueryUrlNameConstant.getSabhaDetails)
     public Response getSabhaDetails() {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
@@ -181,7 +183,7 @@ public class UserRestWS {
     }
     
     @POST
-    @Path("/uploadUserData")
+    @Path(QueryUrlNameConstant.uploadUserData)
     public Response uploadDataByExcel() {
     	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
@@ -196,8 +198,8 @@ public class UserRestWS {
 	}
     
     @GET
-    @Path("/getMandalYuvakList")
-    public Response getMandalYuvakList(@QueryParam("mandal_id") Integer mandal_id) {
+    @Path(QueryUrlNameConstant.getMandalYuvakList)
+    public Response getMandalYuvakList(@QueryParam(QueryUrlNameConstant.mandal_id) Integer mandal_id) {
     	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName()+ " of " + CLASS);
@@ -212,7 +214,7 @@ public class UserRestWS {
 	}
     
     @GET
-    @Path("/getSabhaList")
+    @Path(QueryUrlNameConstant.getSabhaList)
     public Response getSabhaList() {
     	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
@@ -226,8 +228,8 @@ public class UserRestWS {
 	}
     
     @GET
-    @Path("/getSabhaMandalList")
-    public Response getSabhaMandalList(@QueryParam("sabha_id") Integer sabha_id) {
+    @Path(QueryUrlNameConstant.getSabhaMandalList)
+    public Response getSabhaMandalList(@QueryParam(QueryUrlNameConstant.sabha_id) Integer sabha_id) {
     	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
@@ -242,9 +244,9 @@ public class UserRestWS {
 	}
     
     @GET
-    @Path("/getSabhaYuvakList")
-    public Response getSabhaYuvakList(@QueryParam("sabha_id") Integer sabha_id
-    		,@QueryParam("mandal_id") Integer mandal_id) {
+    @Path(QueryUrlNameConstant.getSabhaYuvakList)
+    public Response getSabhaYuvakList(@QueryParam(QueryUrlNameConstant.sabha_id) Integer sabha_id
+    		,@QueryParam(QueryUrlNameConstant.mandal_id) Integer mandal_id) {
     	  
     	UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
@@ -260,7 +262,7 @@ public class UserRestWS {
 	}
     
     @POST
-    @Path("/createYuvakSabhaAttendance")
+    @Path(QueryUrlNameConstant.createYuvakSabhaAttendance)
     public Response createYuvakSabhaAttendance(AttendanceRequest request) {
     	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;

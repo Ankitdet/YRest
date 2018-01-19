@@ -34,13 +34,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Response validateLogin(String email,String password) throws CommandException, ParseException {
 		
-		LoginResponse loginResponse = null;
+		List<UsersFieldData> usersFieldDatas = new ArrayList<UsersFieldData>();
 		UserDao loginDao = new UserDaoImpl();
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName()+" of " + CLASS);
 		try {
-			 loginResponse = loginDao.validateLogin(email,password);
-			 if(loginResponse == null){
-				 return new Response(ResultCode.NOT_FOUND_404.code, "Invalid credential!", null, "email or password doesn't match",loginResponse);
+			usersFieldDatas = loginDao.validateLogin(email,password);
+			 if(usersFieldDatas == null){
+				 return new Response(ResultCode.NOT_FOUND_404.code, "Invalid credential!", null, "email or password doesn't match",usersFieldDatas);
 			 }
 
 		} catch (InfrastructureException ex) {
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 		} finally {
 			
 		}
-		return new Response(ResultCode.SUCCESS_200.code, "Login successfully", null, null,loginResponse);
+		return new Response(ResultCode.SUCCESS_200.code, "Login successfully", null, null,usersFieldDatas);
 	}
 
 	@Override
