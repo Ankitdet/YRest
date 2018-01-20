@@ -12,6 +12,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.log4j.MDC;
 
+import com.test.ws.constant.QueryUrlNameConstant;
 import com.test.ws.exception.BusinessException;
 import com.test.ws.logger.Logger;
 
@@ -45,18 +46,18 @@ public class WebServiceRequestInterceptor implements ContainerRequestFilter {
     
 	public void checkParameter(@Context UriInfo uriInfo,String calledURL) {
 
-		if(!ContextListener.queryParam.containsKey(calledURL)){
+		if(!QueryUrlNameConstant.queryParam.containsKey(calledURL)){
 			return ;
 		}
 
-		String queryParamName = ContextListener.queryParam.get(calledURL);
+		String queryParamName = QueryUrlNameConstant.queryParam.get(calledURL);
 		MultivaluedMap<String, String> params = uriInfo.getQueryParameters();
 		
 		if(queryParamName != null && !"".equals(queryParamName)){
 			String[] seperateParam = queryParamName.split(",");
 			for(String str : seperateParam){
 				if(!params.containsKey(str)){
-					throw new BusinessException("parameter "+str+" is missing.");
+					throw new BusinessException("query parameter "+str+" is missing.");
 				}
 			}
 			

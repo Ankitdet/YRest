@@ -20,7 +20,6 @@ import com.test.ws.logger.Logger;
 public class ContextListener implements ServletContextListener {
 
 	private static String MODULE = ContextListener.class.getSimpleName();
-	public static Map<String, String> queryParam = new HashMap<String, String>();
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
@@ -31,15 +30,18 @@ public class ContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent sce) {
 
 		System.out.println("Initializing Logger.....");
+		
+		// Initialize all QueryParameter when server init....
+		QueryUrlNameConstant.initializedQueryParameter();
+		
 		String contextPath = sce.getServletContext().getRealPath("");
-
 		ServletContext servletContext = sce.getServletContext();
 		String log4jFile = servletContext.getInitParameter("log4jFileName");
 		System.out.println("log4j configuration file:'" + log4jFile + "'");
 		String fullPath = contextPath + File.separator + log4jFile;
 		PropertyConfigurator.configure(fullPath);
 		initilizeTokenList();
-		initializedQueryParameter();
+		
 	}
 
 	private void initilizeTokenList() {
@@ -54,19 +56,5 @@ public class ContextListener implements ServletContextListener {
 		} catch (BusinessException be) {
 			Logger.logError(MODULE, be.getMessage());
 		}
-	}
-
-	private void initializedQueryParameter() {
-		System.out.println("InitializedQueryParameter...");
-		queryParam.put(QueryUrlNameConstant.login,
-				QueryUrlNameConstant.login_request_param);
-		queryParam.put(QueryUrlNameConstant.getBirthday,
-				QueryUrlNameConstant.getBirthday_request_param);
-		queryParam.put(QueryUrlNameConstant.getMandalYuvakList,
-				QueryUrlNameConstant.getMandalYuvakList_request_param);
-		queryParam.put(QueryUrlNameConstant.getSabhaMandalList,
-				QueryUrlNameConstant.getSabhaMandalList_request_param);
-		queryParam.put(QueryUrlNameConstant.getSabhaYuvakList,
-				QueryUrlNameConstant.getSabhaYuvakList_request_param);
 	}
 }
