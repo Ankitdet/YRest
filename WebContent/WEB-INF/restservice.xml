@@ -10,6 +10,7 @@
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
 	<bean id="RestPerson" class="com.test.ws.services.rest.UserRestWS" />
+	<bean id="exampleRest" class="com.test.ws.services.rest.ExampleRestServices"></bean>
 	<bean id='jacksonProvider' class='com.test.ws.utils.JacksonJaxbJsonProvider'></bean>
 	<bean id="MyInterceptor" class="com.test.ws.utils.WebServiceRequestInterceptor" />
 	<bean id="dataManagerExceptionMapper" class="com.test.ws.utils.BusinessExceptionMapper" />
@@ -33,6 +34,23 @@
 			<ref bean="dataManagerExceptionMapper" />
 			<ref bean="jaxbProvider" />
 			<ref bean="postMatchingFilter" />
+		</jaxrs:providers>
+	</jaxrs:server>
+	
+	
+		<jaxrs:server address="/restful/Example">
+		<jaxrs:serviceBeans>
+			<ref bean="exampleRest" />
+		</jaxrs:serviceBeans>
+		<jaxrs:extensionMappings>
+			<entry key="json" value="application/json" />
+			<entry key="xml" value="application/xml" />
+		</jaxrs:extensionMappings>
+		<jaxrs:providers>
+			<ref bean="jsonResolver" />
+			<ref bean='jacksonProvider' />
+			<ref bean="dataManagerExceptionMapper" />
+			<ref bean="jaxbProvider" />
 		</jaxrs:providers>
 	</jaxrs:server>
 
