@@ -1,14 +1,35 @@
 package com.test.ws.services.rest;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.IOUtils;
 
 import com.test.ws.constant.QueryUrlNameConstant;
 import com.test.ws.constant.ResultCode;
@@ -180,21 +201,6 @@ public class UserRestWS {
         return response;
     }
     
-    @POST
-    @Path(QueryUrlNameConstant.uploadUserData)
-    public Response uploadDataByExcel() {
-    	  UserServiceImpl blManager = new UserServiceImpl();
-          Response response = null;
-          Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
-
-          try {
-              response = blManager.uploadDataByExcel();
-          } catch (NumberFormatException ne) {
-              return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
-          }
-          return response;
-	}
-    
     @GET
     @Path(QueryUrlNameConstant.getMandalYuvakList)
     public Response getMandalYuvakList(@QueryParam(QueryUrlNameConstant.mandal_id) Integer mandal_id) {
@@ -203,10 +209,6 @@ public class UserRestWS {
           Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
           Logger.logInfo(MODULE, "Parameters are : mandal_id-"+mandal_id);
           
-          if(mandal_id == null || mandal_id  <= 0){
-              return new Response(ResultCode.NOT_FOUND_404.code, ResultCode.NOT_FOUND_404.name, null, "mandal id not found", null);
-          }
- 
           try {
               response = blManager.getMandalYuvakList(mandal_id);
           } catch (NumberFormatException ne) {
@@ -237,10 +239,6 @@ public class UserRestWS {
           Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
           Logger.logInfo(MODULE, "Parameters are : sabha_id-"+sabha_id);
           
-          if(sabha_id == null || sabha_id  <= 0){
-              return new Response(ResultCode.NOT_FOUND_404.code, ResultCode.NOT_FOUND_404.name, null, "sabha id not found", null);
-          }
-          
           try {
               response = blManager.getSabhaMandalList(sabha_id);
           } catch (NumberFormatException ne) {
@@ -259,13 +257,6 @@ public class UserRestWS {
         Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         Logger.logInfo(MODULE, "Parameters are : sabha_id-"+sabha_id+",mandal_id-"+mandal_id);
         
-        if(sabha_id == null || sabha_id  <= 0){
-            return new Response(ResultCode.NOT_FOUND_404.code, ResultCode.NOT_FOUND_404.name, null, "sabha id not found", null);
-        }
-        
-        if(mandal_id == null || mandal_id  <= 0){
-            return new Response(ResultCode.NOT_FOUND_404.code, ResultCode.NOT_FOUND_404.name, null, "mandal id not found", null);
-        }
         try {
               response = blManager.getSabhaYuvakList(sabha_id,mandal_id);
           } catch (NumberFormatException ne) {
@@ -286,5 +277,140 @@ public class UserRestWS {
               return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
           }
           return response;
+	}
+    
+    
+    @POST
+    @Path(QueryUrlNameConstant.uploadFile)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadFiles(@Context HttpServletRequest request, @Context ServletContext context) {
+
+      File dir = AkdmUtils.getWorkingDir(context);
+      List<String> uploaded = new ArrayList<String>();
+      List<String> uploadedFileNames = new ArrayList<String>();
+      
+      Logger.logDebug(MODULE,"request Content Type:-"+request.getContentType());
+
+      // checks whether there is a file upload request or not
+      if (ServletFileUpload.isMultipartContent(request)) {
+        final FileItemFactory factory = new DiskFileItemFactory();
+        final ServletFileUpload fileUpload = new ServletFileUpload(factory);
+        try {
+          /*
+           * parseRequest returns a list of FileItem but in old (pre-java5) style
+           */
+          // final List items = fileUpload.parseRequest(request);
+
+          FileItemIterator iter = fileUpload.getItemIterator(request);
+
+          while (iter.hasNext()) {
+            final FileItemStream item = iter.next();
+            final String itemName = item.getName();
+            final String fieldName = item.getFieldName();
+
+            uploadedFileNames.add(fieldName);
+            InputStream stream = item.openStream();
+
+            if (item.isFormField()) {
+            	Logger.logDebug(MODULE,"Field Name: " + fieldName + ", andidate Name: "
+                  + Streams.asString(stream));
+            } else {
+             Logger.logDebug(MODULE,"File field " + fieldName + " with file name " + item.getName()
+                  + " detected.");
+
+              final File targetFile =
+                  new File(dir.getPath() + File.separator + itemName.toLowerCase());
+
+              OutputStream outStream = new FileOutputStream(targetFile);
+              byte[] buffer = new byte[8 * 1024];
+              int bytesRead;
+              while ((bytesRead = stream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+              }
+              IOUtils.closeQuietly(stream);
+              IOUtils.closeQuietly(outStream);
+              uploaded.add(dir.getPath() + File.separator + itemName.toLowerCase());
+            }
+          }
+        } catch (FileUploadException e) {
+            return new Response(ResultCode.INTERNAL_ERROR_500.code,e.getMessage(), null , null, null);
+
+        } catch (Exception e) {
+            return new Response(ResultCode.INTERNAL_ERROR_500.code,e.getMessage(), null , null, null);
+
+        }finally {
+			
+		}
+      }
+      return new Response(ResultCode.SUCCESS_200.code,"Successfully uploaded file",null,null, uploadedFileNames);
+    }
+    
+
+	@POST
+	@Path(QueryUrlNameConstant.uploadAndRead)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response uploadAndReadFile(@Context HttpServletRequest request, @Context ServletContext context) {
+
+		UserServiceImpl blManager = new UserServiceImpl();
+		Logger.logInfo(MODULE, "Method called " + AkdmUtils.getMethodName());
+
+		File dir = AkdmUtils.getWorkingDirForUploadExcelFile(context);
+		List<String> uploaded = new ArrayList<String>();
+		String itemName = "";
+		String fieldName = "";
+
+		Logger.logDebug(MODULE, "request Content Type:-" + request.getContentType());
+
+		// checks whether there is a file upload request or not
+		if (ServletFileUpload.isMultipartContent(request)) {
+			final FileItemFactory factory = new DiskFileItemFactory();
+			final ServletFileUpload fileUpload = new ServletFileUpload(factory);
+			try {
+
+				/*
+				 * parseRequest returns a list of FileItem but in old
+				 * (pre-java5) style
+				 */
+				// final List items = fileUpload.parseRequest(request);
+
+				FileItemIterator iter = fileUpload.getItemIterator(request);
+
+				while (iter.hasNext()) {
+					final FileItemStream item = iter.next();
+					itemName = item.getName();
+					fieldName = item.getFieldName();
+					InputStream stream = item.openStream();
+
+					if (item.isFormField()) {
+						Logger.logDebug(MODULE,
+								"Field Name: " + fieldName + ", andidate Name: " + Streams.asString(stream));
+					} else {
+						Logger.logDebug(MODULE,
+								"File field " + fieldName + " with file name " + item.getName() + " detected.");
+
+						final File targetFile = new File(dir.getPath() + File.separator + itemName.toLowerCase());
+
+						OutputStream outStream = new FileOutputStream(targetFile);
+						byte[] buffer = new byte[8 * 1024];
+						int bytesRead;
+						while ((bytesRead = stream.read(buffer)) != -1) {
+							outStream.write(buffer, 0, bytesRead);
+						}
+						IOUtils.closeQuietly(stream);
+						IOUtils.closeQuietly(outStream);
+						uploaded.add(dir.getPath() + File.separator + itemName.toLowerCase());
+					}
+				}
+			} catch (FileUploadException e) {
+				return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, null);
+
+			} catch (Exception e) {
+				return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, null);
+
+			} finally {
+
+			}
+		}
+		return blManager.uploadDataByExcel(dir.getPath() + File.separator + itemName.toLowerCase());
 	}
 }

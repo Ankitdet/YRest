@@ -16,7 +16,8 @@ public class QueryUrlNameConstant {
 	public static final String getArea = "/getArea";
 	public static final String createSabha = "/createSabha";
 	public static final String getSabhaDetails = "/getSabhaDetails";
-	public static final String uploadUserData = "/uploadUserData";
+	public static final String uploadFile = "/uploadFile";
+	public static final String uploadAndRead = "/uploadAndFile";
 	public static final String getMandalYuvakList = "/getMandalYuvakList";
 	public static final String getSabhaList = "/getSabhaList";
 	public static final String getSabhaMandalList = "/getSabhaMandalList";

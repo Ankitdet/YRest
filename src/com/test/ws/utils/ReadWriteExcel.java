@@ -21,20 +21,13 @@ import com.fasterxml.uuid.Logger;
 public class ReadWriteExcel {
 
 	// 500 at time
-	public static List<Object[]> getExcelSheetData() {
+	public static List<Object[]> getExcelSheetData(String string) {
 		
 		Logger.logInfo("method called getExcelSheetData() of :"+ReadWriteExcel.class.getName());
 		List<Object[]> arrayList = new ArrayList<Object[]>(500);
 		
 		try {
-			String OS = System.getProperty("os.name").toLowerCase();
-			FileInputStream file  = null;
-			if(OS.indexOf("win") >= 0){
-				file = new FileInputStream(new File("D:\\BAPS_Work\\Yuva Rest\\trunk\\src\\com\\test\\ws\\utils\\y_list.xlsx"));
-			}else{
-				file = new FileInputStream(new File("/home/elitecore/backup/y_list.xlsx"));
-			}
-			
+			FileInputStream file = new FileInputStream(new File(string));
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
 
 			// Get the Desired sheet

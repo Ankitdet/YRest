@@ -1,14 +1,14 @@
 package com.test.ws.utils;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.joda.time.DateTime;
+import javax.servlet.ServletContext;
+import javax.ws.rs.core.Context;
 
 public class AkdmUtils {
 
@@ -57,4 +57,22 @@ public class AkdmUtils {
             return null;
         } 
     }
+    
+    public static File getWorkingDir(@Context ServletContext context) {
+        String path = context.getRealPath("/WEB-INF/images");         
+        File exDir = new File(path);
+            if (!exDir.exists()) {
+            	exDir.mkdirs();
+            }
+            return exDir;
+          }
+    
+    public static File getWorkingDirForUploadExcelFile(@Context ServletContext context) {
+        String path = context.getRealPath("/WEB-INF/excel");         
+        File exDir = new File(path);
+            if (!exDir.exists()) {
+            	exDir.mkdirs();
+            }
+            return exDir;
+          }
 }

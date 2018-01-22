@@ -4,10 +4,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import com.test.ws.constant.ResultCode;
 import com.test.ws.datamanager.impl.UserDaoImpl;
 import com.test.ws.datamanager.intrf.UserDao;
@@ -20,7 +16,6 @@ import com.test.ws.exception.BusinessException;
 import com.test.ws.exception.CommandException;
 import com.test.ws.exception.InfrastructureException;
 import com.test.ws.logger.Logger;
-import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
 import com.test.ws.service.intrf.UserService;
 import com.test.ws.utils.AkdmUtils;
@@ -61,7 +56,6 @@ public class UserServiceImpl implements UserService {
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 		try {
-			Long myBirthdayDigit = Long.valueOf(cakeId);
 			list = loginDao.getBirthday(cakeId);
 		} catch (InfrastructureException ex) {
 			throw new InfrastructureException(ex);
@@ -191,15 +185,14 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}
 
-	public Response uploadDataByExcel() {
+	public Response uploadDataByExcel(String string) {
 		
 		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
-;
 
 		try {
-			List<Object[]> list = ReadWriteExcel.getExcelSheetData();
+			List<Object[]> list = ReadWriteExcel.getExcelSheetData(string);
 			response = loginDao.uploadDataByExcel(list);
 		} catch (InfrastructureException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
@@ -311,4 +304,5 @@ public class UserServiceImpl implements UserService {
 		}
 		return response;
 	}
+
 }
