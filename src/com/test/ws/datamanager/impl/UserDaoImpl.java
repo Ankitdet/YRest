@@ -1,6 +1,5 @@
 package com.test.ws.datamanager.impl;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
@@ -36,6 +35,7 @@ import com.test.ws.exception.CommandException;
 import com.test.ws.exception.InfrastructureException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
+import com.test.ws.table.metadata.TBLS;
 import com.test.ws.utils.AkdmUtils;
 import com.test.ws.utils.HibernateUtil;
 import com.test.ws.utils.TokenGenerator;
@@ -292,8 +292,8 @@ public class UserDaoImpl implements UserDao {
     public Response doCreateSabha(SabhaData sabhaData) {
     	
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
-        String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction(); 
         PreparedStatement ps = null;
         Statement st = null;
         int count = 0;
@@ -301,17 +301,17 @@ public class UserDaoImpl implements UserDao {
         try {
         	
         	String sql = "INSERT INTO sabhas(SABHA_TITLE,MANDAL_ID,DATE,START_TIME,END_TIME,STATUS,CREATED_DATE,UPDATED_DATE)"
-        			+ " values("+sabhaData.getSabha_title()+","+sabhaData.getMandal_id()+","+AkdmUtils.getToday()+","+AkdmUtils.getTime()+","+AkdmUtils.getSabhaEndTime()+",'A',"+AkdmUtils.getFormatedDate()+","+AkdmUtils.getFormatedDate()+")";
+        			+ " VALUES('"+sabhaData.getSabha_title()+"','"+sabhaData.getMandal_id()+"','"+AkdmUtils.getToday()+"','"+AkdmUtils.getTime()+"','"+AkdmUtils.getSabhaEndTime()+"',false,'"+AkdmUtils.getFormatedDate()+"','"+AkdmUtils.getFormatedDate()+"')";
         	Query q = session.createSQLQuery(sql);
         	q.executeUpdate();
         	
-        	sql = "SELECT ID FROM USERS WHERE MANDAL_ID="+sabhaData.getMandal_id();
+        	sql = "SELECT ID FROM users WHERE MANDAL_ID='"+sabhaData.getMandal_id()+"'";
         	q = session.createSQLQuery(sql);
-        	List<Object[]> list = q.list();
+        	List<BigInteger> list = q.list();
         	
-        	sql = "SELECT MAX(SABHA_ID) FROM SABHAS WHERE MANDAL_ID="+sabhaData.getMandal_id();
+        	sql = "SELECT MAX(SABHA_ID) FROM sabhas WHERE MANDAL_ID='"+sabhaData.getMandal_id()+"'";
         	q = session.createSQLQuery(sql);
-        	Long sabha_id = ((BigDecimal) q.uniqueResult()).longValue();
+        	int sabha_id = ((Integer) q.uniqueResult()).intValue();
         	
 
     		try {
@@ -320,14 +320,14 @@ public class UserDaoImpl implements UserDao {
     			connection.setAutoCommit(true);
     			st = connection.createStatement();
     			
-    			sql = "INSERT INTO YUVA_ATTENDANCE(SABHA_ID,IS_ATTENDED,MANDAL_ID,USER_ID) VALUES(?,?,?,?)";
+    			sql = "INSERT INTO "+TBLS.YUVAATTENDANCE+" (SABHA_ID,IS_ATTENDED,MANDAL_ID,USER_ID) VALUES(?,?,?,?)";
     			ps = connection.prepareStatement(sql);
     			ps.setLong(1, sabha_id);
     			ps.setBoolean(2, false);
     			ps.setLong(3,sabhaData.getMandal_id());
     			
-    			for (Object[] yAttendance : list) {
-    				ps.setLong(3, AkdmUtils.getObject(yAttendance[0],Long.class));
+    			for (BigInteger yAttendance : list) {
+    				ps.setLong(4, AkdmUtils.getObject(yAttendance,Long.class));
     				ps.addBatch();
     				if (count % 100 == 0) {
     					ps.executeBatch();
@@ -351,12 +351,15 @@ public class UserDaoImpl implements UserDao {
     					ps.close();
     				if (st != null)
     					st.close();
+    				//tx.commit();
     			} catch (SQLException sExp) {
     				throw new BusinessException(sExp.getMessage(), sExp);
     			}
     		}
+    		
         } catch (Exception e) {
-            return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+        	tx.rollback();
+            return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, null);
         } finally {
             session.close();
         }
@@ -365,7 +368,40 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Response getSabhaDetails() {
-        return null;
+    	
+    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+		String queryString = "";
+		Session session = HibernateUtil.getSessionFactory().openSession();
+        List<SabhaData> usersFieldDataList = new ArrayList<SabhaData>();
+
+		try {
+			queryString = "select * from " + TBLS.SABHA;
+			Query query = session.createSQLQuery(queryString);
+			List<Object[]> obj = query.list();
+			
+			for(Object[] objects : obj){
+				counter = 0;
+				SabhaData sabhaData = new SabhaData();
+				sabhaData.setId(AkdmUtils.getObject(objects[counter++], Long.class));
+				sabhaData.setSabha_title(AkdmUtils.getObject(objects[counter++],String.class));
+				sabhaData.setMandal_id(AkdmUtils.getObject(objects[counter++],Integer.class));
+				sabhaData.setSabha_date(AkdmUtils.getObject(objects[counter++],Date.class));
+				sabhaData.setStart_time(AkdmUtils.getObject(objects[counter++],String.class));
+				sabhaData.setEnd_time(AkdmUtils.getObject(objects[counter++],String.class));
+				sabhaData.setStatus(AkdmUtils.getObject(objects[counter++],Boolean.class));
+				sabhaData.setCreated_date(AkdmUtils.getObject(objects[counter++],Timestamp.class));
+				sabhaData.setUpdated_date(AkdmUtils.getObject(objects[counter++],Timestamp.class));
+				usersFieldDataList.add(sabhaData);
+			}
+			
+		}catch (InfrastructureException ex) {
+            throw new InfrastructureException(ex);
+        } catch (BusinessException ex) {
+            throw new BusinessException(ex);
+        } finally {
+            session.close();
+        }
+		return new Response(ResultCode.SUCCESS_200.code,"Successfully get data",null,null,usersFieldDataList);
     }
 
 	@Override
@@ -502,38 +538,6 @@ public class UserDaoImpl implements UserDao {
             session.close();
         }
 		return usersFieldDataList;
-	}
-
-	@Override
-	public List<SabhaData> getSabhaList() {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
-		String queryString = "";
-		Session session = HibernateUtil.getSessionFactory().openSession();
-        List<SabhaData> sabhaList = new ArrayList<SabhaData>();
-
-		try {
-			queryString = "SELECT SABHA_ID,CREATED_DATE,SABHA_TITLE,DATE,SABHA_ID FROM SABHAS";
-			Query query = session.createSQLQuery(queryString);
-			List<Object[]> list = query.list();
- 			
-			for(Object[] obj : list){
-				counter = 0;
-				SabhaData sabhaData = new SabhaData();
-				sabhaData.setId(AkdmUtils.getObject(obj[counter++],Long.class));
-				sabhaData.setCreated_date(AkdmUtils.getObject(obj[counter++],Date.class));
-				sabhaData.setSabha_title(AkdmUtils.getObject(obj[counter++],String.class));
-				sabhaData.setSabha_date(AkdmUtils.getObject(obj[counter++],Date.class));
-				sabhaData.setMandal_id(AkdmUtils.getObject(obj[counter++],Integer.class));
-				sabhaList.add(sabhaData);
-			}
-		}catch (InfrastructureException ex) {
-            throw new InfrastructureException(ex);
-        } catch (BusinessException ex) {
-            throw new BusinessException(ex);
-        } finally {
-            session.close();
-        }
-		return sabhaList;
 	}
 
 	@Override

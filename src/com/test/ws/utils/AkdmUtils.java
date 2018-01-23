@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -83,43 +82,29 @@ public class AkdmUtils {
             return exDir;
       }
     
-    public static Date getToday(){
+    public static java.sql.Date getToday(){
         java.util.Date date = new java.util.Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-			return (Date)sdf.parse(sdf.format(date));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+        return convertUtilToSql(date);
+    }
+    
+    private static java.sql.Date convertUtilToSql(java.util.Date uDate) {
+        java.sql.Date sDate = new java.sql.Date(uDate.getTime());
+        return sDate;
     }
     
     public static String getTime(){
     	date = new java.util.Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-        Date parsedDate = null;
-		try {
-			parsedDate = (Date) sdf.parse(sdf.format(date));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        return (String.valueOf(parsedDate.getTime()));
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		return sdf.format(date);
     }
     
     public static String getSabhaEndTime(){
-    	SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-		java.util.Date date = null;
-		try {
-			date = sdf.parse(sdf.format(AkdmUtils.date));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 		Calendar c = Calendar.getInstance();
-		c.setTime(date);
+		c.setTime(AkdmUtils.date);
 		c.add(Calendar.SECOND, 7200); 
-		return (String.valueOf(c.getTime().getTime()));
+		return sdf.format(c.getTime());
     }
+
+    
 }

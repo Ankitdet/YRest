@@ -185,7 +185,7 @@ public class UserRestWS {
     }
 
     @GET
-    @Path(QueryUrlNameConstant.getSabhaDetails)
+    @Path(QueryUrlNameConstant.getSabhaList)
     public Response getSabhaDetails() {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
@@ -209,20 +209,6 @@ public class UserRestWS {
           
           try {
               response = blManager.getMandalYuvakList(mandal_id);
-          } catch (NumberFormatException ne) {
-              return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
-          }
-          return response;
-	}
-    
-    @GET
-    @Path(QueryUrlNameConstant.getSabhaList)
-    public Response getSabhaList() {
-    	  UserServiceImpl blManager = new UserServiceImpl();
-          Response response = null;
-          Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
-          try {
-              response = blManager.getSabhaList();
           } catch (NumberFormatException ne) {
               return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
           }

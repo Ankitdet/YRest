@@ -237,23 +237,6 @@ public class UserServiceImpl implements UserService {
 		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
 	}
 
-	public Response getSabhaList() {
-		
-		UserDao loginDao = new UserDaoImpl();
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
-		List<SabhaData> list = new ArrayList<SabhaData>();
-		
-		try {
-			list = loginDao.getSabhaList();
-		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
-		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
-		} finally {
-		}
-		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
-	}
-
 	public Response getSabhaMandalList(Integer sabha_id) {
 		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());

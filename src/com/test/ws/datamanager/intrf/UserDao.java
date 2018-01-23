@@ -34,7 +34,6 @@ public interface UserDao {
 
 	public List<UsersFieldData> getYuvakProfile(Integer user_id);
 
-	public List<SabhaData> getSabhaList();
 
 	public List<Mandals> getSabhaMandalList(Integer sabha_id);
 
