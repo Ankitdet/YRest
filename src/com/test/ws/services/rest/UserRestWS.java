@@ -52,8 +52,8 @@ public class UserRestWS {
 
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(AkdmUtils.getClassName(), "Method called "+AkdmUtils.getMethodName());
-        Logger.logInfo(AkdmUtils.getClassName(), "Parameters are : email-" + email + ",password-" + password);
+        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, "Parameters are : email-" + email + ",password-" + password);
 
         try {
             if (email == null || email.trim() == "") {

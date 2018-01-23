@@ -568,7 +568,7 @@ public class UserDaoImpl implements UserDao {
         List<Mandals> mandalList = new ArrayList<Mandals>();
 
 		try {
-			queryString = "SELECT MANDAL_ID,MANDAL_TITLE FROM MANDALS WHERE MANDAL_ID = (SELECT MANDAL_ID FROM SABHAS WHERE SABHA_ID="+sabha_id+")";
+			queryString = "SELECT MANDAL_ID,MANDAL_TITLE FROM "+TBLS.MANDAL+" WHERE MANDAL_ID = (SELECT MANDAL_ID FROM "+TBLS.SABHA+" WHERE SABHA_ID="+sabha_id+")";
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> list = query.list();
  			
