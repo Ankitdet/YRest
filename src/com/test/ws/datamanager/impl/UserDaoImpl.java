@@ -1,5 +1,6 @@
 package com.test.ws.datamanager.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
@@ -7,6 +8,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -287,18 +289,72 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Response doCreateSabha() {
+    public Response doCreateSabha(SabhaData sabhaData) {
     	
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Mandals> mandalsArrayList = new ArrayList<Mandals>();
+        PreparedStatement ps = null;
+        Statement st = null;
+        int count = 0;
 
         try {
-            queryString = "insert into sabhas values(3,'parasabha',2,'2001-02-10','17:00:00','19:00:00',0,'2121121','1212121')";
-            Query query = session.createSQLQuery(queryString);
-            query.executeUpdate();
+        	
+        	String sql = "INSERT INTO sabhas(SABHA_TITLE,MANDAL_ID,DATE,START_TIME,END_TIME,STATUS,CREATED_DATE,UPDATED_DATE)"
+        			+ " values("+sabhaData.getSabha_title()+","+sabhaData.getMandal_id()+","+AkdmUtils.getToday()+","+AkdmUtils.getTime()+","+AkdmUtils.getSabhaEndTime()+",'A',"+AkdmUtils.getFormatedDate()+","+AkdmUtils.getFormatedDate()+")";
+        	Query q = session.createSQLQuery(sql);
+        	q.executeUpdate();
+        	
+        	sql = "SELECT ID FROM USERS WHERE MANDAL_ID="+sabhaData.getMandal_id();
+        	q = session.createSQLQuery(sql);
+        	List<Object[]> list = q.list();
+        	
+        	sql = "SELECT MAX(SABHA_ID) FROM SABHAS WHERE MANDAL_ID="+sabhaData.getMandal_id();
+        	q = session.createSQLQuery(sql);
+        	Long sabha_id = ((BigDecimal) q.uniqueResult()).longValue();
+        	
 
+    		try {
+    			SessionImplementor sessImpl = (SessionImplementor) session;
+    			Connection connection = sessImpl.connection();
+    			connection.setAutoCommit(true);
+    			st = connection.createStatement();
+    			
+    			sql = "INSERT INTO YUVA_ATTENDANCE(SABHA_ID,IS_ATTENDED,MANDAL_ID,USER_ID) VALUES(?,?,?,?)";
+    			ps = connection.prepareStatement(sql);
+    			ps.setLong(1, sabha_id);
+    			ps.setBoolean(2, false);
+    			ps.setLong(3,sabhaData.getMandal_id());
+    			
+    			for (Object[] yAttendance : list) {
+    				ps.setLong(3, AkdmUtils.getObject(yAttendance[0],Long.class));
+    				ps.addBatch();
+    				if (count % 100 == 0) {
+    					ps.executeBatch();
+    				}
+    				count++;
+    			}
+    			ps.executeBatch();
+    		} catch (BatchUpdateException e) {
+    			int[] updateCounts = e.getUpdateCounts();
+    			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
+    			throw new BusinessException(
+    					"Upload Translation Mapping Data Failed, Reason "
+    							+ e.getMessage());
+    		} catch (HibernateException hExp) {
+    			throw new BusinessException(hExp.getMessage(), hExp);
+    		} catch (Exception exp) {
+    			throw new BusinessException(exp.getMessage(), exp);
+    		} finally {
+    			try {
+    				if (ps != null)
+    					ps.close();
+    				if (st != null)
+    					st.close();
+    			} catch (SQLException sExp) {
+    				throw new BusinessException(sExp.getMessage(), sExp);
+    			}
+    		}
         } catch (Exception e) {
             return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
         } finally {
@@ -456,13 +512,15 @@ public class UserDaoImpl implements UserDao {
         List<SabhaData> sabhaList = new ArrayList<SabhaData>();
 
 		try {
-			queryString = "SELECT SABHA_TITLE,DATE,SABHA_ID FROM SABHAS";
+			queryString = "SELECT SABHA_ID,CREATED_DATE,SABHA_TITLE,DATE,SABHA_ID FROM SABHAS";
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> list = query.list();
  			
 			for(Object[] obj : list){
 				counter = 0;
 				SabhaData sabhaData = new SabhaData();
+				sabhaData.setId(AkdmUtils.getObject(obj[counter++],Long.class));
+				sabhaData.setCreated_date(AkdmUtils.getObject(obj[counter++],Date.class));
 				sabhaData.setSabha_title(AkdmUtils.getObject(obj[counter++],String.class));
 				sabhaData.setSabha_date(AkdmUtils.getObject(obj[counter++],Date.class));
 				sabhaData.setMandal_id(AkdmUtils.getObject(obj[counter++],Integer.class));

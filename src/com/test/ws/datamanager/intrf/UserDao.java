@@ -24,7 +24,7 @@ public interface UserDao {
 
 	Response getManadal();
 
-	Response doCreateSabha();
+	Response doCreateSabha(SabhaData sabhaData);
 
 	Response getSabhaDetails();
 

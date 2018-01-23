@@ -150,14 +150,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Response doCreateSabha() {
+	public Response doCreateSabha(SabhaData sabhaData) {
 		UserDao loginDao = new UserDaoImpl();
 		Response response = new Response();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 
 		try {
-			response = loginDao.doCreateSabha();
+			response = loginDao.doCreateSabha(sabhaData);
 		} catch (InfrastructureException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {

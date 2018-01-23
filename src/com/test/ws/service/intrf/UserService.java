@@ -2,6 +2,7 @@ package com.test.ws.service.intrf;
 
 import java.text.ParseException;
 
+import com.test.ws.entities.SabhaData;
 import com.test.ws.exception.CommandException;
 import com.test.ws.requestobject.Response;
 
@@ -17,7 +18,7 @@ public interface UserService {
 
     Response getArea();
 
-    Response doCreateSabha();
+    Response doCreateSabha(SabhaData sabhaData);
 
     Response getSabhaDetails();
 }

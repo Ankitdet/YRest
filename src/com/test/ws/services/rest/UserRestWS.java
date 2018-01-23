@@ -1,10 +1,8 @@
 package com.test.ws.services.rest;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -13,7 +11,6 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -34,6 +31,7 @@ import org.apache.commons.io.IOUtils;
 import com.test.ws.constant.QueryUrlNameConstant;
 import com.test.ws.constant.ResultCode;
 import com.test.ws.entities.AttendanceRequest;
+import com.test.ws.entities.SabhaData;
 import com.test.ws.exception.CommandException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
@@ -173,13 +171,13 @@ public class UserRestWS {
 
     @POST
     @Path(QueryUrlNameConstant.createSabha)
-    public Response doCreateSabha() {
+    public Response doCreateSabha(SabhaData sabhaData) {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
         Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
 
         try {
-            response = blManager.doCreateSabha();
+            response = blManager.doCreateSabha(sabhaData);
         } catch (NumberFormatException ne) {
             return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
         }

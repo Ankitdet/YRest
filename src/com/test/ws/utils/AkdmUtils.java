@@ -5,13 +5,17 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 
 public class AkdmUtils {
 
+	public static java.util.Date date = new java.util.Date();
+	
 	public static String getMethodName() {
         return Thread.currentThread().getStackTrace()[2].getMethodName() + "()";
     }
@@ -55,8 +59,7 @@ public class AkdmUtils {
         	return clazz.cast(o);
         } catch(ClassCastException e) {
             return null;
-        } 
-    }
+        }     }
     
     public static File getWorkingDir(@Context ServletContext context) {
         String path = context.getRealPath("/WEB-INF/images");         
@@ -74,5 +77,45 @@ public class AkdmUtils {
             	exDir.mkdirs();
             }
             return exDir;
-          }
+      }
+    
+    public static Date getToday(){
+        java.util.Date date = new java.util.Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+			return (Date)sdf.parse(sdf.format(date));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
+    public static Timestamp getTime(){
+    	date = new java.util.Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        Date parsedDate = null;
+		try {
+			parsedDate = (Date) sdf.parse(sdf.format(date));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return new java.sql.Timestamp(parsedDate.getTime());
+    }
+    
+    public static Timestamp getSabhaEndTime(){
+    	SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+		java.util.Date date = null;
+		try {
+			date = sdf.parse(sdf.format(AkdmUtils.date));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.SECOND, 7200); 
+		return new Timestamp(c.getTime().getTime());
+    }
 }
