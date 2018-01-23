@@ -952,13 +952,7 @@ CREATE TABLE IF NOT EXISTS `yuva_attendance` (
   `sabha_id` int(11) NOT NULL,
   `user_id` bigint(20) NOT NULL,
   `is_attended` tinyint(4) DEFAULT NULL,
-  `mandal_id` int(11) NOT NULL,
-  KEY `sabha_id` (`sabha_id`),
-  KEY `user_id` (`user_id`),
-  KEY `mandal_id` (`mandal_id`),
-  CONSTRAINT `FK_yuva_attendance_mandals` FOREIGN KEY (`mandal_id`) REFERENCES `mandals` (`mandal_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_yuva_attendance_sabhas` FOREIGN KEY (`sabha_id`) REFERENCES `sabhas` (`sabha_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_yuva_attendance_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `mandal_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table xboxlive_akdm.yuva_attendance: ~0 rows (approximately)
@@ -967,3 +961,4 @@ CREATE TABLE IF NOT EXISTS `yuva_attendance` (
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+
