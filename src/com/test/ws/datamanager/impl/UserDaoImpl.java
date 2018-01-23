@@ -35,6 +35,7 @@ import com.test.ws.exception.CommandException;
 import com.test.ws.exception.InfrastructureException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
+import com.test.ws.table.metadata.CLMS;
 import com.test.ws.table.metadata.TBLS;
 import com.test.ws.utils.AkdmUtils;
 import com.test.ws.utils.HibernateUtil;
@@ -46,20 +47,39 @@ public class UserDaoImpl implements UserDao {
 	
 	/**
 	 * Initialize counter variable for get COLUMN values
-	 * @see AkdmUtils#getMethodName()
+	 * 
 	 */
 	public static int counter ;
 	
     public static  final String userDataQuery = 
-    		"select u.id,u.role_id,u.user_name," +
-            "u.email,u.password,u.phone," +
-            "u.whatsapp_number,u.email_verified,u.birth_date" +
-            ",u.user_image,u.latitude,u.longitude,u.address," +
-            "u.auth_token,u.relationship_status,u.created_at," +
-            "u.updated_at,u.status,u.device_type,u.device_token," +
-            "u.badge_count,ur.role_name,ar.area_title,m.mandal_title from users u " +
-            "left join user_roles ur on ur.id=u.role_id left join areas ar on ar.area_id=u.area_id " +
-            "left join mandals m on m.mandal_id = u.mandal_id ";
+    		"select "
+    		+ "u."+CLMS.ID+","
+    		+ "u."+CLMS.ROLE_NAME+","
+    		+ "u."+CLMS.USERNAME+","
+    		+ "u."+CLMS.EMAIL+","
+    		+ "u."+CLMS.PASSWORD+","
+    		+ "u."+CLMS.PHONE+","
+    		+ "u."+CLMS.WHATSAPP_NUMBER+","
+    		+ "u."+CLMS.EMAIL_VERIFIED+","
+    		+ "u."+CLMS.BIRTH_DATE+"," 
+    		+ "u.user_image,"
+    		+ "u.latitude,"
+    		+ "u.longitude,"
+    		+ "u.address," 
+    		+ "u.auth_token,"
+    		+ "u.relationship_status,"
+    		+ "u.created_at," 
+    		+ "u.updated_at,"
+    		+ "u.status,"
+    		+ "u.device_type,"
+    		+ "u.device_token,"
+    		+ "u.badge_count,"
+    		+ "ur.role_name,"
+    		+ "ar.area_title,"
+    		+ "m.mandal_title "
+    		+ "from users u "
+    		+ "left join user_roles ur on ur.id=u.role_id left join areas ar on ar.area_id=u.area_id " 
+            + "left join mandals m on m.mandal_id = u.mandal_id ";
 
     @Override
     public List<UsersFieldData> validateLogin(String email, String password) throws CommandException {
