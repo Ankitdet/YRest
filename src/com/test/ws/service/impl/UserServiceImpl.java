@@ -23,7 +23,7 @@ import com.test.ws.utils.ReadWriteExcel;
 
 public class UserServiceImpl implements UserService {
 
-	public static final String MODULE = UserServiceImpl.class.getName();
+	public static final String MODULE = UserServiceImpl.class.getSimpleName();
 	
 	@Override
 	public Response validateLogin(String email,String password) throws CommandException, ParseException {

@@ -15,9 +15,6 @@ public class AkdmUtils {
 
 	public static java.util.Date date = new java.util.Date();
 
-	public static void main(String[] args) {
-		getSabhaEndTime();
-	}
 	public static String getMethodName() {
         return Thread.currentThread().getStackTrace()[2].getMethodName() + "()";
     }
@@ -106,5 +103,4 @@ public class AkdmUtils {
 		return sdf.format(c.getTime());
     }
 
-    
 }

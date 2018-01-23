@@ -14,7 +14,7 @@ import com.test.ws.logger.Logger;
 @Provider
 public class PostMatchingFilter implements ContainerResponseFilter {
 
-	private static final String MODULE = PostMatchingFilter.class.getName();
+	private static final String MODULE = PostMatchingFilter.class.getSimpleName();
 
 	@Override
 	public void filter(ContainerRequestContext arg0, ContainerResponseContext arg1) throws IOException {

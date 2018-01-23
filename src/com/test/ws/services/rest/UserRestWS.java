@@ -42,7 +42,7 @@ import com.test.ws.utils.AkdmUtils;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class UserRestWS {
 
-    private static final String MODULE = UserRestWS.class.getName();
+    private static final String MODULE = UserRestWS.class.getSimpleName();
 
     @POST
     @Path(QueryUrlNameConstant.login)
@@ -52,8 +52,8 @@ public class UserRestWS {
 
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
-        Logger.logInfo(MODULE, "Parameters are : email-" + email + ",password-" + password);
+        Logger.logInfo(AkdmUtils.getClassName(), "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(AkdmUtils.getClassName(), "Parameters are : email-" + email + ",password-" + password);
 
         try {
             if (email == null || email.trim() == "") {

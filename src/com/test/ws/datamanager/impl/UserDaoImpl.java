@@ -43,7 +43,7 @@ import com.test.ws.utils.TokenGenerator;
 
 public class UserDaoImpl implements UserDao {
 
-	public static final String MODULE = UserDaoImpl.class.getName();
+	public static final String MODULE = UserDaoImpl.class.getSimpleName();
 	
 	/**
 	 * Initialize counter variable for get COLUMN values
@@ -54,7 +54,6 @@ public class UserDaoImpl implements UserDao {
     public static  final String userDataQuery = 
     		"select "
     		+ "u."+CLMS.ID+","
-    		+ "u."+CLMS.ROLE_NAME+","
     		+ "u."+CLMS.USERNAME+","
     		+ "u."+CLMS.EMAIL+","
     		+ "u."+CLMS.PASSWORD+","
@@ -280,7 +279,7 @@ public class UserDaoImpl implements UserDao {
         	counter = 0;
             UsersFieldData usersFieldData = new UsersFieldData();
             usersFieldData.setId(AkdmUtils.getObject(obj[counter++],Long.class));
-            usersFieldData.setRole_id(AkdmUtils.getObject(obj[counter++],Integer.class));
+        //    usersFieldData.setRole_id(AkdmUtils.getObject(obj[counter++],Integer.class));
             usersFieldData.setUser_name(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldData.setEmail(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldData.setPassword(AkdmUtils.getObject(obj[counter++],String.class));
@@ -317,7 +316,6 @@ public class UserDaoImpl implements UserDao {
         PreparedStatement ps = null;
         Statement st = null;
         int count = 0;
-
         try {
         	
         	String sql = "INSERT INTO sabhas(SABHA_TITLE,MANDAL_ID,DATE,START_TIME,END_TIME,STATUS,CREATED_DATE,UPDATED_DATE)"
@@ -393,7 +391,7 @@ public class UserDaoImpl implements UserDao {
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<SabhaData> usersFieldDataList = new ArrayList<SabhaData>();
-
+        
 		try {
 			queryString = "select * from " + TBLS.SABHA;
 			Query query = session.createSQLQuery(queryString);
@@ -413,7 +411,7 @@ public class UserDaoImpl implements UserDao {
 				sabhaData.setUpdated_date(AkdmUtils.getObject(objects[counter++],Timestamp.class));
 				usersFieldDataList.add(sabhaData);
 			}
-			
+			session.getTransaction().commit();
 		}catch (InfrastructureException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code,ex.getMessage(),null,null,null);
         } catch (BusinessException ex) {
