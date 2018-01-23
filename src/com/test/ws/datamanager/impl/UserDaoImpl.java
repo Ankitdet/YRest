@@ -395,10 +395,12 @@ public class UserDaoImpl implements UserDao {
 			}
 			
 		}catch (InfrastructureException ex) {
-            throw new InfrastructureException(ex);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code,ex.getMessage(),null,null,null);
         } catch (BusinessException ex) {
-            throw new BusinessException(ex);
-        } finally {
+        	return new Response(ResultCode.INTERNAL_ERROR_500.code,ex.getMessage(),null,null,null);
+        }catch (Exception ex) {
+        	return new Response(ResultCode.INTERNAL_ERROR_500.code,ex.getMessage(),null,null,null);
+        }finally {
             session.close();
         }
 		return new Response(ResultCode.SUCCESS_200.code,"Successfully get data",null,null,usersFieldDataList);
