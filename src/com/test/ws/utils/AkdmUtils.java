@@ -15,11 +15,15 @@ import javax.ws.rs.core.Context;
 public class AkdmUtils {
 
 	public static java.util.Date date = new java.util.Date();
-	
+
+	public static void main(String[] args) {
+		getSabhaEndTime();
+	}
 	public static String getMethodName() {
         return Thread.currentThread().getStackTrace()[2].getMethodName() + "()";
     }
-	
+
+    // This will return yyyy-MM-dd HH:mm:ss.SSS format
 	public static Timestamp getFormatedDate() {
 	        java.util.Date date = new java.util.Date();
 	        return new Timestamp(date.getTime());
@@ -91,7 +95,7 @@ public class AkdmUtils {
 		return null;
     }
     
-    public static Timestamp getTime(){
+    public static String getTime(){
     	date = new java.util.Date();
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
         Date parsedDate = null;
@@ -101,10 +105,10 @@ public class AkdmUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        return new java.sql.Timestamp(parsedDate.getTime());
+        return (String.valueOf(parsedDate.getTime()));
     }
     
-    public static Timestamp getSabhaEndTime(){
+    public static String getSabhaEndTime(){
     	SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 		java.util.Date date = null;
 		try {
@@ -116,6 +120,6 @@ public class AkdmUtils {
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
 		c.add(Calendar.SECOND, 7200); 
-		return new Timestamp(c.getTime().getTime());
+		return (String.valueOf(c.getTime().getTime()));
     }
 }
