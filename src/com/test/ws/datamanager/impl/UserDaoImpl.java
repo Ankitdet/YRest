@@ -335,7 +335,7 @@ public class UserDaoImpl implements UserDao {
     		try {
     			SessionImplementor sessImpl = (SessionImplementor) session;
     			Connection connection = sessImpl.connection();
-    			connection.setAutoCommit(true);
+    			connection.setAutoCommit(false);
     			st = connection.createStatement();
     			
     			sql = "INSERT INTO "+TBLS.YUVAATTENDANCE+" (SABHA_ID,IS_ATTENDED,MANDAL_ID,USER_ID) VALUES(?,?,?,?)";
@@ -353,6 +353,7 @@ public class UserDaoImpl implements UserDao {
     				count++;
     			}
     			ps.executeBatch();
+    			
     		} catch (BatchUpdateException e) {
     			int[] updateCounts = e.getUpdateCounts();
     			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
@@ -360,8 +361,10 @@ public class UserDaoImpl implements UserDao {
     					"Upload Translation Mapping Data Failed, Reason "
     							+ e.getMessage());
     		} catch (HibernateException hExp) {
+    			tx.rollback();
     			throw new BusinessException(hExp.getMessage(), hExp);
     		} catch (Exception exp) {
+    			tx.rollback();
     			throw new BusinessException(exp.getMessage(), exp);
     		} finally {
     			try {
@@ -369,8 +372,9 @@ public class UserDaoImpl implements UserDao {
     					ps.close();
     				if (st != null)
     					st.close();
-    				//tx.commit();
+    				tx.commit();
     			} catch (SQLException sExp) {
+    				tx.rollback();
     				throw new BusinessException(sExp.getMessage(), sExp);
     			}
     		}
@@ -430,6 +434,7 @@ public class UserDaoImpl implements UserDao {
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		PreparedStatement ps = null;
+		Transaction tx= session.beginTransaction();
 		Statement st = null;
 		int failedDataConunt = 0;
 		int successDataCount = 0;
@@ -494,12 +499,15 @@ public class UserDaoImpl implements UserDao {
 			}
 			ps.executeBatch();
 		} catch (BatchUpdateException e) {
+			tx.rollback();
 			int[] updateCounts = e.getUpdateCounts();
 			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
 			throw new BusinessException("Upload Translation Mapping Data Failed, Reason " + e.getMessage());
 		} catch (HibernateException hExp) {
+			tx.rollback();
 			Logger.logError(MODULE, hExp.getMessage());
 		} catch (Exception exp) {
+			tx.rollback();
 			Logger.logError(MODULE, exp.getMessage());
 		} finally {
 			try {
@@ -507,7 +515,9 @@ public class UserDaoImpl implements UserDao {
 					ps.close();
 				if (st != null)
 					st.close();
+				tx.commit();
 			} catch (SQLException sExp) {
+				tx.rollback();
 				throw new BusinessException(sExp.getMessage(), sExp);
 			}
 		}
