@@ -56,16 +56,6 @@ public class UserRestWS {
         Logger.logInfo(MODULE, "Parameters are : email-" + email + ",password-" + password);
 
         try {
-            if (email == null || email.trim() == "") {
-                return new Response(
-                        ResultCode.INPUT_PARAMETER_MISSING_401.code,
-                        "email must not blank", null, null, null);
-            }
-            if (password == null || password.trim() == "") {
-                return new Response(
-                        ResultCode.INPUT_PARAMETER_MISSING_401.code,
-                        "password must not blank", null, null, null);
-            }
 
             response = blManager.validateLogin(email, password);
 

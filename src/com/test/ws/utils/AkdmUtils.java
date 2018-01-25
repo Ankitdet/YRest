@@ -52,8 +52,30 @@ public class AkdmUtils {
         		}
         	}
         	if(o instanceof Timestamp){
-        		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        		o = dateFormat.format(new Date(((Timestamp) o).getTime()));
+        		
+        		if(clazz == String.class){
+        			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        			o = dateFormat.format(new Date(((Timestamp) o).getTime()));
+        		}else if(clazz == Date.class){
+        			o = new Date(((Timestamp) o).getTime());
+        		}
+        	}
+        	
+        	if(o instanceof Integer){
+        		if(clazz == Long.class){
+        			o = ((Integer) o).longValue();
+        		}else if(clazz == Integer.class){
+        			o = ((Integer) o).intValue();
+        		}
+        	}
+        	
+        	if(o instanceof Byte){
+        		Byte b = ((Byte) o).byteValue();
+        		if(clazz == Integer.class){
+        			o = b.intValue();
+        		}else if(clazz == Boolean.class){
+        			o = (b!=0);
+        		}
         	}
 
         	return clazz.cast(o);
@@ -98,7 +120,7 @@ public class AkdmUtils {
     public static String getSabhaEndTime(){
     	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 		Calendar c = Calendar.getInstance();
-		c.setTime(AkdmUtils.date);
+		c.setTime(date);
 		c.add(Calendar.SECOND, 7200); 
 		return sdf.format(c.getTime());
     }

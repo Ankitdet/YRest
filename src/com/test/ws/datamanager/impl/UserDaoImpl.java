@@ -61,24 +61,24 @@ public class UserDaoImpl implements UserDao {
     		+ "u."+CLMS.WHATSAPP_NUMBER+","
     		+ "u."+CLMS.EMAIL_VERIFIED+","
     		+ "u."+CLMS.BIRTH_DATE+"," 
-    		+ "u.user_image,"
-    		+ "u.latitude,"
-    		+ "u.longitude,"
-    		+ "u.address," 
-    		+ "u.auth_token,"
-    		+ "u.relationship_status,"
-    		+ "u.created_at," 
-    		+ "u.updated_at,"
-    		+ "u.status,"
-    		+ "u.device_type,"
-    		+ "u.device_token,"
-    		+ "u.badge_count,"
-    		+ "ur.role_name,"
-    		+ "ar.area_title,"
-    		+ "m.mandal_title "
-    		+ "from users u "
-    		+ "left join user_roles ur on ur.id=u.role_id left join areas ar on ar.area_id=u.area_id " 
-            + "left join mandals m on m.mandal_id = u.mandal_id ";
+    		+ "u."+CLMS.USER_IMAGE+","
+    		+ "u."+CLMS.LATITUDE+","
+    		+ "u."+CLMS.LONGITUDE+","
+    		+ "u."+CLMS.ADDRESS+"," 
+    		+ "u."+CLMS.AUTH_TOKEN+","
+    		+ "u."+CLMS.RELATIONSHIP_STATUS+","
+    		+ "u."+CLMS.CREATED_AT+"," 
+    		+ "u."+CLMS.UPDATED_AT+","
+    		+ "u."+CLMS.STATUS+","
+    		+ "u."+CLMS.DEVICE_TYPE+","
+    		+ "u."+CLMS.DEVICE_TOKEN+","
+    		+ "u."+CLMS.BADGE_COUNT+","
+    		+ "ur."+CLMS.ROLE_NAME+","
+    		+ "ar."+CLMS.AREA_TITLE+","
+    		+ "m."+CLMS.MANDAL_TITLE+" "
+    		+ "from "+TBLS.USER+" u "
+    		+ "left join "+TBLS.USERROLE+" ur on ur."+CLMS.ID+"=u."+CLMS.ROLE_ID+" left join "+TBLS.AREA+" ar on ar."+CLMS.AREA_ID+"=u."+CLMS.AREA_ID+" " 
+            + "left join "+TBLS.MANDAL+" m on m."+CLMS.MANDAL_ID+" = u."+CLMS.MANDAL_ID+" ";
 
     @Override
     public List<UsersFieldData> validateLogin(String email, String password) throws CommandException {
@@ -94,7 +94,7 @@ public class UserDaoImpl implements UserDao {
         try {
 
         	String token = TokenGenerator.uniqueUUID();
-            queryString = "select * from users where email='" + email + "' and password='" + password + "'";
+            queryString = "SELECT * FROM "+TBLS.USER+" WHERE "+CLMS.EMAIL+"='" + email + "' AND "+CLMS.PASSWORD+"='" + password + "'";
             Query query = session.createSQLQuery(queryString);
             list = query.list();
 
@@ -103,11 +103,11 @@ public class UserDaoImpl implements UserDao {
                     user_id = ((BigInteger) o[0]).longValue();
                 }
 
-                queryString = "update users set auth_token='" + token + "',updated_at='" + AkdmUtils.getFormatedDate() + "' where id='" + user_id + "'";
+                queryString = "UPDATE "+TBLS.USER+" SET "+CLMS.AUTH_TOKEN+"='" + token + "',"+CLMS.UPDATED_AT+"='" + AkdmUtils.getFormatedDate() + "' where "+CLMS.ID+"='" + user_id + "'";
                 query = session.createSQLQuery(queryString);
                 query.executeUpdate();
 
-                Query crt = session.createSQLQuery(userDataQuery + " where u.id='" + user_id + "'");
+                Query crt = session.createSQLQuery(userDataQuery + " WHERE u."+CLMS.ID+"='" + user_id + "'");
                 list = crt.list();
                 usersFieldDataList = fillUserTablePojo(list);
                 TokenGenerator.tokenMap.put(token,token);
@@ -155,36 +155,44 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<UsersFieldData> getBirthday(String cakeId) throws CommandException {
+    public Response getBirthday(String cakeId) throws CommandException {
 
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Session session = HibernateUtil.getSessionFactory().openSession();
+    	List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
         String queryString = "";
-        Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> list = null;
-        List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
 
 		try {
             Long myBirthdayDigit = Long.parseLong(cakeId);
             
+            if(myBirthdayDigit > 4) 
+            	return new Response(ResultCode.OPERATION_NOT_SUPPORTED_599.code, "Invalid input " + myBirthdayDigit + ", allow 0 to 4" , null, null, null);
             
-            if(myBirthdayDigit > 4) return null;
             if (myBirthdayDigit == 0) {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u.USER_NAME";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY u."+CLMS.USER_NAME+"";
             } else  {
-                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+")";
+                queryString = userDataQuery + " WHERE "+getBirthFilterQuery(cakeId)+" ORDER BY MONTH("+CLMS.BIRTH_DATE+")";
             } 
             Query queryNew = session.createSQLQuery(queryString);
             list = queryNew.list();
-            usersFieldDataList = fillUserTablePojo(list);
-
-        } catch (InfrastructureException ex) {
-            throw new InfrastructureException(ex);
+            
+            if(!list.isEmpty()){
+            	usersFieldDataList = fillUserTablePojo(list);
+    			return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, usersFieldDataList);
+    		}else{
+    			return new Response(ResultCode.SUCCESS_200.code, "No record found", null, null, usersFieldDataList);
+    		}
+        } catch(NumberFormatException nx){
+        	  return new Response(ResultCode.INTERNAL_ERROR_500.code, "Number can't parse in long " +cakeId, null, null, null);
+        }
+		catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, null);
         } catch (BusinessException ex) {
-            throw new BusinessException(ex);
+        	return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, null);
         } finally {
             session.close();
         }
-        return usersFieldDataList;
     }
 
     @Override
@@ -209,7 +217,7 @@ public class UserDaoImpl implements UserDao {
             }
 
         } catch (Exception e) {
-            return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+            return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, null);
         } finally {
             session.close();
         }
@@ -397,7 +405,7 @@ public class UserDaoImpl implements UserDao {
         List<SabhaData> usersFieldDataList = new ArrayList<SabhaData>();
         
 		try {
-			queryString = "select * from " + TBLS.SABHA;
+			queryString = "select "+CLMS.SABHA_ID+","+CLMS.SABHA_TITLE+","+CLMS.MANDAL_ID+","+CLMS.DATE+","+CLMS.START_TIME+","+CLMS.END_TIME+","+CLMS.STATUS+","+CLMS.CREATED_DATE+","+CLMS.UPDATED_DATE+" from " + TBLS.SABHA;
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> obj = query.list();
 			
@@ -410,12 +418,11 @@ public class UserDaoImpl implements UserDao {
 				sabhaData.setSabha_date(AkdmUtils.getObject(objects[counter++],Date.class));
 				sabhaData.setStart_time(AkdmUtils.getObject(objects[counter++],String.class));
 				sabhaData.setEnd_time(AkdmUtils.getObject(objects[counter++],String.class));
-				sabhaData.setStatus(AkdmUtils.getObject(objects[counter++],Boolean.class));
-				sabhaData.setCreated_date(AkdmUtils.getObject(objects[counter++],Timestamp.class));
-				sabhaData.setUpdated_date(AkdmUtils.getObject(objects[counter++],Timestamp.class));
+				sabhaData.setStatus(AkdmUtils.getObject(objects[counter++],Integer.class));
+				sabhaData.setCreated_date(AkdmUtils.getObject(objects[counter++],Date.class));
+				sabhaData.setUpdated_date(AkdmUtils.getObject(objects[counter++],Date.class));
 				usersFieldDataList.add(sabhaData);
 			}
-			session.getTransaction().commit();
 		}catch (InfrastructureException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code,ex.getMessage(),null,null,null);
         } catch (BusinessException ex) {
@@ -571,7 +578,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<Mandals> getSabhaMandalList(Integer sabha_id) {
+	public Response getSabhaMandalList(Integer sabha_id) {
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -589,14 +596,18 @@ public class UserDaoImpl implements UserDao {
 				mandals.setMandalTitle(AkdmUtils.getObject(obj[counter++],String.class));
 				mandalList.add(mandals);
 			}
+		return new Response(ResultCode.SUCCESS_200.code,"Successfully get records", null,
+			null, mandalList);
+		
 		}catch (InfrastructureException ex) {
-            throw new InfrastructureException(ex);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code,ex.getMessage(), null,
+					null, null);
         } catch (BusinessException ex) {
-            throw new BusinessException(ex);
+        	return new Response(ResultCode.INTERNAL_ERROR_500.code,ex.getMessage(), null,
+        			null, null);
         } finally {
             session.close();
         }
-		return mandalList;
 	}
 
 	@Override
@@ -607,17 +618,16 @@ public class UserDaoImpl implements UserDao {
         List<CreateSabhaData> userSabhaList = new ArrayList<CreateSabhaData>();
         
         try {
-			queryString = "select id,user_name,user_uniqueid from users where mandal_id="+mandal_id+"" ;
+			queryString = "SELECT "+CLMS.SABHA_ID+","+CLMS.USER_ID+","+CLMS.IS_ATTENDED+" FROM "+TBLS.YUVAATTENDANCE+" WHERE "+CLMS.MANDAL_ID+"="+mandal_id+" AND "+CLMS.SABHA_ID+"="+sabha_id+"" ;
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> list = query.list();
 
 			for(Object[] object : list){
 				counter = 0;
 				CreateSabhaData createSabhaData = new CreateSabhaData();
-				createSabhaData.setUser_id((AkdmUtils.getObject(object[counter++],Long.class)));
-				createSabhaData.setUser_name(AkdmUtils.getObject(object[counter++],String.class));
-				createSabhaData.setUser_uniqueid(AkdmUtils.getObject(object[counter++],String.class));
-				createSabhaData.setIs_Attended(false);
+				createSabhaData.setSabhaId(AkdmUtils.getObject(object[counter++],Long.class));
+				createSabhaData.setUser_id(AkdmUtils.getObject(object[counter++],Long.class));
+				createSabhaData.setIs_Attended(AkdmUtils.getObject(object[counter++],Boolean.class));
 				userSabhaList.add(createSabhaData);
 			}
 			
@@ -635,7 +645,9 @@ public class UserDaoImpl implements UserDao {
 	public Response createYuvakSabhaAttendance(AttendanceRequest request) {
 
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, "Requested data : " +request.toString());
 		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction tx = session.beginTransaction();
 		PreparedStatement ps = null;
 		Statement st = null;
 		int count = 0;
@@ -643,16 +655,16 @@ public class UserDaoImpl implements UserDao {
 		try {
 			SessionImplementor sessImpl = (SessionImplementor) session;
 			Connection connection = sessImpl.connection();
-			connection.setAutoCommit(true);
+			connection.setAutoCommit(false);
 			st = connection.createStatement();
 
-			String sql = "INSERT INTO YUVA_ATTENDANCE(SABHA_ID,MANDAL_ID,USER_ID,IS_ATTENDED) VALUES(?,?,?,?)";
+			String sql = "UPDATE "+TBLS.YUVAATTENDANCE+" SET "+CLMS.IS_ATTENDED+"=? WHERE "+CLMS.SABHA_ID+"=? AND "+CLMS.MANDAL_ID+"=? AND "+CLMS.USER_ID+"=?";
 			ps = connection.prepareStatement(sql);
-			ps.setLong(1, request.getSabha_id());
-			ps.setLong(2, request.getMandal_id());
+			ps.setLong(2, request.getSabha_id());
+			ps.setLong(3, request.getMandal_id());
 			for (YuAttendance yAttendance : request.getListOfAttendance()) {
-				ps.setLong(3, yAttendance.getYuvak_id());
-				ps.setBoolean(4, yAttendance.isIs_attended());
+				ps.setLong(4, yAttendance.getYuvak_id());
+				ps.setBoolean(1, yAttendance.isIs_attended());
 				ps.addBatch();
 				if (count % 100 == 0) {
 					ps.executeBatch();
@@ -661,22 +673,29 @@ public class UserDaoImpl implements UserDao {
 			}
 			ps.executeBatch();
 		} catch (BatchUpdateException e) {
-			int[] updateCounts = e.getUpdateCounts();
-			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
-			throw new BusinessException(
-					"Upload Translation Mapping Data Failed, Reason "
-							+ e.getMessage());
-		} catch (HibernateException hExp) {
-			throw new BusinessException(hExp.getMessage(), hExp);
-		} catch (Exception exp) {
-			throw new BusinessException(exp.getMessage(), exp);
+			tx.rollback();
+			return new Response(ResultCode.INTERNAL_ERROR_500.code,
+					e.getMessage(), null,
+					null, "rollback query");
+		} catch (HibernateException e) {
+			tx.rollback();
+			return new Response(ResultCode.INTERNAL_ERROR_500.code,
+					e.getMessage(), null,
+					null, "rollback query");
+		} catch (Exception e) {
+			tx.rollback();
+			return new Response(ResultCode.INTERNAL_ERROR_500.code,
+					e.getMessage(), null,
+					null, "rollback query");
 		} finally {
 			try {
 				if (ps != null)
 					ps.close();
 				if (st != null)
 					st.close();
+				tx.commit();
 			} catch (SQLException sExp) {
+				tx.rollback();
 				throw new BusinessException(sExp.getMessage(), sExp);
 			}
 		}

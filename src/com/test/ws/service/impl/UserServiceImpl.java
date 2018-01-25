@@ -52,11 +52,11 @@ public class UserServiceImpl implements UserService {
 	public Response getBirthday(String cakeId) throws CommandException {
 
 		UserDao loginDao = new UserDaoImpl();
-		List<UsersFieldData> list = null;
+		Response response = new Response();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
 		try {
-			list = loginDao.getBirthday(cakeId);
+			response = loginDao.getBirthday(cakeId);
 		} catch (InfrastructureException ex) {
 			throw new InfrastructureException(ex);
 		} catch (BusinessException ex) {
@@ -64,15 +64,7 @@ public class UserServiceImpl implements UserService {
 		} finally {
 
 		}
-		
-		if(list == null)
-			return new Response(ResultCode.NOT_FOUND_404.code, "Invalid value passed " +cakeId, null, null, list);
-		
-		if(!list.isEmpty()){
-			return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
-		}else{
-			return new Response(ResultCode.SUCCESS_200.code, "No record found", null, null, list);
-		}
+		return response;
 
 	}
 
@@ -240,17 +232,16 @@ public class UserServiceImpl implements UserService {
 	public Response getSabhaMandalList(Integer sabha_id) {
 		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
-		List<Mandals> list = new ArrayList<Mandals>();
-		
+		Response response = new Response();
 		try {
-			list = loginDao.getSabhaMandalList(sabha_id);
+			response = loginDao.getSabhaMandalList(sabha_id);
 		} catch (InfrastructureException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} finally {
 		}
-		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
+		return response;
 	}
 
 	public Response getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {

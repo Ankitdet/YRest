@@ -11,9 +11,9 @@ public class SabhaData {
 	private String sabha_title;
 	private String start_time;
 	private String end_time;
-	private boolean status;
-	private Timestamp created_date;
-	private Timestamp updated_date;
+	private Integer status;
+	private Date created_date;
+	private Date updated_date;
 	public Long getId() {
 		return id;
 	}
@@ -50,22 +50,22 @@ public class SabhaData {
 	public void setEnd_time(String end_time) {
 		this.end_time = end_time;
 	}
-	public boolean isStatus() {
+	public Integer isStatus() {
 		return status;
 	}
-	public void setStatus(boolean status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	public Timestamp getCreated_date() {
+	public Date getCreated_date() {
 		return created_date;
 	}
-	public void setCreated_date(Timestamp created_date) {
+	public void setCreated_date(Date created_date) {
 		this.created_date = created_date;
 	}
-	public Timestamp getUpdated_date() {
+	public Date getUpdated_date() {
 		return updated_date;
 	}
-	public void setUpdated_date(Timestamp updated_date) {
+	public void setUpdated_date(Date updated_date) {
 		this.updated_date = updated_date;
 	}
 	@Override

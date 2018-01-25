@@ -16,6 +16,8 @@ import org.hibernate.Session;
 import com.test.ws.constant.QueryUrlNameConstant;
 import com.test.ws.exception.BusinessException;
 import com.test.ws.logger.Logger;
+import com.test.ws.table.metadata.CLMS;
+import com.test.ws.table.metadata.TBLS;
 
 public class ContextListener implements ServletContextListener {
 
@@ -23,7 +25,7 @@ public class ContextListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		// TODO Auto-generated method stub
+		TokenGenerator.tokenMap = new HashMap<String,String>();
 	}
 
 	@Override
@@ -48,7 +50,7 @@ public class ContextListener implements ServletContextListener {
 		try {
 			Session session = HibernateUtil.getSessionFactory().openSession();
 			Query query = session
-					.createSQLQuery("select auth_token from users");
+					.createSQLQuery("SELECT "+CLMS.AUTH_TOKEN+" FROM "+TBLS.USER+"");
 			List<String> list = query.list();
 			for (String str : list) {
 				TokenGenerator.tokenMap.put(str, str);

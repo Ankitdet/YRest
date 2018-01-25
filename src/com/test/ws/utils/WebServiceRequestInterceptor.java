@@ -37,10 +37,10 @@ public class WebServiceRequestInterceptor implements ContainerRequestFilter {
         
         if (!path.contains("/login")) {
             if(token == null){
-                throw new BusinessException("Token has expired !");
+                throw new BusinessException("Bad login request !");
             }
             if(TokenGenerator.tokenMap.get(token) == null || TokenGenerator.tokenMap.get(token) == "")
-                throw new BusinessException("Bad login request !");
+                throw new BusinessException("Token has expired !");
         }
     }
     

@@ -16,7 +16,7 @@ public interface UserDao {
 
 	public List<UsersFieldData> getUserContactList() throws CommandException;
 
-	public List<UsersFieldData> getBirthday(String cakeId) throws CommandException;
+	public Response getBirthday(String cakeId) throws CommandException;
 
     Response getSSP();
 
@@ -35,7 +35,7 @@ public interface UserDao {
 	public List<UsersFieldData> getYuvakProfile(Integer user_id);
 
 
-	public List<Mandals> getSabhaMandalList(Integer sabha_id);
+	public Response getSabhaMandalList(Integer sabha_id);
 
 	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id);
 
