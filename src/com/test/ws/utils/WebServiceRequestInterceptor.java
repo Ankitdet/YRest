@@ -21,52 +21,52 @@ import com.test.ws.logger.Logger;
 public class WebServiceRequestInterceptor implements ContainerRequestFilter {
 
     public static final String MODULE = WebServiceRequestInterceptor.class.getSimpleName();
-
     @Override
     public void filter(ContainerRequestContext request) throws IOException {
 
-    	MDC.put("start-time", String.valueOf(System.currentTimeMillis()));
+        MDC.put("start-time", String.valueOf(System.currentTimeMillis()));
         String token = request.getHeaderString("token");
-        Logger.logInfo(MODULE, "Method called filter() with token :"+ token);
+        Logger.logInfo(MODULE, "Method called filter() with token :" + token);
         final java.net.URI absolutePath = request.getUriInfo().getAbsolutePath();
         String path = absolutePath.getPath();
         Logger.logInfo(MODULE, "URL called :" + path);
-        
+
         String calledURL = path.substring(path.lastIndexOf("/"), path.length());
-        checkParameter(request.getUriInfo(),calledURL);
-        
+        checkParameter(request.getUriInfo(), calledURL);
+        HttpRequestCounter.httpRequestCount(calledURL);
+
         if (!path.contains("/login")) {
-            if(token == null){
+            if (token == null) {
                 throw new BusinessException("Bad login request !");
             }
-            if(TokenGenerator.tokenMap.get(token) == null || TokenGenerator.tokenMap.get(token) == "")
+            if (TokenGenerator.tokenMap.get(token) == null || TokenGenerator.tokenMap.get(token) == "")
                 throw new BusinessException("Token has expired !");
         }
     }
-    
-	public void checkParameter(@Context UriInfo uriInfo,String calledURL) {
 
-		if(!QueryUrlNameConstant.queryParam.containsKey(calledURL)){
-			return ;
-		}
+    public void checkParameter(@Context UriInfo uriInfo, String calledURL) {
 
-		String queryParamName = QueryUrlNameConstant.queryParam.get(calledURL);
-		MultivaluedMap<String, String> params = uriInfo.getQueryParameters();
-		
-		if(queryParamName != null && !"".equals(queryParamName)){
-			String[] seperateParam = queryParamName.split(",");
-			for(String str : seperateParam){
-				if(!params.containsKey(str)){
-					throw new BusinessException("query parameter "+str+" is missing.");
-				}
-			}
-			
-			for (String str : params.keySet()) {
-				Object object = (String) params.getFirst(str);
-				if (object == null || "".equals(object)) {
-					throw new BusinessException("query parameter "+str+" is blank or not set.");
-				}
-			}
-		}
-	}
+        if (!QueryUrlNameConstant.queryParam.containsKey(calledURL)) {
+            return;
+        }
+
+        String queryParamName = QueryUrlNameConstant.queryParam.get(calledURL);
+        MultivaluedMap<String, String> params = uriInfo.getQueryParameters();
+
+        if (queryParamName != null && !"".equals(queryParamName)) {
+            String[] seperateParam = queryParamName.split(",");
+            for (String str : seperateParam) {
+                if (!params.containsKey(str)) {
+                    throw new BusinessException("query parameter " + str + " is missing.");
+                }
+            }
+
+            for (String str : params.keySet()) {
+                Object object = (String) params.getFirst(str);
+                if (object == null || "".equals(object)) {
+                    throw new BusinessException("query parameter " + str + " is blank or not set.");
+                }
+            }
+        }
+    }
 }
