@@ -733,9 +733,9 @@ public class UserDaoImpl implements UserDao {
 		int end_day = 0;
 
 		StringBuffer sb = new StringBuffer();
-		
-		switch (id) {
-		case "1":
+		int val = Integer.valueOf(id);
+		switch (val) {
+		case 1:
 			// Next 7 days
 			c.add(Calendar.DATE, 7); 
 			end_day = c.get(Calendar.DATE);
@@ -748,7 +748,7 @@ public class UserDaoImpl implements UserDao {
 			}
 			break;
 			
-		case "2" :
+		case 2 :
 			// Next 1 month
 			c.add(Calendar.MONTH, 1); 
 			end_day = c.get(Calendar.DATE);
@@ -756,7 +756,7 @@ public class UserDaoImpl implements UserDao {
 			sb.append(++start_month).append(",").append(++end_month);
 			break;
 		
-		case "3" :
+		case 3 :
 			// Next 3 month
 			c.add(Calendar.MONTH, 3); 
 			end_day = c.get(Calendar.DATE);
@@ -774,7 +774,7 @@ public class UserDaoImpl implements UserDao {
 			
 			break;
 		
-		case "4" :
+		case 4 :
 			
 			// Next 6 month
 			c.add(Calendar.MONTH, 6); 
