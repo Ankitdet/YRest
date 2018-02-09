@@ -32,7 +32,13 @@
 	</target>
 
 	<target name="war" depends="compile">
-		<copy file="${src}/hibernate.cfg.xml" todir="${classes}"/>
+
+		<copy todir="${classes}">
+		            <fileset dir="${src}">
+		                <include name="**/*.*"/>
+		            </fileset>              
+        </copy>     
+		
 		<war destfile="${build}/${ant.project.name}-${version}.war" webxml="${webxml}">
 			<fileset dir="${WebContent}" />
 			<lib dir="${libcompile}" />
