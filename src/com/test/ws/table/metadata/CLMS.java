@@ -54,7 +54,7 @@ public class CLMS {
 	public static final String DEVICE_TYPE = "device_type";
 	public static final String DEVICE_TOKEN = "device_token";
 	public static final String BADGE_COUNT = "badge_count";
-	public static final String USERNAME = "username";
+	public static final String USERNAME = "user_name";
 	public static final String USER_UNIQUEID = "user_uniqueid";
 	public static final String RESOURCE = "resource";
 	public static final String ONLINE = "online";
