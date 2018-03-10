@@ -2,6 +2,21 @@ package com.test.ws.entities;
 
 public class CreateSabhaData {
 	
+	private String yuvak_name; 
+	public String getYuvak_name() {
+		return yuvak_name;
+	}
+	public void setYuvak_name(String yuvak_name) {
+		this.yuvak_name = yuvak_name;
+	}
+	private Long mandal_id;
+	public Long getMandal_id() {
+		return mandal_id;
+	}
+	public void setMandal_id(Long mandal_id) {
+		this.mandal_id = mandal_id;
+	}
+
 	private Long user_id;
 	private Long sabha_id;
 	private Boolean is_Attended;

@@ -10,13 +10,13 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- Dumping database structure for xboxlive_akdm
-DROP DATABASE IF EXISTS `xboxlive_akdm`;
-CREATE DATABASE IF NOT EXISTS `xboxlive_akdm` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `xboxlive_akdm`;
+-- Dumping database structure for akshardh_ms
+DROP DATABASE IF EXISTS `akshardh_ms`;
+CREATE DATABASE IF NOT EXISTS `akshardh_ms` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `akshardh_ms`;
 
 
--- Dumping structure for table xboxlive_akdm.areas
+-- Dumping structure for table akshardh_ms.areas
 DROP TABLE IF EXISTS `areas`;
 CREATE TABLE IF NOT EXISTS `areas` (
   `area_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `areas` (
   KEY `area_id` (`area_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table xboxlive_akdm.areas: ~20 rows (approximately)
+-- Dumping data for table akshardh_ms.areas: ~20 rows (approximately)
 /*!40000 ALTER TABLE `areas` DISABLE KEYS */;
 INSERT INTO `areas` (`area_id`, `area_title`) VALUES
 	(1, 'Sector 1'),
@@ -51,7 +51,7 @@ INSERT INTO `areas` (`area_id`, `area_title`) VALUES
 /*!40000 ALTER TABLE `areas` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.attendance
+-- Dumping structure for table akshardh_ms.attendance
 DROP TABLE IF EXISTS `attendance`;
 CREATE TABLE IF NOT EXISTS `attendance` (
   `attendance_id` int(11) NOT NULL,
@@ -60,14 +60,14 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `is_attended` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.attendance: ~0 rows (approximately)
+-- Dumping data for table akshardh_ms.attendance: ~0 rows (approximately)
 /*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
 INSERT INTO `attendance` (`attendance_id`, `user_id`, `sabha_id`, `is_attended`) VALUES
 	(1, 515, 1, 1);
 /*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.blood_groups
+-- Dumping structure for table akshardh_ms.blood_groups
 DROP TABLE IF EXISTS `blood_groups`;
 CREATE TABLE IF NOT EXISTS `blood_groups` (
   `blood_group_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `blood_groups` (
   PRIMARY KEY (`blood_group_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.blood_groups: ~8 rows (approximately)
+-- Dumping data for table akshardh_ms.blood_groups: ~8 rows (approximately)
 /*!40000 ALTER TABLE `blood_groups` DISABLE KEYS */;
 INSERT INTO `blood_groups` (`blood_group_id`, `blood_group_title`) VALUES
 	(1, 'A+'),
@@ -89,7 +89,7 @@ INSERT INTO `blood_groups` (`blood_group_id`, `blood_group_title`) VALUES
 /*!40000 ALTER TABLE `blood_groups` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.countries
+-- Dumping structure for table akshardh_ms.countries
 DROP TABLE IF EXISTS `countries`;
 CREATE TABLE IF NOT EXISTS `countries` (
   `countries_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `countries` (
   PRIMARY KEY (`countries_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=258 DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.countries: ~251 rows (approximately)
+-- Dumping data for table akshardh_ms.countries: ~251 rows (approximately)
 /*!40000 ALTER TABLE `countries` DISABLE KEYS */;
 INSERT INTO `countries` (`countries_id`, `countries_name`, `countries_iso_code`, `countries_isd_code`) VALUES
 	(1, 'Afghanistan', 'AF', '93'),
@@ -356,7 +356,7 @@ INSERT INTO `countries` (`countries_id`, `countries_name`, `countries_iso_code`,
 /*!40000 ALTER TABLE `countries` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.email_format
+-- Dumping structure for table akshardh_ms.email_format
 DROP TABLE IF EXISTS `email_format`;
 CREATE TABLE IF NOT EXISTS `email_format` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -369,7 +369,7 @@ CREATE TABLE IF NOT EXISTS `email_format` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.email_format: ~2 rows (approximately)
+-- Dumping data for table akshardh_ms.email_format: ~2 rows (approximately)
 /*!40000 ALTER TABLE `email_format` DISABLE KEYS */;
 INSERT INTO `email_format` (`id`, `title`, `subject`, `body`, `status`, `created_at`, `updated_at`) VALUES
 	(1, 'forgot_password', 'Social App : Forgot Password', '<table cellpadding="0" cellspacing="0" border="0" width="100%">\n    <tbody>\n        <tr>\n            <td style="padding:20px 0 20px 0" align="center" valign="top"><!-- [ header starts here] -->\n            <table style="border:1px solid #E0E0E0;" cellpadding="10" cellspacing="0" bgcolor="FFFFFF" border="0" width="650">\n                <tbody>\n                    <tr>\n                        <td style="background: #444444; " bgcolor="#EAEAEA" valign="top"><p style="font-size:12px; margin:0;"><a href="{logo_front_url}"><img style="" src="{logo_img_url}" alt="SocialApp" title="SocialApp"></a></p><p></p><p></p></td>\n                    </tr>\n                    <!-- [ middle starts here] -->\n                    <tr>\n                        <td valign="top">\n                        <p>Dear  {username},</p>\n                        <p><strong>Your Email address is:</strong> {email}<br></p>                       \n                        <p>Follow the link below to reset your password.<br></p>\n                        <p><a href="reset_link" target="_blank" title="Click to reset password">reset_link</a><br></p>\n                        </p><p>&nbsp;</p>\n                        </td>\n                    </tr>\n                   <tr>\n                        <td style="background: #444444; text-align:center;color: white;" align="center" bgcolor="#EAEAEA"><center>\n                        <p style="font-size:12px; margin:0;">Social Application Team</p>\n                        </center></td>\n                    </tr>\n                </tbody>\n            </table>\n            </td>\n        </tr>\n    </tbody>\n</table>', 1, '2013-09-08 00:00:00', '0000-00-00 00:00:00'),
@@ -377,7 +377,7 @@ INSERT INTO `email_format` (`id`, `title`, `subject`, `body`, `status`, `created
 /*!40000 ALTER TABLE `email_format` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.mandals
+-- Dumping structure for table akshardh_ms.mandals
 DROP TABLE IF EXISTS `mandals`;
 CREATE TABLE IF NOT EXISTS `mandals` (
   `mandal_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -385,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `mandals` (
   PRIMARY KEY (`mandal_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table xboxlive_akdm.mandals: ~4 rows (approximately)
+-- Dumping data for table akshardh_ms.mandals: ~4 rows (approximately)
 /*!40000 ALTER TABLE `mandals` DISABLE KEYS */;
 INSERT INTO `mandals` (`mandal_id`, `mandal_title`) VALUES
 	(1, 'Sector 6'),
@@ -395,7 +395,7 @@ INSERT INTO `mandals` (`mandal_id`, `mandal_title`) VALUES
 /*!40000 ALTER TABLE `mandals` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.myguests
+-- Dumping structure for table akshardh_ms.myguests
 DROP TABLE IF EXISTS `myguests`;
 CREATE TABLE IF NOT EXISTS `myguests` (
   `id` int(6) unsigned NOT NULL,
@@ -405,12 +405,12 @@ CREATE TABLE IF NOT EXISTS `myguests` (
   `reg_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.myguests: ~0 rows (approximately)
+-- Dumping data for table akshardh_ms.myguests: ~0 rows (approximately)
 /*!40000 ALTER TABLE `myguests` DISABLE KEYS */;
 /*!40000 ALTER TABLE `myguests` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.push_notification
+-- Dumping structure for table akshardh_ms.push_notification
 DROP TABLE IF EXISTS `push_notification`;
 CREATE TABLE IF NOT EXISTS `push_notification` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -436,12 +436,12 @@ CREATE TABLE IF NOT EXISTS `push_notification` (
   KEY `message_id` (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.push_notification: ~0 rows (approximately)
+-- Dumping data for table akshardh_ms.push_notification: ~0 rows (approximately)
 /*!40000 ALTER TABLE `push_notification` DISABLE KEYS */;
 /*!40000 ALTER TABLE `push_notification` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.sabhas
+-- Dumping structure for table akshardh_ms.sabhas
 DROP TABLE IF EXISTS `sabhas`;
 CREATE TABLE IF NOT EXISTS `sabhas` (
   `sabha_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -456,14 +456,14 @@ CREATE TABLE IF NOT EXISTS `sabhas` (
   PRIMARY KEY (`sabha_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.sabhas: ~0 rows (approximately)
+-- Dumping data for table akshardh_ms.sabhas: ~0 rows (approximately)
 /*!40000 ALTER TABLE `sabhas` DISABLE KEYS */;
 INSERT INTO `sabhas` (`sabha_id`, `sabha_title`, `mandal_id`, `date`, `start_time`, `end_time`, `status`, `created_date`, `updated_date`) VALUES
 	(1, 'Ravi Sabha', 1, '2017-12-17', '17:00:00', '19:00:00', 1, 1513153579, 1513153579);
 /*!40000 ALTER TABLE `sabhas` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.skills
+-- Dumping structure for table akshardh_ms.skills
 DROP TABLE IF EXISTS `skills`;
 CREATE TABLE IF NOT EXISTS `skills` (
   `skill_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -471,7 +471,7 @@ CREATE TABLE IF NOT EXISTS `skills` (
   PRIMARY KEY (`skill_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table xboxlive_akdm.skills: ~5 rows (approximately)
+-- Dumping data for table akshardh_ms.skills: ~5 rows (approximately)
 /*!40000 ALTER TABLE `skills` DISABLE KEYS */;
 INSERT INTO `skills` (`skill_id`, `skill_title`) VALUES
 	(1, 'singer'),
@@ -482,7 +482,7 @@ INSERT INTO `skills` (`skill_id`, `skill_title`) VALUES
 /*!40000 ALTER TABLE `skills` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.ssp
+-- Dumping structure for table akshardh_ms.ssp
 DROP TABLE IF EXISTS `ssp`;
 CREATE TABLE IF NOT EXISTS `ssp` (
   `ssp_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -490,7 +490,7 @@ CREATE TABLE IF NOT EXISTS `ssp` (
   PRIMARY KEY (`ssp_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table xboxlive_akdm.ssp: ~7 rows (approximately)
+-- Dumping data for table akshardh_ms.ssp: ~7 rows (approximately)
 /*!40000 ALTER TABLE `ssp` DISABLE KEYS */;
 INSERT INTO `ssp` (`ssp_id`, `ssp_title`) VALUES
 	(1, 'Prarambh'),
@@ -503,7 +503,7 @@ INSERT INTO `ssp` (`ssp_id`, `ssp_title`) VALUES
 /*!40000 ALTER TABLE `ssp` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.study
+-- Dumping structure for table akshardh_ms.study
 DROP TABLE IF EXISTS `study`;
 CREATE TABLE IF NOT EXISTS `study` (
   `study_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -511,7 +511,7 @@ CREATE TABLE IF NOT EXISTS `study` (
   PRIMARY KEY (`study_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table xboxlive_akdm.study: ~12 rows (approximately)
+-- Dumping data for table akshardh_ms.study: ~12 rows (approximately)
 /*!40000 ALTER TABLE `study` DISABLE KEYS */;
 INSERT INTO `study` (`study_id`, `study_title`) VALUES
 	(1, '9'),
@@ -529,7 +529,7 @@ INSERT INTO `study` (`study_id`, `study_title`) VALUES
 /*!40000 ALTER TABLE `study` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.users
+-- Dumping structure for table akshardh_ms.users
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'auto_increment id',
@@ -564,7 +564,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `mandal_id` (`mandal_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6028 DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.users: ~171 rows (approximately)
+-- Dumping data for table akshardh_ms.users: ~171 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `role_id`, `user_name`, `email`, `password`, `phone`, `whatsapp_number`, `email_verified`, `birth_date`, `user_image`, `latitude`, `longitude`, `address`, `area_id`, `mandal_id`, `auth_token`, `relationship_status`, `created_at`, `updated_at`, `status`, `device_type`, `device_token`, `badge_count`, `username`, `USER_UNIQUEID`) VALUES
 	(5857, 3, 'Hiren d. Chhayani 12 ', 'hiren d. chhayani 12 @gmail.com', 'hiren d. chhayani 12 ', '919624660131', '9979042180', 1, '1996-11-13', '0', 0.00000000, 0.00000000, 'Medical Hostel', 5, 6, 'c68b009d161146bf940e949a3291ea94', '0', '2018-01-15 21:57:56', '2018-01-15 21:57:56', 0, 0, '0', 0, NULL, ''),
@@ -741,7 +741,7 @@ INSERT INTO `users` (`id`, `role_id`, `user_name`, `email`, `password`, `phone`,
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.userstatus
+-- Dumping structure for table akshardh_ms.userstatus
 DROP TABLE IF EXISTS `userstatus`;
 CREATE TABLE IF NOT EXISTS `userstatus` (
   `username` varchar(64) NOT NULL,
@@ -754,12 +754,12 @@ CREATE TABLE IF NOT EXISTS `userstatus` (
   PRIMARY KEY (`username`,`resource`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.userstatus: ~0 rows (approximately)
+-- Dumping data for table akshardh_ms.userstatus: ~0 rows (approximately)
 /*!40000 ALTER TABLE `userstatus` DISABLE KEYS */;
 /*!40000 ALTER TABLE `userstatus` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.userstatushistory
+-- Dumping structure for table akshardh_ms.userstatushistory
 DROP TABLE IF EXISTS `userstatushistory`;
 CREATE TABLE IF NOT EXISTS `userstatushistory` (
   `historyID` bigint(20) NOT NULL,
@@ -771,12 +771,12 @@ CREATE TABLE IF NOT EXISTS `userstatushistory` (
   PRIMARY KEY (`historyID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.userstatushistory: ~0 rows (approximately)
+-- Dumping data for table akshardh_ms.userstatushistory: ~0 rows (approximately)
 /*!40000 ALTER TABLE `userstatushistory` DISABLE KEYS */;
 /*!40000 ALTER TABLE `userstatushistory` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.user_normal_details
+-- Dumping structure for table akshardh_ms.user_normal_details
 DROP TABLE IF EXISTS `user_normal_details`;
 CREATE TABLE IF NOT EXISTS `user_normal_details` (
   `user_normal_detail_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -789,7 +789,7 @@ CREATE TABLE IF NOT EXISTS `user_normal_details` (
   KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table xboxlive_akdm.user_normal_details: 7 rows
+-- Dumping data for table akshardh_ms.user_normal_details: 7 rows
 /*!40000 ALTER TABLE `user_normal_details` DISABLE KEYS */;
 INSERT INTO `user_normal_details` (`user_normal_detail_id`, `user_id`, `study_id`, `occupation`, `notes`, `blood_group_id`) VALUES
 	(1, 511, 1, 1, 'JSN', 1),
@@ -802,7 +802,7 @@ INSERT INTO `user_normal_details` (`user_normal_detail_id`, `user_id`, `study_id
 /*!40000 ALTER TABLE `user_normal_details` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.user_permission
+-- Dumping structure for table akshardh_ms.user_permission
 DROP TABLE IF EXISTS `user_permission`;
 CREATE TABLE IF NOT EXISTS `user_permission` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -819,12 +819,12 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
   KEY `category_id` (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.user_permission: ~0 rows (approximately)
+-- Dumping data for table akshardh_ms.user_permission: ~0 rows (approximately)
 /*!40000 ALTER TABLE `user_permission` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_permission` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.user_roles
+-- Dumping structure for table akshardh_ms.user_roles
 DROP TABLE IF EXISTS `user_roles`;
 CREATE TABLE IF NOT EXISTS `user_roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -833,7 +833,7 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.user_roles: ~3 rows (approximately)
+-- Dumping data for table akshardh_ms.user_roles: ~3 rows (approximately)
 /*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
 INSERT INTO `user_roles` (`id`, `role_name`, `role_description`) VALUES
 	(1, 'Admin Users', 'Admin'),
@@ -842,7 +842,7 @@ INSERT INTO `user_roles` (`id`, `role_name`, `role_description`) VALUES
 /*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.user_rules
+-- Dumping structure for table akshardh_ms.user_rules
 DROP TABLE IF EXISTS `user_rules`;
 CREATE TABLE IF NOT EXISTS `user_rules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -857,7 +857,7 @@ CREATE TABLE IF NOT EXISTS `user_rules` (
   CONSTRAINT `user_rules_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `user_roles` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.user_rules: ~8 rows (approximately)
+-- Dumping data for table akshardh_ms.user_rules: ~8 rows (approximately)
 /*!40000 ALTER TABLE `user_rules` DISABLE KEYS */;
 INSERT INTO `user_rules` (`id`, `role_id`, `privileges_controller`, `privileges_actions`, `permission`, `permission_type`) VALUES
 	(1, 1, 'siteController', 'index,logout,change-password,change-status,change-user-status,edit-profile', 'allow', 'admin'),
@@ -871,7 +871,7 @@ INSERT INTO `user_rules` (`id`, `role_id`, `privileges_controller`, `privileges_
 /*!40000 ALTER TABLE `user_rules` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.user_rules_menu
+-- Dumping structure for table akshardh_ms.user_rules_menu
 DROP TABLE IF EXISTS `user_rules_menu`;
 CREATE TABLE IF NOT EXISTS `user_rules_menu` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
@@ -889,7 +889,7 @@ CREATE TABLE IF NOT EXISTS `user_rules_menu` (
   CONSTRAINT `user_rules_menu_ibfk_1` FOREIGN KEY (`user_rules_id`) REFERENCES `user_rules` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.user_rules_menu: ~6 rows (approximately)
+-- Dumping data for table akshardh_ms.user_rules_menu: ~6 rows (approximately)
 /*!40000 ALTER TABLE `user_rules_menu` DISABLE KEYS */;
 INSERT INTO `user_rules_menu` (`id`, `category`, `parent_id`, `user_rules_id`, `label`, `class`, `url`, `position`, `status`) VALUES
 	(1, 'admin', 0, 1, 'Dashboard', 'icon-home', 'site/index', 1, 1),
@@ -901,7 +901,7 @@ INSERT INTO `user_rules_menu` (`id`, `category`, `parent_id`, `user_rules_id`, `
 /*!40000 ALTER TABLE `user_rules_menu` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.user_satsang_details
+-- Dumping structure for table akshardh_ms.user_satsang_details
 DROP TABLE IF EXISTS `user_satsang_details`;
 CREATE TABLE IF NOT EXISTS `user_satsang_details` (
   `user_satsang_detail_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -919,7 +919,7 @@ CREATE TABLE IF NOT EXISTS `user_satsang_details` (
   PRIMARY KEY (`user_satsang_detail_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table xboxlive_akdm.user_satsang_details: ~7 rows (approximately)
+-- Dumping data for table akshardh_ms.user_satsang_details: ~7 rows (approximately)
 /*!40000 ALTER TABLE `user_satsang_details` DISABLE KEYS */;
 INSERT INTO `user_satsang_details` (`user_satsang_detail_id`, `user_id`, `aarti`, `puja`, `tilak`, `ekadasi`, `vachnamrut`, `swaminivato`, `otherreading`, `ssp_id`, `garshabha`, `dharmado`) VALUES
 	(1, 511, 1, 1, 1, 1, 1, 1, 'JSN', 4, 1, 1),
@@ -932,7 +932,7 @@ INSERT INTO `user_satsang_details` (`user_satsang_detail_id`, `user_id`, `aarti`
 /*!40000 ALTER TABLE `user_satsang_details` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.user_skills
+-- Dumping structure for table akshardh_ms.user_skills
 DROP TABLE IF EXISTS `user_skills`;
 CREATE TABLE IF NOT EXISTS `user_skills` (
   `user_skill_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -941,12 +941,12 @@ CREATE TABLE IF NOT EXISTS `user_skills` (
   PRIMARY KEY (`user_skill_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table xboxlive_akdm.user_skills: ~0 rows (approximately)
+-- Dumping data for table akshardh_ms.user_skills: ~0 rows (approximately)
 /*!40000 ALTER TABLE `user_skills` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_skills` ENABLE KEYS */;
 
 
--- Dumping structure for table xboxlive_akdm.yuva_attendance
+-- Dumping structure for table akshardh_ms.yuva_attendance
 DROP TABLE IF EXISTS `yuva_attendance`;
 CREATE TABLE IF NOT EXISTS `yuva_attendance` (
   `sabha_id` int(11) NOT NULL,
@@ -955,7 +955,7 @@ CREATE TABLE IF NOT EXISTS `yuva_attendance` (
   `mandal_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table xboxlive_akdm.yuva_attendance: ~0 rows (approximately)
+-- Dumping data for table akshardh_ms.yuva_attendance: ~0 rows (approximately)
 /*!40000 ALTER TABLE `yuva_attendance` DISABLE KEYS */;
 /*!40000 ALTER TABLE `yuva_attendance` ENABLE KEYS */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

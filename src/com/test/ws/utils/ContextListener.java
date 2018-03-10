@@ -41,7 +41,7 @@ public class ContextListener implements ServletContextListener {
 		String log4jFile = servletContext.getInitParameter("log4jFileName");
 		System.out.println("log4j configuration file:'" + log4jFile + "'");
 		String fullPath = contextPath + File.separator + log4jFile;
-		PropertyConfigurator.configure(fullPath);
+		//PropertyConfigurator.configure(fullPath);
 		initilizeTokenList();
 		
 	}

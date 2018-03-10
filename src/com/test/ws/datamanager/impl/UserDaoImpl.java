@@ -618,13 +618,15 @@ public class UserDaoImpl implements UserDao {
         List<CreateSabhaData> userSabhaList = new ArrayList<CreateSabhaData>();
         
         try {
-			queryString = "SELECT "+CLMS.SABHA_ID+","+CLMS.USER_ID+","+CLMS.IS_ATTENDED+" FROM "+TBLS.YUVAATTENDANCE+" WHERE "+CLMS.MANDAL_ID+"="+mandal_id+" AND "+CLMS.SABHA_ID+"="+sabha_id+"" ;
+			queryString = "SELECT u.user_name,y.mandal_id,y.sabha_id,y.user_id,y.is_attended FROM "+TBLS.YUVAATTENDANCE+" y LEFT JOIN "+TBLS.USER+" u ON y.user_id=u.id where y."+CLMS.MANDAL_ID+"="+mandal_id+" AND y."+CLMS.SABHA_ID+"="+sabha_id+"" ;
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> list = query.list();
 
 			for(Object[] object : list){
 				counter = 0;
 				CreateSabhaData createSabhaData = new CreateSabhaData();
+				createSabhaData.setYuvak_name(AkdmUtils.getObject(object[counter++],String.class));
+				createSabhaData.setMandal_id(AkdmUtils.getObject(object[counter++],Long.class));
 				createSabhaData.setSabhaId(AkdmUtils.getObject(object[counter++],Long.class));
 				createSabhaData.setUser_id(AkdmUtils.getObject(object[counter++],Long.class));
 				createSabhaData.setIs_Attended(AkdmUtils.getObject(object[counter++],Boolean.class));
