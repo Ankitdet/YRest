@@ -106,7 +106,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/cxf-2.7.1.jar">
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/cxf-2.7.1.jar" sourcepath="C:/Users/ankitdet/.m2/repository/org/apache/cxf/cxf-bundle/2.7.1/cxf-bundle-2.7.1-sources.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
