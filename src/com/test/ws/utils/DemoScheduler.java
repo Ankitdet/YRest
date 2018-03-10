@@ -12,7 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class DemoScheduler {
  
-    public static void main(String[] args) {
+    public static void getStartScheduler(){
  
         // Create a calendar instance
     	int startHours = 9;
@@ -64,10 +64,8 @@ public class DemoScheduler {
                // scheduler.shutdown();
             } 
         };
-		
         // execute scheduler at fixed time.
         scheduler.scheduleAtFixedRate(task, startScheduler, stopScheduler, MILLISECONDS);
-     
     }
 }
 
@@ -168,6 +166,21 @@ Date and Time :2018/02/19 23:11:28
 Date and Time :2018/02/19 23:12:39
 Date and Time :2018/02/19 23:13:49
 Date and Time :2018/02/19 23:15:00
-
+Date and Time :2018/02/19 23:16:11
+Date and Time :2018/02/19 23:17:22
+Date and Time :2018/02/19 23:18:33
+Date and Time :2018/02/19 23:19:44
+Date and Time :2018/02/19 23:20:55
+Date and Time :2018/02/19 23:22:06
+Date and Time :2018/02/19 23:23:17
+Date and Time :2018/02/19 23:24:28
+Date and Time :2018/02/19 23:25:39
+Date and Time :2018/02/19 23:26:50
+Date and Time :2018/02/19 23:28:01
+Date and Time :2018/02/19 23:29:12
+Date and Time :2018/02/19 23:30:23
+Date and Time :2018/02/19 23:31:34
+Date and Time :2018/02/19 23:32:45
+Date and Time :2018/02/19 23:33:56
 
 */
