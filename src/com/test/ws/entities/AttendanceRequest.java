@@ -6,22 +6,22 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class AttendanceRequest {
 
-	private Long sabha_id;
-	private Long mandal_id;
+	private Integer sabha_id;
+	private Integer mandal_id;
 	
 	@JsonProperty(value="data")
 	private List<YuAttendance> data;
 	
-	public Long getSabha_id() {
+	public Integer getSabha_id() {
 		return sabha_id;
 	}
-	public void setSabha_id(Long sabha_id) {
+	public void setSabha_id(Integer sabha_id) {
 		this.sabha_id = sabha_id;
 	}
-	public Long getMandal_id() {
+	public Integer getMandal_id() {
 		return mandal_id;
 	}
-	public void setMandal_id(Long mandal_id) {
+	public void setMandal_id(Integer mandal_id) {
 		this.mandal_id = mandal_id;
 	}
 	public List<YuAttendance> getListOfAttendance() {

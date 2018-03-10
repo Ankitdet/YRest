@@ -240,12 +240,16 @@ public class UserRestWS {
 	}
     
     @POST
-    @Path(QueryUrlNameConstant.createYuvakSabhaAttendance)
-    public Response createYuvakSabhaAttendance(AttendanceRequest request) {
+    @Path(QueryUrlNameConstant.createYuvakAttendance)
+    public Response createYuvakSabhaAttendance(
+    		@QueryParam(QueryUrlNameConstant.mandal_id) Integer mandal_id,@QueryParam(QueryUrlNameConstant.sabha_id) Integer sabha_id
+    		,AttendanceRequest request) {
     	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
           Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
           try {
+        	  request.setMandal_id(mandal_id);
+        	  request.setSabha_id(sabha_id);
               response = blManager.createYuvakSabhaAttendance(request);
           } catch (NumberFormatException ne) {
               return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);

@@ -21,7 +21,7 @@ public class QueryUrlNameConstant {
 	public static final String getMandalYuvakList = "/getMandalYuvakList";
 	public static final String getSabhaMandalList = "/getSabhaMandalList";
 	public static final String getSabhaYuvakList ="/getSabhaYuvakList";
-	public static final String createYuvakSabhaAttendance ="/createYuvakSabhaAttendance";
+	public static final String createYuvakAttendance ="/createYuvakAttendance";
 	
 	
 	// All @QueryParam's are below 
