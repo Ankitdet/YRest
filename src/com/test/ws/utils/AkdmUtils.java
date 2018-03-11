@@ -4,6 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -78,6 +79,13 @@ public class AkdmUtils {
         		}
         	}
 
+        	if(o instanceof Time){
+        		if(clazz == String.class){
+        			o = o.toString() ;
+        		}else if (clazz == Time.class){
+        			o = ((Time)o);
+        		}
+        	}
         	return clazz.cast(o);
         } catch(ClassCastException e) {
             return null;
