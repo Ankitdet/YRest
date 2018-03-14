@@ -2,11 +2,15 @@ package com.test.ws.entities;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class SabhaData {
 	
 	private Long id;
-	private Integer mandal_id;
+	
+	private List<Integer> mandal_id;
 	private Date sabha_date;
 	private String sabha_title;
 	private String start_time;
@@ -14,16 +18,24 @@ public class SabhaData {
 	private Integer status;
 	private Date created_date;
 	private Date updated_date;
+	private Integer mandalId;
+	
+	public Integer getMandalId() {
+		return mandalId;
+	}
+	public void setMandalId(Integer mandalId) {
+		this.mandalId = mandalId;
+	}
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Integer getMandal_id() {
+	public List<Integer> getMandal_id() {
 		return mandal_id;
 	}
-	public void setMandal_id(Integer mandal_id) {
+	public void setMandal_id(List<Integer> mandal_id) {
 		this.mandal_id = mandal_id;
 	}
 	public Date getSabha_date() {

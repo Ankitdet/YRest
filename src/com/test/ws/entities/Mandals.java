@@ -4,6 +4,16 @@ public class Mandals  {
 
 	private Integer mandalId;
 	private String mandalTitle;
+	private Integer total_yuvak;
+
+	
+	public Integer getTotal_yuvak() {
+		return total_yuvak;
+	}
+
+	public void setTotal_yuvak(Integer total_yuvak) {
+		this.total_yuvak = total_yuvak;
+	}
 
 	public Mandals() {
 	}

@@ -7,7 +7,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import com.test.ws.datamanager.intrf.UserDao;
 import com.test.ws.entities.Areas;
 import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.CreateSabhaData;
+import com.test.ws.entities.MandalYuvak;
 import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.Ssp;
@@ -36,6 +36,7 @@ import com.test.ws.exception.InfrastructureException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
 import com.test.ws.table.metadata.CLMS;
+import com.test.ws.table.metadata.SqlStaticQuery;
 import com.test.ws.table.metadata.TBLS;
 import com.test.ws.utils.AkdmUtils;
 import com.test.ws.utils.HibernateUtil;
@@ -47,8 +48,8 @@ public class UserDaoImpl implements UserDao {
 	
 	/**
 	 * Initialize counter variable for get COLUMN values
-	 * 
 	 */
+	
 	public static int counter ;
 	
     public static  final String userDataQuery = 
@@ -75,7 +76,10 @@ public class UserDaoImpl implements UserDao {
     		+ "u."+CLMS.BADGE_COUNT+","
     		+ "ur."+CLMS.ROLE_NAME+","
     		+ "ar."+CLMS.AREA_TITLE+","
-    		+ "m."+CLMS.MANDAL_TITLE+" "
+    		+ "m."+CLMS.MANDAL_TITLE+","
+    		+ "u."+CLMS.MANDAL_ID+","
+    		+ "u."+CLMS.AREA_ID+","
+    		+ "u."+CLMS.ROLE_ID+" "
     		+ "from "+TBLS.USER+" u "
     		+ "left join "+TBLS.USERROLE+" ur on ur."+CLMS.ID+"=u."+CLMS.ROLE_ID+" left join "+TBLS.AREA+" ar on ar."+CLMS.AREA_ID+"=u."+CLMS.AREA_ID+" " 
             + "left join "+TBLS.MANDAL+" m on m."+CLMS.MANDAL_ID+" = u."+CLMS.MANDAL_ID+" ";
@@ -199,13 +203,11 @@ public class UserDaoImpl implements UserDao {
     public Response getSSP() {
 
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
-        String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         List<Ssp> sspList = new ArrayList<Ssp>();
         try {
-            queryString = "select ssp_id,ssp_title from ssp";
-            Query query = session.createSQLQuery(queryString);
+            Query query = session.createSQLQuery(SqlStaticQuery.getSSPQuery);
             List<Object[]> list = query.list();
 
             for (Object[] newList : list) {
@@ -232,8 +234,7 @@ public class UserDaoImpl implements UserDao {
         List<Areas> areasArrayList = new ArrayList<Areas>();
 
         try {
-            queryString = "select area_id,area_title from areas";
-            Query query = session.createSQLQuery(queryString);
+            Query query = session.createSQLQuery(SqlStaticQuery.getAreaQuery);
             List<Object[]> list = query.list();
 
             for (Object[] newList : list) {
@@ -255,20 +256,24 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Response getManadal() {
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
-        String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Mandals> mandalsArrayList = new ArrayList<Mandals>();
 
         try {
-            queryString = "select mandal_id,mandal_title from mandals";
-            Query query = session.createSQLQuery(queryString);
+        	
+            Query query = session.createSQLQuery(SqlStaticQuery.getMandalQuery);
             List<Object[]> list = query.list();
 
             for (Object[] newList : list) {
+            	counter = 0;
                 Mandals mandals = new Mandals();
-                counter = 0;
                 mandals.setMandalId(AkdmUtils.getObject(newList[counter++],Integer.class));
                 mandals.setMandalTitle(AkdmUtils.getObject(newList[counter++],String.class));
+                
+                String str = "SELECT count(*) FROM users WHERE mandal_id="+mandals.getMandalId();
+                Number mId = ((Number)session.createSQLQuery(str).uniqueResult()).longValue(); 
+                mandals.setTotal_yuvak(mId.intValue());
+                
                 mandalsArrayList.add(mandals);
             }
 
@@ -287,7 +292,6 @@ public class UserDaoImpl implements UserDao {
         	counter = 0;
             UsersFieldData usersFieldData = new UsersFieldData();
             usersFieldData.setId(AkdmUtils.getObject(obj[counter++],Long.class));
-        //    usersFieldData.setRole_id(AkdmUtils.getObject(obj[counter++],Integer.class));
             usersFieldData.setUser_name(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldData.setEmail(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldData.setPassword(AkdmUtils.getObject(obj[counter++],String.class));
@@ -310,6 +314,10 @@ public class UserDaoImpl implements UserDao {
             usersFieldData.setRole_name(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldData.setArea_title(AkdmUtils.getObject(obj[counter++],String.class));
             usersFieldData.setMandal_title(AkdmUtils.getObject(obj[counter++],String.class));
+            usersFieldData.setMandal_id(AkdmUtils.getObject(obj[counter++],Integer.class));
+            usersFieldData.setArea_id(AkdmUtils.getObject(obj[counter++],Integer.class));
+            usersFieldData.setRole_id(AkdmUtils.getObject(obj[counter++],Integer.class));
+            
             usersFieldDataList.add(usersFieldData);
         }
         return usersFieldDataList;
@@ -324,21 +332,30 @@ public class UserDaoImpl implements UserDao {
         PreparedStatement ps = null;
         Statement st = null;
         int count = 0;
+        List<BigInteger> list = null;
+        
         try {
         	
-        	String sql = "INSERT INTO sabhas(SABHA_TITLE,MANDAL_ID,DATE,START_TIME,END_TIME,STATUS,CREATED_DATE,UPDATED_DATE)"
-        			+ " VALUES('"+sabhaData.getSabha_title()+"','"+sabhaData.getMandal_id()+"','"+AkdmUtils.getToday()+"','"+AkdmUtils.getTime()+"','"+AkdmUtils.getSabhaEndTime()+"',false,'"+AkdmUtils.getFormatedDate()+"','"+AkdmUtils.getFormatedDate()+"')";
-        	Query q = session.createSQLQuery(sql);
-        	q.executeUpdate();
+        	String sql = "";
+        	Query q = null;
         	
-        	sql = "SELECT ID FROM users WHERE MANDAL_ID='"+sabhaData.getMandal_id()+"'";
-        	q = session.createSQLQuery(sql);
-        	List<BigInteger> list = q.list();
+        	for(Integer i : sabhaData.getMandal_id()){
+        		
+        		sql = "INSERT INTO sabhas(SABHA_TITLE,MANDAL_ID,DATE,START_TIME,END_TIME,STATUS,CREATED_DATE,UPDATED_DATE)"
+        				+ " VALUES('"+sabhaData.getSabha_title()+"','"+i+"','"+AkdmUtils.getToday()+"','"+AkdmUtils.getTime()+"','"+AkdmUtils.getSabhaEndTime()+"',false,'"+AkdmUtils.getFormatedDate()+"','"+AkdmUtils.getFormatedDate()+"')";
+        		q = session.createSQLQuery(sql);
+        		q.executeUpdate();
+        		
+        	}
         	
-        	sql = "SELECT MAX(SABHA_ID) FROM sabhas WHERE MANDAL_ID='"+sabhaData.getMandal_id()+"'";
-        	q = session.createSQLQuery(sql);
-        	int sabha_id = ((Integer) q.uniqueResult()).intValue();
+	        	sql = "SELECT ID FROM users WHERE MANDAL_ID='"+sabhaData.getMandal_id()+"'";
+	        	q = session.createSQLQuery(sql);
+	        	list = q.list();
         	
+	        	sql = "SELECT MAX(SABHA_ID) FROM sabhas WHERE MANDAL_ID='"+sabhaData.getMandal_id()+"'";
+	        	q = session.createSQLQuery(sql);
+	        	int sabha_id = ((Integer) q.uniqueResult()).intValue();
+	        	
 
     		try {
     			SessionImplementor sessImpl = (SessionImplementor) session;
@@ -348,19 +365,23 @@ public class UserDaoImpl implements UserDao {
     			
     			sql = "INSERT INTO "+TBLS.YUVAATTENDANCE+" (SABHA_ID,IS_ATTENDED,MANDAL_ID,USER_ID) VALUES(?,?,?,?)";
     			ps = connection.prepareStatement(sql);
-    			ps.setLong(1, sabha_id);
     			ps.setBoolean(2, false);
-    			ps.setLong(3,sabhaData.getMandal_id());
+    			ps.setLong(3,sabhaData.getMandalId());
     			
-    			for (BigInteger yAttendance : list) {
-    				ps.setLong(4, AkdmUtils.getObject(yAttendance,Long.class));
-    				ps.addBatch();
-    				if (count % 100 == 0) {
-    					ps.executeBatch();
-    				}
-    				count++;
-    			}
-    			ps.executeBatch();
+    		
+				for (Integer i : sabhaData.getMandal_id()) {
+					for (BigInteger yAttendance : list) {
+						ps.setLong(1, i);
+						ps.setLong(4,AkdmUtils.getObject(yAttendance, Long.class));
+						ps.addBatch();
+						if (count % 100 == 0) {
+							ps.executeBatch();
+						}
+						count++;
+					}
+					ps.executeBatch();
+				}
+    			
     			
     		} catch (BatchUpdateException e) {
     			int[] updateCounts = e.getUpdateCounts();
@@ -414,13 +435,15 @@ public class UserDaoImpl implements UserDao {
 				SabhaData sabhaData = new SabhaData();
 				sabhaData.setId(AkdmUtils.getObject(objects[counter++], Long.class));
 				sabhaData.setSabha_title(AkdmUtils.getObject(objects[counter++],String.class));
-				sabhaData.setMandal_id(AkdmUtils.getObject(objects[counter++],Integer.class));
+				//sabhaData.setMandal_id(AkdmUtils.getObject(objects[counter++],Integer.class));
+				sabhaData.setMandalId(AkdmUtils.getObject(objects[counter++],Integer.class));
 				sabhaData.setSabha_date(AkdmUtils.getObject(objects[counter++],Date.class));
 				sabhaData.setStart_time(AkdmUtils.getObject(objects[counter++],String.class));
 				sabhaData.setEnd_time(AkdmUtils.getObject(objects[counter++],String.class));
 				sabhaData.setStatus(AkdmUtils.getObject(objects[counter++],Integer.class));
 				sabhaData.setCreated_date(AkdmUtils.getObject(objects[counter++],Date.class));
 				sabhaData.setUpdated_date(AkdmUtils.getObject(objects[counter++],Date.class));
+				
 				usersFieldDataList.add(sabhaData);
 			}
 		}catch (InfrastructureException ex) {
@@ -532,17 +555,28 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	@Override
-	public List<UsersFieldData> getMandalYuvakList(Integer mandal_id) {
+	public List<MandalYuvak> getMandalYuvakList(Integer mandal_id) {
 
     	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
-        List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
+        List<MandalYuvak> listMandalYuvak = new ArrayList<MandalYuvak>();
+		
 
 		try {
-			queryString =userDataQuery + " WHERE U.MANDAL_ID="+mandal_id;
+			queryString ="select u.user_name,m.mandal_title,u.id from users u left join mandals m on u.mandal_id=m.mandal_id where m.mandal_id="+mandal_id+"";
 			Query query = session.createSQLQuery(queryString);
-            usersFieldDataList = fillUserTablePojo(query.list());
+            List<Object[]> object = query.list();
+			
+			for(Object[] obj : object){
+				counter = 0;
+				MandalYuvak mandalYuvak = new MandalYuvak();
+				mandalYuvak.setName(AkdmUtils.getObject(obj[counter++],String.class));
+			//	mandalYuval.setImage(AkdmUtils.getObject(obj[counter++],Byte.class));
+				mandalYuvak.setSector(AkdmUtils.getObject(obj[counter++],String.class));
+				mandalYuvak.setUser_id(AkdmUtils.getObject(obj[counter++],Integer.class));
+				listMandalYuvak.add(mandalYuvak);
+			}
 			
 		}catch (InfrastructureException ex) {
             throw new InfrastructureException(ex);
@@ -551,7 +585,7 @@ public class UserDaoImpl implements UserDao {
         } finally {
             session.close();
         }
-		return usersFieldDataList;
+		return listMandalYuvak;
 	}
 
 	@Override
@@ -710,7 +744,7 @@ public class UserDaoImpl implements UserDao {
 
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
 
-		  /**
+		 /**
          *  default 0 = today's
          *  if id 1 = 1 Week
          *  if id 2 = 1 Months

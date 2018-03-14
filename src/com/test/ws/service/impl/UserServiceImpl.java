@@ -9,6 +9,7 @@ import com.test.ws.datamanager.impl.UserDaoImpl;
 import com.test.ws.datamanager.intrf.UserDao;
 import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.CreateSabhaData;
+import com.test.ws.entities.MandalYuvak;
 import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.UsersFieldData;
@@ -199,7 +200,7 @@ public class UserServiceImpl implements UserService {
 		
 		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
-		List<UsersFieldData> list = new ArrayList<UsersFieldData>();
+		List<MandalYuvak> list = new ArrayList<MandalYuvak>();
 		
 		try {
 			list = loginDao.getMandalYuvakList(mandal_id);

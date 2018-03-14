@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.CreateSabhaData;
+import com.test.ws.entities.MandalYuvak;
 import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
 import com.test.ws.entities.UsersFieldData;
@@ -30,7 +31,7 @@ public interface UserDao {
 
 	public Response uploadDataByExcel(List<Object[]> list);
 
-	public List<UsersFieldData> getMandalYuvakList(Integer mandal_id);
+	public List<MandalYuvak> getMandalYuvakList(Integer mandal_id);
 
 	public List<UsersFieldData> getYuvakProfile(Integer user_id);
 
