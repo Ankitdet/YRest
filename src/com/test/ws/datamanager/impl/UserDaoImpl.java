@@ -317,7 +317,7 @@ public class UserDaoImpl implements UserDao {
             usersFieldData.setMandal_id(AkdmUtils.getObject(obj[counter++],Integer.class));
             usersFieldData.setArea_id(AkdmUtils.getObject(obj[counter++],Integer.class));
             usersFieldData.setRole_id(AkdmUtils.getObject(obj[counter++],Integer.class));
-            
+            usersFieldData.setAttendance("100%");
             usersFieldDataList.add(usersFieldData);
         }
         return usersFieldDataList;
@@ -572,7 +572,7 @@ public class UserDaoImpl implements UserDao {
 				counter = 0;
 				MandalYuvak mandalYuvak = new MandalYuvak();
 				mandalYuvak.setName(AkdmUtils.getObject(obj[counter++],String.class));
-			//	mandalYuval.setImage(AkdmUtils.getObject(obj[counter++],Byte.class));
+				mandalYuvak.setImage("1.png");
 				mandalYuvak.setSector(AkdmUtils.getObject(obj[counter++],String.class));
 				mandalYuvak.setUser_id(AkdmUtils.getObject(obj[counter++],Integer.class));
 				listMandalYuvak.add(mandalYuvak);
@@ -597,7 +597,7 @@ public class UserDaoImpl implements UserDao {
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
 
 		try {
-			queryString =userDataQuery + " WHERE U.ID="+user_id;
+			queryString =userDataQuery + " WHERE u.ID="+user_id;
 			Query query = session.createSQLQuery(queryString);
             usersFieldDataList = fillUserTablePojo(query.list());
 			

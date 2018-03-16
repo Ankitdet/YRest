@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class MandalYuvak {
 
 	private String name ;
-	private Byte[] image;
+	private String image;
 	private String sector;
 	private Integer user_id;
 	
@@ -15,10 +15,10 @@ public class MandalYuvak {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Byte[] getImage() {
+	public String getImage() {
 		return image;
 	}
-	public void setImage(Byte[] image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 	public String getSector() {
@@ -36,7 +36,7 @@ public class MandalYuvak {
 	@Override
 	public String toString() {
 		return "MandalYuvak [name=" + name + ", image="
-				+ Arrays.toString(image) + ", sector=" + sector + ", user_id="
+				+ (image) + ", sector=" + sector + ", user_id="
 				+ user_id + "]";
 	}
 	

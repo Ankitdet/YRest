@@ -33,9 +33,19 @@ public class UsersFieldData {
     private String role_name;
     private String area_title;
     private String mandal_title;
+    private String attendance;
+    
+    // red_chief
 
+    public String getAttendance() {
+		return attendance;
+	}
 
-    public int getRole_id(){
+	public void setAttendance(String attendance) {
+		this.attendance = attendance;
+	}
+
+	public int getRole_id(){
         return role_id;
     }
 

@@ -22,6 +22,7 @@ public class QueryUrlNameConstant {
 	public static final String getSabhaMandalList = "/getSabhaMandalList";
 	public static final String getSabhaYuvakList ="/getSabhaYuvakList";
 	public static final String createYuvakAttendance ="/createYuvakAttendance";
+	public static final String getYuvakProfile ="/getYuvakProfile";
 	
 	
 	// All @QueryParam's are below 
@@ -30,6 +31,7 @@ public class QueryUrlNameConstant {
 	public static final String id = "id";
 	public static final String mandal_id = "mandal_id"; 
 	public static final String sabha_id = "sabha_id";
+	public static final String user_id = "user_id";
 	
 	
 	//URL + It's parameter 
@@ -38,15 +40,16 @@ public class QueryUrlNameConstant {
 	public static final String getMandalYuvakList_request_param = mandal_id;
 	public static final String getSabhaMandalList_request_param = sabha_id;
 	public static final String getSabhaYuvakList_request_param = sabha_id + comma + mandal_id;
+	public static final String getYuvakProfile_request_param = user_id;
 	
 	
 	public static void initializedQueryParameter() {
-		System.out.println("Initializing QueryParameter");
+		System.out.println("Initializing QueryParameter !!...");
 		queryParam.put(QueryUrlNameConstant.login,QueryUrlNameConstant.login_request_param);
 		queryParam.put(QueryUrlNameConstant.getBirthday,QueryUrlNameConstant.getBirthday_request_param);
 		queryParam.put(QueryUrlNameConstant.getMandalYuvakList,QueryUrlNameConstant.getMandalYuvakList_request_param);
 		queryParam.put(QueryUrlNameConstant.getSabhaMandalList,QueryUrlNameConstant.getSabhaMandalList_request_param);
-		queryParam.put(QueryUrlNameConstant.getSabhaYuvakList,QueryUrlNameConstant.getSabhaYuvakList_request_param);
+		queryParam.put(QueryUrlNameConstant.getYuvakProfile,QueryUrlNameConstant.getYuvakProfile_request_param);
 	}
 			
 }

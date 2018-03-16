@@ -391,4 +391,20 @@ public class UserRestWS {
 		}
 		return blManager.uploadDataByExcel(dir.getPath() + File.separator + itemName.toLowerCase());
 	}
+	
+	@GET
+	@Path(QueryUrlNameConstant.getYuvakProfile)
+	public Response getYuvakProfile(@QueryParam(QueryUrlNameConstant.user_id) Integer user_id) {
+		UserServiceImpl blManager = new UserServiceImpl();
+		Response response = null;
+		Logger.logInfo(MODULE, "Method called " + AkdmUtils.getMethodName());
+		try {
+			response = blManager.getYuvakProfile(user_id);
+		} catch (NumberFormatException ne) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code,
+					ResultCode.INTERNAL_ERROR_500.name, null,
+					"Can't convert from String", null);
+		}
+		return response;
+	}
 }
