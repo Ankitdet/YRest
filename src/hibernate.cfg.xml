@@ -6,11 +6,14 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-       <!--  <property name="hibernate.connection.username">akshardh_ms</property>
+       <!--
+       	<property name="hibernate.connection.username">akshardh_ms</property>
         <property name="hibernate.connection.password">msswami</property>
-        <property name="hibernate.connection.url">jdbc:mysql://mysql3000.mochahost.com:3306/akshardh_ms</property> -->
+        <property name="hibernate.connection.url">jdbc:mysql://mysql3000.mochahost.com:3306/akshardh_ms</property> 
         
-         <property name="hibernate.connection.username">root</property>
+        -->
+        
+        <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">root</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/akshardh_ms</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
