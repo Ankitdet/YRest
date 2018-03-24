@@ -17,7 +17,7 @@ public class AkdmUtils {
 	public static java.util.Date date = new java.util.Date();
 
 	public static String getMethodName() {
-        return Thread.currentThread().getStackTrace()[2].getMethodName() + "()";
+        return "Method called "+ Thread.currentThread().getStackTrace()[2].getMethodName() + "()";
     }
 
     // This will return yyyy-MM-dd HH:mm:ss.SSS format

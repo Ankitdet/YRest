@@ -86,7 +86,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<UsersFieldData> validateLogin(String email, String password) throws CommandException {
-        Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         Long user_id = 0l;
         List<Object[]> list = null;
         String queryString = "";
@@ -138,7 +138,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<UsersFieldData> getUserContactList() throws CommandException {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Object[]> list = null;
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
@@ -161,7 +161,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Response getBirthday(String cakeId) throws CommandException {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
     	Session session = HibernateUtil.getSessionFactory().openSession();
     	List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
         String queryString = "";
@@ -202,7 +202,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Response getSSP() {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         List<Ssp> sspList = new ArrayList<Ssp>();
@@ -228,7 +228,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Response getArea() {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         String queryString = "";
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Areas> areasArrayList = new ArrayList<Areas>();
@@ -255,7 +255,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Response getManadal() {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Mandals> mandalsArrayList = new ArrayList<Mandals>();
 
@@ -286,7 +286,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     private List<UsersFieldData> fillUserTablePojo(List<Object[]> list){
-        Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
         for (Object[] obj : list) {
         	counter = 0;
@@ -326,7 +326,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Response doCreateSabha(SabhaData sabhaData) {
     	
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction(); 
         PreparedStatement ps = null;
@@ -420,7 +420,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Response getSabhaDetails() {
     	
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<SabhaData> usersFieldDataList = new ArrayList<SabhaData>();
@@ -461,7 +461,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public Response uploadDataByExcel(List<Object[]> list) {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		PreparedStatement ps = null;
 		Transaction tx= session.beginTransaction();
@@ -557,7 +557,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<MandalYuvak> getMandalYuvakList(Integer mandal_id) {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<MandalYuvak> listMandalYuvak = new ArrayList<MandalYuvak>();
@@ -591,7 +591,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<UsersFieldData> getYuvakProfile(Integer user_id) {
     	
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<UsersFieldData> usersFieldDataList = new ArrayList<UsersFieldData>();
@@ -613,7 +613,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public Response getSabhaMandalList(Integer sabha_id) {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<Mandals> mandalList = new ArrayList<Mandals>();
@@ -646,7 +646,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
         List<CreateSabhaData> userSabhaList = new ArrayList<CreateSabhaData>();
@@ -680,7 +680,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public Response createYuvakSabhaAttendance(AttendanceRequest request) {
 
-    	Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+    	Logger.logInfo(MODULE, AkdmUtils.getMethodName());
     	Logger.logInfo(MODULE, "Requested data : " +request.toString());
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
@@ -742,7 +742,7 @@ public class UserDaoImpl implements UserDao {
 	
 	private String getBirthFilterQuery(String id){
 
-		Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 
 		 /**
          *  default 0 = today's

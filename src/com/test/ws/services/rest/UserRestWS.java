@@ -52,7 +52,7 @@ public class UserRestWS {
 
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         Logger.logInfo(MODULE, "Parameters are : email-" + email + ",password-" + password);
 
         try {
@@ -81,7 +81,7 @@ public class UserRestWS {
 
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 
         try {
             response = blManager.getUserContactList();
@@ -99,7 +99,7 @@ public class UserRestWS {
     public Response getBirthday(@QueryParam(QueryUrlNameConstant.id) String cakeId) {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         Logger.logInfo(MODULE, "Parameters are : Id-" + cakeId);
         
         try {
@@ -122,7 +122,7 @@ public class UserRestWS {
 
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         try {
             response = blManager.getSSP();
         } catch (NumberFormatException ne) {
@@ -136,7 +136,7 @@ public class UserRestWS {
     public  Response getManadal() {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         try {
             response = blManager.getManadal();
         } catch (NumberFormatException ne) {
@@ -150,7 +150,7 @@ public class UserRestWS {
     public Response getArea() {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
         try {
             response = blManager.getArea();
         } catch (NumberFormatException ne) {
@@ -164,7 +164,7 @@ public class UserRestWS {
     public Response doCreateSabha(SabhaData sabhaData) {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 
         try {
             response = blManager.doCreateSabha(sabhaData);
@@ -179,7 +179,7 @@ public class UserRestWS {
     public Response getSabhaDetails() {
         UserServiceImpl blManager = new UserServiceImpl();
         Response response = null;
-        Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+        Logger.logInfo(MODULE,AkdmUtils.getMethodName());
 
         try {
             response = blManager.getSabhaDetails();
@@ -194,7 +194,7 @@ public class UserRestWS {
     public Response getMandalYuvakList(@QueryParam(QueryUrlNameConstant.mandal_id) Integer mandal_id) {
     	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
-          Logger.logInfo(MODULE, "Method called "+AkdmUtils.getMethodName());
+          Logger.logInfo(MODULE, AkdmUtils.getMethodName());
           Logger.logInfo(MODULE, "Parameters are : mandal_id-"+mandal_id);
           
           try {
@@ -210,7 +210,7 @@ public class UserRestWS {
     public Response getSabhaMandalList(@QueryParam(QueryUrlNameConstant.sabha_id) Integer sabha_id) {
     	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
-          Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+          Logger.logInfo(MODULE, AkdmUtils.getMethodName());
           Logger.logInfo(MODULE, "Parameters are : sabha_id-"+sabha_id);
           
           try {
@@ -246,7 +246,7 @@ public class UserRestWS {
     		,AttendanceRequest request) {
     	  UserServiceImpl blManager = new UserServiceImpl();
           Response response = null;
-          Logger.logInfo(MODULE, "Method called " +AkdmUtils.getMethodName());
+          Logger.logInfo(MODULE, AkdmUtils.getMethodName());
           try {
         	  request.setMandal_id(mandal_id);
         	  request.setSabha_id(sabha_id);
@@ -330,7 +330,7 @@ public class UserRestWS {
 	public Response uploadAndReadFile(@Context HttpServletRequest request, @Context ServletContext context) {
 
 		UserServiceImpl blManager = new UserServiceImpl();
-		Logger.logInfo(MODULE, "Method called " + AkdmUtils.getMethodName());
+		Logger.logInfo(MODULE,AkdmUtils.getMethodName());
 
 		File dir = AkdmUtils.getWorkingDirForUploadExcelFile(context);
 		List<String> uploaded = new ArrayList<String>();
@@ -397,7 +397,7 @@ public class UserRestWS {
 	public Response getYuvakProfile(@QueryParam(QueryUrlNameConstant.user_id) Integer user_id) {
 		UserServiceImpl blManager = new UserServiceImpl();
 		Response response = null;
-		Logger.logInfo(MODULE, "Method called " + AkdmUtils.getMethodName());
+		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		try {
 			response = blManager.getYuvakProfile(user_id);
 		} catch (NumberFormatException ne) {
