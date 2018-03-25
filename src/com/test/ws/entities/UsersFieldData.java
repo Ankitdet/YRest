@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 
 import org.joda.time.DateTime;
 
-public class UsersFieldData {
+public class UsersFieldData  implements Comparable<UsersFieldData>{
 
     private Long id;
     private String user_name;
@@ -253,4 +253,9 @@ public class UsersFieldData {
     public void setMandal_title(String mandal_title) {
         this.mandal_title = mandal_title;
     }
+
+	@Override
+	public int compareTo(UsersFieldData o) {
+		return this.getUser_name().compareTo(o.getUser_name());
+	}
 }

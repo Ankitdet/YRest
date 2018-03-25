@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -320,6 +321,8 @@ public class UserDaoImpl implements UserDao {
             usersFieldData.setAttendance("100%");
             usersFieldDataList.add(usersFieldData);
         }
+        
+        Collections.sort(usersFieldDataList);
         return usersFieldDataList;
     }
 
