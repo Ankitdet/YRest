@@ -12,7 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -34,6 +36,7 @@ import com.test.ws.entities.YuAttendance;
 import com.test.ws.exception.BusinessException;
 import com.test.ws.exception.CommandException;
 import com.test.ws.exception.InfrastructureException;
+import com.test.ws.exception.MandalIdNotFoundException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
 import com.test.ws.table.metadata.CLMS;
@@ -473,13 +476,17 @@ public class UserDaoImpl implements UserDao {
 		int successDataCount = 0;
 
 		try {
+			
+			Map<String,Integer> mandalIds = getMandalIds();
+			 
 			SessionImplementor sessImpl = (SessionImplementor) session;
 			Connection connection = sessImpl.connection();
-			connection.setAutoCommit(true);
+			connection.setAutoCommit(false);
 			st = connection.createStatement();
 
 			// batch insert
-			String sql = "INSERT INTO users(ROLE_ID,USER_NAME,USER_UNIQUEID,EMAIL,PASSWORD,PHONE,WHATSAPP_NUMBER,EMAIL_VERIFIED,BIRTH_DATE,USER_IMAGE,LATITUDE,LONGITUDE,ADDRESS,AREA_ID,MANDAL_ID,AUTH_TOKEN,RELATIONSHIP_STATUS,CREATED_AT,UPDATED_AT,STATUS,DEVICE_TYPE,DEVICE_TOKEN,BADGE_COUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO users"
+					+ "(ROLE_ID,FIRSTNAME,USER_UNIQUEID,EMAIL,PASSWORD,PHONE,WHATSAPP_NUMBER,EMAIL_VERIFIED,BIRTH_DATE,USER_IMAGE,LATITUDE,LONGITUDE,ADDRESS,AREA_ID,MANDAL_ID,AUTH_TOKEN,RELATIONSHIP_STATUS,CREATED_AT,UPDATED_AT,STATUS,DEVICE_TYPE,DEVICE_TOKEN,BADGE_COUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			ps = connection.prepareStatement(sql);
 			int i =0 ;
 			for (Object[] newData : list) {
@@ -513,7 +520,13 @@ public class UserDaoImpl implements UserDao {
 					ps.setInt(12, 0);
 					ps.setString(13, AkdmUtils.getObject(newData[6],String.class));
 					ps.setInt(14, 5);
-					ps.setInt(15, 6);
+					
+				
+					Integer mandalId = mandalIds.get(AkdmUtils.getObject(newData[1],String.class));
+					if(mandalId == null){
+						throw new MandalIdNotFoundException("Wrong mandal id found in database");
+					}
+					ps.setInt(15, mandalId);
 					ps.setString(16, TokenGenerator.uniqueUUID());
 					ps.setInt(17, 0);
 					ps.setTimestamp(18, AkdmUtils.getFormatedDate());
@@ -837,5 +850,31 @@ public class UserDaoImpl implements UserDao {
 			break;
 		}
 		return "MONTH("+com.test.ws.constant.Constants.BIRTH_DATE+") In ("+sb+") and DAY("+com.test.ws.constant.Constants.BIRTH_DATE+")>="+start_day+" and DAY("+com.test.ws.constant.Constants.BIRTH_DATE+")<="+end_day+"";
+	}
+	
+	public static Map<String,Integer> getMandalIds(){
+		
+		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Map<String,Integer> map1 = new HashMap<String,Integer>();
+		
+		try{
+			String queryString = "SELECT mandal_id,area from mandal_area";
+			Query query = session.createSQLQuery(queryString);
+			List<Object[]> list = query.list();
+			
+			for(Object[] object : list){
+				
+				int mandal_id = AkdmUtils.getObject(object[0], Integer.class);
+				String area = AkdmUtils.getObject(object[1], String.class);
+				map1.put(area,mandal_id);
+			}
+
+		}catch(Exception e){
+			
+		}finally{
+			session.close();
+		}
+		return map1;
 	}
 }

@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -84,6 +85,20 @@ public class AkdmUtils {
         			o = o.toString() ;
         		}else if (clazz == Time.class){
         			o = ((Time)o);
+        		}
+        	}
+        	
+        	if(o instanceof String){
+        		if(clazz == Date.class){
+        			SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
+        			java.util.Date date;
+					try {
+						date = sdf1.parse((String)o);
+						o = new java.sql.Date(date.getTime()); 
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
         		}
         	}
         	return clazz.cast(o);
