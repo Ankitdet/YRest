@@ -72,7 +72,23 @@ public class UserServiceImpl implements UserService {
 		UserDao loginDao = new UserDaoImpl();
 		List<UsersFieldData> list = null;
 		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
+		try {
+			 list = loginDao.getUserContactList();
+		} catch (InfrastructureException ex) {
+			throw new CommandException(ex);
 
+		} catch (BusinessException ex) {
+			throw new CommandException(ex);
+		} finally {
+			
+		}
+		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
+	}
+	
+	public Response getYuvakList() throws CommandException, ParseException {
+		UserDao loginDao = new UserDaoImpl();
+		List<UsersFieldData> list = null;
+		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 	
 		try {
 			 list = loginDao.getUserContactList();
@@ -86,7 +102,8 @@ public class UserServiceImpl implements UserService {
 		}
 		return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null, list);
 	}
-
+	
+	
 	@Override
 	public Response getSSP() {
 		UserDao loginDao = new UserDaoImpl();
@@ -270,6 +287,21 @@ public class UserServiceImpl implements UserService {
 		
 		try {
 			response = loginDao.createYuvakSabhaAttendance(request);
+		} catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
+		} catch (BusinessException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
+		} finally {
+		}
+		return response;
+	}
+
+	public Response registerYuvakDetail(UsersFieldData userFieldsData) {
+		UserDao loginDao = new UserDaoImpl();
+		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
+		Response response = null;
+		try {
+			response = loginDao.registerYuvakDetail(userFieldsData);
 		} catch (InfrastructureException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
 		} catch (BusinessException ex) {

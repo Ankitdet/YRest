@@ -25,6 +25,14 @@ public class QueryUrlNameConstant {
 	public static final String getYuvakProfile ="/getYuvakProfile";
 	
 	
+	// New Started on 6th June 2018
+	public static final String getYuvakList ="/getYuvakList";
+	public static final String registerYuvak ="/registerYuvak";
+//	public static final String getYuvakList ="/getYuvakList";
+	
+
+	
+	
 	// All @QueryParam's are below 
 	public static final String email = "email";
 	public static final String password = "password";

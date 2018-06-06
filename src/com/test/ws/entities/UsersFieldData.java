@@ -12,6 +12,9 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
     private String email;
     private String password;
     private String phone;
+    private String l_name;
+    private String f_name;
+    private String m_name;
     private String whatsapp_number;
     private boolean email_verified;
     private String user_image;
@@ -25,7 +28,31 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
     private int device_type;
     private boolean status;
     private String device_token;
-    private int badge_count;
+    public String getL_name() {
+		return l_name;
+	}
+
+	public void setL_name(String l_name) {
+		this.l_name = l_name;
+	}
+
+	public String getF_name() {
+		return f_name;
+	}
+
+	public void setF_name(String f_name) {
+		this.f_name = f_name;
+	}
+
+	public String getM_name() {
+		return m_name;
+	}
+
+	public void setM_name(String m_name) {
+		this.m_name = m_name;
+	}
+
+	private int badge_count;
     private String created_at;
     private String updated_at;
     private Date birth_date;
@@ -256,6 +283,6 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
 
 	@Override
 	public int compareTo(UsersFieldData o) {
-		return this.getUser_name().compareTo(o.getUser_name());
+		return this.getArea_title().compareTo(o.getArea_title());
 	}
 }

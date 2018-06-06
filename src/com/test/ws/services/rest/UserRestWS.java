@@ -32,6 +32,7 @@ import com.test.ws.constant.QueryUrlNameConstant;
 import com.test.ws.constant.ResultCode;
 import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.SabhaData;
+import com.test.ws.entities.UsersFieldData;
 import com.test.ws.exception.CommandException;
 import com.test.ws.logger.Logger;
 import com.test.ws.requestobject.Response;
@@ -92,8 +93,6 @@ public class UserRestWS {
         }
         return response;
     }
-
-    
     @GET
     @Path(QueryUrlNameConstant.getBirthday)
     public Response getBirthday(@QueryParam(QueryUrlNameConstant.id) String cakeId) {
@@ -407,4 +406,42 @@ public class UserRestWS {
 		}
 		return response;
 	}
+	
+	
+	
+	
+	
+	 	@GET
+	    @Path(QueryUrlNameConstant.getYuvakList)
+	    public Response getYuvakList() throws ParseException {
+
+	        UserServiceImpl blManager = new UserServiceImpl();
+	        Response response = null;
+	        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
+
+	        try {
+	            response = blManager.getUserContactList();
+	        } catch (Exception e) {
+	            return new Response(ResultCode.INPUT_PARAMETER_MISSING_401.code,
+	                    ResultCode.INPUT_PARAMETER_MISSING_401.name, null,
+	                    e.getMessage(), null);
+	        }
+	        return response;
+	    }
+	 
+	 	 @POST
+	     @Path(QueryUrlNameConstant.createSabha)
+	     public Response registerYuvakDetails(UsersFieldData userFieldsData) {
+	         UserServiceImpl blManager = new UserServiceImpl();
+	         Response response = null;
+	         Logger.logInfo(MODULE, AkdmUtils.getMethodName());
+
+	         try {
+	             response = blManager.registerYuvakDetail(userFieldsData);
+	         } catch (NumberFormatException ne) {
+	             return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
+	         }
+	         return response;
+	     }
+	 
 }

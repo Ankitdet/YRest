@@ -16,7 +16,9 @@ public interface UserDao {
 	public List<UsersFieldData> validateLogin(String email, String password) throws CommandException;
 
 	public List<UsersFieldData> getUserContactList() throws CommandException;
-
+	
+	public List<UsersFieldData> getYuvakList() throws CommandException;
+	
 	public Response getBirthday(String cakeId) throws CommandException;
 
     Response getSSP();
@@ -41,4 +43,6 @@ public interface UserDao {
 	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id);
 
 	public Response createYuvakSabhaAttendance(AttendanceRequest request);
+
+	public Response registerYuvakDetail(UsersFieldData userFieldsData)  throws CommandException;
 }
