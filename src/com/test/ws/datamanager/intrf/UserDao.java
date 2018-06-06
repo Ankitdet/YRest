@@ -45,4 +45,6 @@ public interface UserDao {
 	public Response createYuvakSabhaAttendance(AttendanceRequest request);
 
 	public Response registerYuvakDetail(UsersFieldData userFieldsData)  throws CommandException;
+
+	public Response getExtraData()  throws CommandException;
 }
