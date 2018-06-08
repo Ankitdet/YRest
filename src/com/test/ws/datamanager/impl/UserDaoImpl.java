@@ -301,7 +301,7 @@ public class UserDaoImpl implements UserDao {
 			 * usersFieldData.setEmail_verified(AkdmUtils.getObject(
 			 * obj[counter++], Boolean.class));
 			 */
-			usersFieldData.setBirth_date(AkdmUtils.getObject(obj[counter++], Date.class));
+//			usersFieldData.setBirth_date(AkdmUtils.getObject(obj[counter++], Date.class));
 			usersFieldData.setUser_image(AkdmUtils.getObject(obj[counter++], String.class));
 			/*
 			 * usersFieldData.setLatitude(AkdmUtils.getObject(obj[counter++],
@@ -947,19 +947,16 @@ public class UserDaoImpl implements UserDao {
 		if (birthday == null) {
 				birthday = (String) "";
 			} else {
-				if (birthday instanceof String) {
-					SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
+					SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
 					java.util.Date date;
 					try {
-						date = sdf1.parse((String) birthday);
+						date = sdf1.parse((String)birthday);
 						birthday = new java.sql.Date(date.getTime());
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					birthday = (String) birthday;
 				}
-			}
 
 		try {
 				Query q = null;

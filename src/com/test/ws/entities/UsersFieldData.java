@@ -50,7 +50,7 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
 	private int badge_count;
     private String created_at;
     private String updated_at;
-    private Date birth_date;
+    private String birth_date;
     private int role_id;
     private String role_name;
     private String area_title;
@@ -158,11 +158,11 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
         this.badge_count=badge_count;
     }
 
-    public Date getBirth_date() {
+    public String getBirth_date() {
         return birth_date;
     }
 
-    public void setBirth_date(Date birth_date) {
+    public void setBirth_date(String birth_date) {
         this.birth_date = birth_date;
     }
 
