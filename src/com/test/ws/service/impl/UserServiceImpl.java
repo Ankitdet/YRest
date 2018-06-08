@@ -3,6 +3,10 @@ package com.test.ws.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import com.test.ws.constant.ResultCode;
 import com.test.ws.datamanager.impl.UserDaoImpl;
@@ -11,6 +15,7 @@ import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.CreateSabhaData;
 import com.test.ws.entities.MandalYuvak;
 import com.test.ws.entities.SabhaData;
+import com.test.ws.entities.Ssp;
 import com.test.ws.entities.UsersFieldData;
 import com.test.ws.exception.BusinessException;
 import com.test.ws.exception.CommandException;
@@ -91,7 +96,7 @@ public class UserServiceImpl implements UserService {
 		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 	
 		try {
-			 list = loginDao.getUserContactList();
+			 list = loginDao.getYuvakList();
 		} catch (InfrastructureException ex) {
 			throw new CommandException(ex);
 
@@ -312,8 +317,29 @@ public class UserServiceImpl implements UserService {
 		}
 		return response;
 	}
+
+	public Response getDependentData() {
+
+		UserDao loginDao = new UserDaoImpl();
+		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
+		Map<String, List<Ssp>> Jsonresponse  = null;
+		
+		try {
+			Jsonresponse = loginDao.getDependentData();
+			
+		} catch (InfrastructureException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
+		} catch (BusinessException ex) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
+		} catch (CommandException e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null,Jsonresponse);
+		
+	}
 	
-	public Response getExtraData() {
+/*	public Response getExtraData() {
 		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		Response response = null;
@@ -329,5 +355,5 @@ public class UserServiceImpl implements UserService {
 		}
 		return response;
 	}
-	
+*/	
 }

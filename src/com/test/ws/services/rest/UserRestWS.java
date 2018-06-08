@@ -27,6 +27,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.IOUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.test.ws.constant.QueryUrlNameConstant;
 import com.test.ws.constant.ResultCode;
@@ -420,7 +421,7 @@ public class UserRestWS {
 	        Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 
 	        try {
-	            response = blManager.getUserContactList();
+	            response = blManager.getYuvakList();
 	        } catch (Exception e) {
 	            return new Response(ResultCode.INPUT_PARAMETER_MISSING_401.code,
 	                    ResultCode.INPUT_PARAMETER_MISSING_401.name, null,
@@ -430,7 +431,7 @@ public class UserRestWS {
 	    }
 	 
 	 	 @POST
-	     @Path(QueryUrlNameConstant.createSabha)
+	     @Path(QueryUrlNameConstant.registerYuvak)
 	     public Response registerYuvakDetails(UsersFieldData userFieldsData) {
 	         UserServiceImpl blManager = new UserServiceImpl();
 	         Response response = null;
@@ -443,5 +444,24 @@ public class UserRestWS {
 	         }
 	         return response;
 	     }
+	 	 
+	 	 @GET
+	     @Path(QueryUrlNameConstant.getDependableData)
+	     public Response getDependentData() {
+	         UserServiceImpl blManager = new UserServiceImpl();
+	         Response response = null;
+	         Logger.logInfo(MODULE, AkdmUtils.getMethodName());
+
+	         try {
+	             response = blManager.getDependentData();
+	         } catch (NumberFormatException ne) {
+	             return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, "Can't convert from String", null);
+	         }
+	         return response;
+	     }
+	 	 
+	 	 
+	 	 
 	 
+	 	 
 }

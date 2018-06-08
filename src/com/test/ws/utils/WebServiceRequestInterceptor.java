@@ -32,16 +32,16 @@ public class WebServiceRequestInterceptor implements ContainerRequestFilter {
         Logger.logInfo(MODULE, "URL called :" + path);
 
         String calledURL = path.substring(path.lastIndexOf("/"), path.length());
-        checkParameter(request.getUriInfo(), calledURL);
+//        checkParameter(request.getUriInfo(), calledURL);
         HttpRequestCounter.httpRequestCount(calledURL);
 
-        if (!path.contains("/login")) {
+       /* if (!path.contains("/login")) {
             if (token == null) {
                 throw new BusinessException("Bad login request !");
             }
             if (TokenGenerator.tokenMap.get(token) == null || TokenGenerator.tokenMap.get(token) == "")
                 throw new BusinessException("Token has expired !");
-        }
+        }*/
     }
 
     public void checkParameter(@Context UriInfo uriInfo, String calledURL) {

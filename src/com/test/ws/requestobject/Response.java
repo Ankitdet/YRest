@@ -1,12 +1,23 @@
 package com.test.ws.requestobject;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.codehaus.jettison.json.JSONObject;
+
+import com.test.ws.entities.Ssp;
 
 @XmlRootElement(name = "Response")
 public class Response {
@@ -39,10 +50,9 @@ public class Response {
         this.message = message;
         this.TransactionDate = getCurrentTimeStemp(date);
         this.reason = reason;
-
         if (list instanceof Collection<?>) {
             this.data = (Collection<?>) list;
-        } else {
+        }     else {
             this.data = list;
         }
     }

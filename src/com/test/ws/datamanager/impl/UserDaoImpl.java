@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -30,7 +32,7 @@ import com.test.ws.entities.CreateSabhaData;
 import com.test.ws.entities.MandalYuvak;
 import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
-import com.test.ws.entities.Sectors;
+
 import com.test.ws.entities.Ssp;
 import com.test.ws.entities.UsersFieldData;
 import com.test.ws.entities.YuAttendance;
@@ -56,28 +58,21 @@ public class UserDaoImpl implements UserDao {
 
 	public static int counter;
 
-	public static final String userDataQuery = "select " + "u." + CLMS.ID + ","
-			+ "u." + CLMS.USERNAME + "," + "u." + CLMS.EMAIL + "," + "u."
-			+ CLMS.PASSWORD + "," + "u." + CLMS.PHONE + "," + "u."
-			+ CLMS.WHATSAPP_NUMBER + "," + "u." + CLMS.EMAIL_VERIFIED + ","
-			+ "u." + CLMS.BIRTH_DATE + "," + "u." + CLMS.USER_IMAGE + ","
-			+ "u." + CLMS.LATITUDE + "," + "u." + CLMS.LONGITUDE + "," + "u."
-			+ CLMS.ADDRESS + "," + "u." + CLMS.AUTH_TOKEN + "," + "u."
-			+ CLMS.RELATIONSHIP_STATUS + "," + "u." + CLMS.CREATED_AT + ","
-			+ "u." + CLMS.UPDATED_AT + "," + "u." + CLMS.STATUS + "," + "u."
-			+ CLMS.DEVICE_TYPE + "," + "u." + CLMS.DEVICE_TOKEN + "," + "u."
-			+ CLMS.BADGE_COUNT + "," + "ur." + CLMS.ROLE_NAME + "," + "ar."
-			+ CLMS.AREA_TITLE + "," + "m." + CLMS.MANDAL_TITLE + "," + "u."
-			+ CLMS.MANDAL_ID + "," + "u." + CLMS.AREA_ID + "," + "u."
-			+ CLMS.ROLE_ID + " " + "from " + TBLS.USER + " u " + "left join "
-			+ TBLS.USERROLE + " ur on ur." + CLMS.ID + "=u." + CLMS.ROLE_ID
-			+ " left join " + TBLS.AREA + " ar on ar." + CLMS.AREA_ID + "=u."
-			+ CLMS.AREA_ID + " " + "left join " + TBLS.MANDAL + " m on m."
-			+ CLMS.MANDAL_ID + " = u." + CLMS.MANDAL_ID + " ";
+	public static final String userDataQuery = "select " + "u." + CLMS.ID + "," + "u." + CLMS.USERNAME + "," + "u."
+			+ CLMS.EMAIL + "," + "u." + CLMS.PASSWORD + "," + "u." + CLMS.PHONE + "," + "u." + CLMS.WHATSAPP_NUMBER
+			+ "," + "u." + CLMS.EMAIL_VERIFIED + "," + "u." + CLMS.BIRTH_DATE + "," + "u." + CLMS.USER_IMAGE + ","
+			+ "u." + CLMS.LATITUDE + "," + "u." + CLMS.LONGITUDE + "," + "u." + CLMS.ADDRESS + "," + "u."
+			+ CLMS.AUTH_TOKEN + "," + "u." + CLMS.RELATIONSHIP_STATUS + "," + "u." + CLMS.CREATED_AT + "," + "u."
+			+ CLMS.UPDATED_AT + "," + "u." + CLMS.STATUS + "," + "u." + CLMS.DEVICE_TYPE + "," + "u."
+			+ CLMS.DEVICE_TOKEN + "," + "u." + CLMS.BADGE_COUNT + "," + "ur." + CLMS.ROLE_NAME + "," + "ar."
+			+ CLMS.AREA_TITLE + "," + "m." + CLMS.MANDAL_TITLE + "," + "u." + CLMS.MANDAL_ID + "," + "u." + CLMS.AREA_ID
+			+ "," + "u." + CLMS.ROLE_ID + " " + "from " + TBLS.USER + " u " + "left join " + TBLS.USERROLE
+			+ " ur on ur." + CLMS.ID + "=u." + CLMS.ROLE_ID + " left join " + TBLS.AREA + " ar on ar." + CLMS.AREA_ID
+			+ "=u." + CLMS.AREA_ID + " " + "left join " + TBLS.MANDAL + " m on m." + CLMS.MANDAL_ID + " = u."
+			+ CLMS.MANDAL_ID + " ";
 
 	@Override
-	public List<UsersFieldData> validateLogin(String email, String password)
-			throws CommandException {
+	public List<UsersFieldData> validateLogin(String email, String password) throws CommandException {
 		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		Long user_id = 0l;
 		List<Object[]> list = null;
@@ -90,9 +85,8 @@ public class UserDaoImpl implements UserDao {
 		try {
 
 			String token = TokenGenerator.uniqueUUID();
-			queryString = "SELECT * FROM " + TBLS.USER + " WHERE " + CLMS.EMAIL
-					+ "='" + email + "' AND " + CLMS.PASSWORD + "='" + password
-					+ "'";
+			queryString = "SELECT * FROM " + TBLS.USER + " WHERE " + CLMS.EMAIL + "='" + email + "' AND "
+					+ CLMS.PASSWORD + "='" + password + "'";
 			Query query = session.createSQLQuery(queryString);
 			list = query.list();
 
@@ -101,15 +95,12 @@ public class UserDaoImpl implements UserDao {
 					user_id = ((BigInteger) o[0]).longValue();
 				}
 
-				queryString = "UPDATE " + TBLS.USER + " SET " + CLMS.AUTH_TOKEN
-						+ "='" + token + "'," + CLMS.UPDATED_AT + "='"
-						+ AkdmUtils.getFormatedDate() + "' where " + CLMS.ID
-						+ "='" + user_id + "'";
+				queryString = "UPDATE " + TBLS.USER + " SET " + CLMS.AUTH_TOKEN + "='" + token + "'," + CLMS.UPDATED_AT
+						+ "='" + AkdmUtils.getFormatedDate() + "' where " + CLMS.ID + "='" + user_id + "'";
 				query = session.createSQLQuery(queryString);
 				query.executeUpdate();
 
-				Query crt = session.createSQLQuery(userDataQuery + " WHERE u."
-						+ CLMS.ID + "='" + user_id + "'");
+				Query crt = session.createSQLQuery(userDataQuery + " WHERE u." + CLMS.ID + "='" + user_id + "'");
 				list = crt.list();
 				usersFieldDataList = fillUserTablePojo(list);
 				TokenGenerator.tokenMap.put(token, token);
@@ -142,13 +133,10 @@ public class UserDaoImpl implements UserDao {
 
 		try {
 
-			String userDataQuery = "select " + "u." + CLMS.ID + "," + "u."
-					+ CLMS.USERNAME + "," + "u." + CLMS.EMAIL + "," + "u."
-					+ CLMS.PASSWORD + "," + "u." + CLMS.PHONE + "," + "u."
-					+ CLMS.WHATSAPP_NUMBER + "," + "u." + CLMS.EMAIL_VERIFIED
-					+ "," + "u." + CLMS.BIRTH_DATE + "," + "u."
-					+ CLMS.USER_IMAGE + "," + "u." + CLMS.LATITUDE + "," + "u."
-					+ CLMS.LONGITUDE + "," + "u." + CLMS.ADDRESS + ",";
+			String userDataQuery = "select " + "u." + CLMS.ID + "," + "u." + CLMS.USERNAME + "," + "u." + CLMS.EMAIL
+					+ "," + "u." + CLMS.PASSWORD + "," + "u." + CLMS.PHONE + "," + "u." + CLMS.WHATSAPP_NUMBER + ","
+					+ "u." + CLMS.EMAIL_VERIFIED + "," + "u." + CLMS.BIRTH_DATE + "," + "u." + CLMS.USER_IMAGE + ","
+					+ "u." + CLMS.LATITUDE + "," + "u." + CLMS.LONGITUDE + "," + "u." + CLMS.ADDRESS + ",";
 
 			Query crt = session.createSQLQuery(userDataQuery);
 			list = crt.list();
@@ -177,18 +165,14 @@ public class UserDaoImpl implements UserDao {
 			Long myBirthdayDigit = Long.parseLong(cakeId);
 
 			if (myBirthdayDigit > 4)
-				return new Response(
-						ResultCode.OPERATION_NOT_SUPPORTED_599.code,
-						"Invalid input " + myBirthdayDigit + ", allow 0 to 4",
-						null, null, null);
+				return new Response(ResultCode.OPERATION_NOT_SUPPORTED_599.code,
+						"Invalid input " + myBirthdayDigit + ", allow 0 to 4", null, null, null);
 
 			if (myBirthdayDigit == 0) {
-				queryString = userDataQuery + " WHERE "
-						+ getBirthFilterQuery(cakeId) + " ORDER BY u."
-						+ CLMS.USER_NAME + "";
+				queryString = userDataQuery + " WHERE " + getBirthFilterQuery(cakeId) + " ORDER BY u." + CLMS.USER_NAME
+						+ "";
 			} else {
-				queryString = userDataQuery + " WHERE "
-						+ getBirthFilterQuery(cakeId) + " ORDER BY MONTH("
+				queryString = userDataQuery + " WHERE " + getBirthFilterQuery(cakeId) + " ORDER BY MONTH("
 						+ CLMS.BIRTH_DATE + ")";
 			}
 			Query queryNew = session.createSQLQuery(queryString);
@@ -196,21 +180,18 @@ public class UserDaoImpl implements UserDao {
 
 			if (!list.isEmpty()) {
 				usersFieldDataList = fillUserTablePojo(list);
-				return new Response(ResultCode.SUCCESS_200.code,
-						"successfully get data", null, null, usersFieldDataList);
+				return new Response(ResultCode.SUCCESS_200.code, "successfully get data", null, null,
+						usersFieldDataList);
 			} else {
-				return new Response(ResultCode.SUCCESS_200.code,
-						"No record found", null, null, usersFieldDataList);
+				return new Response(ResultCode.SUCCESS_200.code, "No record found", null, null, usersFieldDataList);
 			}
 		} catch (NumberFormatException nx) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					"Number can't parse in long " + cakeId, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, "Number can't parse in long " + cakeId, null, null,
+					null);
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					ex.getMessage(), null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, null);
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					ex.getMessage(), null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, null);
 		} finally {
 			session.close();
 		}
@@ -230,21 +211,17 @@ public class UserDaoImpl implements UserDao {
 			for (Object[] newList : list) {
 				counter = 0;
 				Ssp ssp = new Ssp();
-				ssp.setSspId(AkdmUtils.getObject(newList[counter++],
-						Integer.class));
-				ssp.setSspTitle(AkdmUtils.getObject(newList[counter++],
-						String.class));
+				ssp.setSspId(AkdmUtils.getObject(newList[counter++], Integer.class));
+				ssp.setSspTitle(AkdmUtils.getObject(newList[counter++], String.class));
 				sspList.add(ssp);
 			}
 
 		} catch (Exception e) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					e.getMessage(), null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, null);
 		} finally {
 			session.close();
 		}
-		return new Response(ResultCode.SUCCESS_200.code,
-				ResultCode.SUCCESS_200.name, null, null, sspList);
+		return new Response(ResultCode.SUCCESS_200.code, ResultCode.SUCCESS_200.name, null, null, sspList);
 	}
 
 	@Override
@@ -261,21 +238,18 @@ public class UserDaoImpl implements UserDao {
 			for (Object[] newList : list) {
 				counter = 0;
 				Areas areas = new Areas();
-				areas.setAreaId(AkdmUtils.getObject(newList[counter++],
-						Integer.class));
-				areas.setAreaTitle(AkdmUtils.getObject(newList[counter++],
-						String.class));
+				areas.setAreaId(AkdmUtils.getObject(newList[counter++], Integer.class));
+				areas.setAreaTitle(AkdmUtils.getObject(newList[counter++], String.class));
 				areasArrayList.add(areas);
 			}
 
 		} catch (Exception e) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null,
+					null);
 		} finally {
 			session.close();
 		}
-		return new Response(ResultCode.SUCCESS_200.code,
-				ResultCode.SUCCESS_200.name, null, null, areasArrayList);
+		return new Response(ResultCode.SUCCESS_200.code, ResultCode.SUCCESS_200.name, null, null, areasArrayList);
 	}
 
 	@Override
@@ -292,28 +266,23 @@ public class UserDaoImpl implements UserDao {
 			for (Object[] newList : list) {
 				counter = 0;
 				Mandals mandals = new Mandals();
-				mandals.setMandalId(AkdmUtils.getObject(newList[counter++],
-						Integer.class));
-				mandals.setMandalTitle(AkdmUtils.getObject(newList[counter++],
-						String.class));
+				mandals.setMandalId(AkdmUtils.getObject(newList[counter++], Integer.class));
+				mandals.setMandalTitle(AkdmUtils.getObject(newList[counter++], String.class));
 
-				String str = "SELECT count(*) FROM users WHERE mandal_id="
-						+ mandals.getMandalId();
-				Number mId = ((Number) session.createSQLQuery(str)
-						.uniqueResult()).longValue();
+				String str = "SELECT count(*) FROM users WHERE mandal_id=" + mandals.getMandalId();
+				Number mId = ((Number) session.createSQLQuery(str).uniqueResult()).longValue();
 				mandals.setTotal_yuvak(mId.intValue());
 
 				mandalsArrayList.add(mandals);
 			}
 
 		} catch (Exception e) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					ResultCode.INTERNAL_ERROR_500.name, null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null,
+					null);
 		} finally {
 			session.close();
 		}
-		return new Response(ResultCode.SUCCESS_200.code,
-				ResultCode.SUCCESS_200.name, null, null, mandalsArrayList);
+		return new Response(ResultCode.SUCCESS_200.code, ResultCode.SUCCESS_200.name, null, null, mandalsArrayList);
 	}
 
 	private List<UsersFieldData> fillUserTablePojo(List<Object[]> list) {
@@ -322,58 +291,48 @@ public class UserDaoImpl implements UserDao {
 		for (Object[] obj : list) {
 			counter = 0;
 			UsersFieldData usersFieldData = new UsersFieldData();
-			usersFieldData.setId(AkdmUtils
-					.getObject(obj[counter++], Long.class));
-			usersFieldData.setUser_name(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setEmail(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setPassword(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setPhone(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setWhatsapp_number(AkdmUtils.getObject(
-					obj[counter++], String.class));
-			usersFieldData.setEmail_verified(AkdmUtils.getObject(
-					obj[counter++], Boolean.class));
-			usersFieldData.setBirth_date(AkdmUtils.getObject(obj[counter++],
-					Date.class));
-			usersFieldData.setUser_image(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setLatitude(AkdmUtils.getObject(obj[counter++],
-					Double.class));
-			usersFieldData.setLongitude(AkdmUtils.getObject(obj[counter++],
-					Double.class));
-			usersFieldData.setAddress(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setAuth_token(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setRelationship_status(AkdmUtils.getObject(
-					obj[counter++], String.class));
-			usersFieldData.setCreated_at(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setUpdated_at(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setStatus(AkdmUtils.getObject(obj[counter++],
-					Boolean.class));
-			usersFieldData.setDevice_type(AkdmUtils.getObject(obj[counter++],
-					Integer.class));
-			usersFieldData.setDevice_token(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setBadge_count(AkdmUtils.getObject(obj[counter++],
-					Integer.class));
-			usersFieldData.setRole_name(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setArea_title(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setMandal_title(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setMandal_id(AkdmUtils.getObject(obj[counter++],
-					Integer.class));
-			usersFieldData.setArea_id(AkdmUtils.getObject(obj[counter++],
-					Integer.class));
-			usersFieldData.setRole_id(AkdmUtils.getObject(obj[counter++],
-					Integer.class));
+			usersFieldData.setId(AkdmUtils.getObject(obj[counter++], Long.class));
+			usersFieldData.setUser_name(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setEmail(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setPassword(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setPhone(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setWhatsapp_number(AkdmUtils.getObject(obj[counter++], String.class));
+			/*
+			 * usersFieldData.setEmail_verified(AkdmUtils.getObject(
+			 * obj[counter++], Boolean.class));
+			 */
+			usersFieldData.setBirth_date(AkdmUtils.getObject(obj[counter++], Date.class));
+			usersFieldData.setUser_image(AkdmUtils.getObject(obj[counter++], String.class));
+			/*
+			 * usersFieldData.setLatitude(AkdmUtils.getObject(obj[counter++],
+			 * Double.class));
+			 * usersFieldData.setLongitude(AkdmUtils.getObject(obj[counter++],
+			 * Double.class));
+			 */
+			usersFieldData.setAddress(AkdmUtils.getObject(obj[counter++], String.class));
+			/*
+			 * usersFieldData.setAuth_token(AkdmUtils.getObject(obj[counter++],
+			 * String.class));
+			 * usersFieldData.setRelationship_status(AkdmUtils.getObject(
+			 * obj[counter++], String.class));
+			 */
+			usersFieldData.setCreated_at(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setUpdated_at(AkdmUtils.getObject(obj[counter++], String.class));
+			/*
+			 * usersFieldData.setStatus(AkdmUtils.getObject(obj[counter++],
+			 * Boolean.class));
+			 * usersFieldData.setDevice_type(AkdmUtils.getObject(obj[counter++],
+			 * Integer.class));
+			 * usersFieldData.setDevice_token(AkdmUtils.getObject(obj[counter++]
+			 * , String.class));
+			 */
+			usersFieldData.setBadge_count(AkdmUtils.getObject(obj[counter++], Integer.class));
+			usersFieldData.setRole_name(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setArea_title(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setMandal_title(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setMandal_id(AkdmUtils.getObject(obj[counter++], Integer.class));
+			usersFieldData.setArea_id(AkdmUtils.getObject(obj[counter++], Integer.class));
+			usersFieldData.setRole_id(AkdmUtils.getObject(obj[counter++], Integer.class));
 			usersFieldData.setAttendance("100%");
 			usersFieldDataList.add(usersFieldData);
 		}
@@ -401,32 +360,19 @@ public class UserDaoImpl implements UserDao {
 			for (Integer i : sabhaData.getMandal_id()) {
 
 				sql = "INSERT INTO sabhas(SABHA_TITLE,MANDAL_ID,DATE,START_TIME,END_TIME,STATUS,CREATED_DATE,UPDATED_DATE)"
-						+ " VALUES('"
-						+ sabhaData.getSabha_title()
-						+ "','"
-						+ i
-						+ "','"
-						+ AkdmUtils.getToday()
-						+ "','"
-						+ AkdmUtils.getTime()
-						+ "','"
-						+ AkdmUtils.getSabhaEndTime()
-						+ "',false,'"
-						+ AkdmUtils.getFormatedDate()
-						+ "','"
-						+ AkdmUtils.getFormatedDate() + "')";
+						+ " VALUES('" + sabhaData.getSabha_title() + "','" + i + "','" + AkdmUtils.getToday() + "','"
+						+ AkdmUtils.getTime() + "','" + AkdmUtils.getSabhaEndTime() + "',false,'"
+						+ AkdmUtils.getFormatedDate() + "','" + AkdmUtils.getFormatedDate() + "')";
 				q = session.createSQLQuery(sql);
 				q.executeUpdate();
 
 			}
 
-			sql = "SELECT ID FROM users WHERE MANDAL_ID='"
-					+ sabhaData.getMandal_id() + "'";
+			sql = "SELECT ID FROM users WHERE MANDAL_ID='" + sabhaData.getMandal_id() + "'";
 			q = session.createSQLQuery(sql);
 			list = q.list();
 
-			sql = "SELECT MAX(SABHA_ID) FROM sabhas WHERE MANDAL_ID='"
-					+ sabhaData.getMandal_id() + "'";
+			sql = "SELECT MAX(SABHA_ID) FROM sabhas WHERE MANDAL_ID='" + sabhaData.getMandal_id() + "'";
 			q = session.createSQLQuery(sql);
 			int sabha_id = ((Integer) q.uniqueResult()).intValue();
 
@@ -436,8 +382,7 @@ public class UserDaoImpl implements UserDao {
 				connection.setAutoCommit(false);
 				st = connection.createStatement();
 
-				sql = "INSERT INTO "
-						+ TBLS.YUVAATTENDANCE
+				sql = "INSERT INTO " + TBLS.YUVAATTENDANCE
 						+ " (SABHA_ID,IS_ATTENDED,MANDAL_ID,USER_ID) VALUES(?,?,?,?)";
 				ps = connection.prepareStatement(sql);
 				ps.setBoolean(2, false);
@@ -446,8 +391,7 @@ public class UserDaoImpl implements UserDao {
 				for (Integer i : sabhaData.getMandal_id()) {
 					for (BigInteger yAttendance : list) {
 						ps.setLong(1, i);
-						ps.setLong(4,
-								AkdmUtils.getObject(yAttendance, Long.class));
+						ps.setLong(4, AkdmUtils.getObject(yAttendance, Long.class));
 						ps.addBatch();
 						if (count % 100 == 0) {
 							ps.executeBatch();
@@ -460,9 +404,7 @@ public class UserDaoImpl implements UserDao {
 			} catch (BatchUpdateException e) {
 				int[] updateCounts = e.getUpdateCounts();
 				Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
-				throw new BusinessException(
-						"Upload Translation Mapping Data Failed, Reason "
-								+ e.getMessage());
+				throw new BusinessException("Upload Translation Mapping Data Failed, Reason " + e.getMessage());
 			} catch (HibernateException hExp) {
 				tx.rollback();
 				throw new BusinessException(hExp.getMessage(), hExp);
@@ -484,13 +426,11 @@ public class UserDaoImpl implements UserDao {
 
 		} catch (Exception e) {
 			tx.rollback();
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					e.getMessage(), null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, null);
 		} finally {
 			session.close();
 		}
-		return new Response(ResultCode.SUCCESS_200.code,
-				"Sabha successfully created!", null, null, null);
+		return new Response(ResultCode.SUCCESS_200.code, "Sabha successfully created!", null, null, null);
 	}
 
 	@Override
@@ -502,53 +442,38 @@ public class UserDaoImpl implements UserDao {
 		List<SabhaData> usersFieldDataList = new ArrayList<SabhaData>();
 
 		try {
-			queryString = "select " + CLMS.SABHA_ID + "," + CLMS.SABHA_TITLE
-					+ "," + CLMS.MANDAL_ID + "," + CLMS.DATE + ","
-					+ CLMS.START_TIME + "," + CLMS.END_TIME + "," + CLMS.STATUS
-					+ "," + CLMS.CREATED_DATE + "," + CLMS.UPDATED_DATE
-					+ " from " + TBLS.SABHA;
+			queryString = "select " + CLMS.SABHA_ID + "," + CLMS.SABHA_TITLE + "," + CLMS.MANDAL_ID + "," + CLMS.DATE
+					+ "," + CLMS.START_TIME + "," + CLMS.END_TIME + "," + CLMS.STATUS + "," + CLMS.CREATED_DATE + ","
+					+ CLMS.UPDATED_DATE + " from " + TBLS.SABHA;
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> obj = query.list();
 
 			for (Object[] objects : obj) {
 				counter = 0;
 				SabhaData sabhaData = new SabhaData();
-				sabhaData.setId(AkdmUtils.getObject(objects[counter++],
-						Long.class));
-				sabhaData.setSabha_title(AkdmUtils.getObject(
-						objects[counter++], String.class));
+				sabhaData.setId(AkdmUtils.getObject(objects[counter++], Long.class));
+				sabhaData.setSabha_title(AkdmUtils.getObject(objects[counter++], String.class));
 				// sabhaData.setMandal_id(AkdmUtils.getObject(objects[counter++],Integer.class));
-				sabhaData.setMandalId(AkdmUtils.getObject(objects[counter++],
-						Integer.class));
-				sabhaData.setSabha_date(AkdmUtils.getObject(objects[counter++],
-						Date.class));
-				sabhaData.setStart_time(AkdmUtils.getObject(objects[counter++],
-						String.class));
-				sabhaData.setEnd_time(AkdmUtils.getObject(objects[counter++],
-						String.class));
-				sabhaData.setStatus(AkdmUtils.getObject(objects[counter++],
-						Integer.class));
-				sabhaData.setCreated_date(AkdmUtils.getObject(
-						objects[counter++], Date.class));
-				sabhaData.setUpdated_date(AkdmUtils.getObject(
-						objects[counter++], Date.class));
+				sabhaData.setMandalId(AkdmUtils.getObject(objects[counter++], Integer.class));
+				sabhaData.setSabha_date(AkdmUtils.getObject(objects[counter++], Date.class));
+				sabhaData.setStart_time(AkdmUtils.getObject(objects[counter++], String.class));
+				sabhaData.setEnd_time(AkdmUtils.getObject(objects[counter++], String.class));
+				sabhaData.setStatus(AkdmUtils.getObject(objects[counter++], Integer.class));
+				sabhaData.setCreated_date(AkdmUtils.getObject(objects[counter++], Date.class));
+				sabhaData.setUpdated_date(AkdmUtils.getObject(objects[counter++], Date.class));
 
 				usersFieldDataList.add(sabhaData);
 			}
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					ex.getMessage(), null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, null);
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					ex.getMessage(), null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, null);
 		} catch (Exception ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					ex.getMessage(), null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, null);
 		} finally {
 			session.close();
 		}
-		return new Response(ResultCode.SUCCESS_200.code,
-				"Successfully get data", null, null, usersFieldDataList);
+		return new Response(ResultCode.SUCCESS_200.code, "Successfully get data", null, null, usersFieldDataList);
 	}
 
 	@Override
@@ -587,42 +512,29 @@ public class UserDaoImpl implements UserDao {
 
 					if ("".equals(newData[0]))
 						break;
-					ps.setString(2,
-							AkdmUtils.getObject(newData[0], String.class));
-					ps.setString(3,
-							AkdmUtils.getObject(newData[0], String.class)
-									+ "_Y_");
-					ps.setString(
-							4,
-							(AkdmUtils.getObject(newData[0], String.class))
-									.toLowerCase() + "@gmail.com");
-					ps.setString(5, (AkdmUtils.getObject(newData[0],
-							String.class)).toLowerCase());
+					ps.setString(2, AkdmUtils.getObject(newData[0], String.class));
+					ps.setString(3, AkdmUtils.getObject(newData[0], String.class) + "_Y_");
+					ps.setString(4, (AkdmUtils.getObject(newData[0], String.class)).toLowerCase() + "@gmail.com");
+					ps.setString(5, (AkdmUtils.getObject(newData[0], String.class)).toLowerCase());
 
-					String phno = (AkdmUtils
-							.getObject(newData[2], String.class)).replace("+",
-							"");
+					String phno = (AkdmUtils.getObject(newData[2], String.class)).replace("+", "");
 					ps.setString(6, phno);
 
-					String Whatsapp = (AkdmUtils.getObject(newData[3],
-							String.class)).replace("+", "");
+					String Whatsapp = (AkdmUtils.getObject(newData[3], String.class)).replace("+", "");
 					ps.setString(7, Whatsapp);
 					ps.setInt(8, 1);
 
 					String str = (AkdmUtils.getObject(newData[5], String.class));
 					if (!"".equals(str)) {
-						ps.setDate(9,
-								AkdmUtils.getObject(newData[5], Date.class));
+						ps.setDate(9, AkdmUtils.getObject(newData[5], Date.class));
 					}
 					ps.setInt(10, 0);
 					ps.setInt(11, 0);
 					ps.setInt(12, 0);
-					ps.setString(13,
-							AkdmUtils.getObject(newData[6], String.class));
+					ps.setString(13, AkdmUtils.getObject(newData[6], String.class));
 					ps.setInt(14, 5);
 
-					Integer mandalId = mandalIds.get(AkdmUtils.getObject(
-							newData[1], String.class));
+					Integer mandalId = mandalIds.get(AkdmUtils.getObject(newData[1], String.class));
 					ps.setInt(15, mandalId);
 					ps.setString(16, TokenGenerator.uniqueUUID());
 					ps.setInt(17, 0);
@@ -645,9 +557,7 @@ public class UserDaoImpl implements UserDao {
 			tx.rollback();
 			int[] updateCounts = e.getUpdateCounts();
 			Logger.logDebug(MODULE, "UpdateCounts :" + updateCounts.length);
-			throw new BusinessException(
-					"Upload Translation Mapping Data Failed, Reason "
-							+ e.getMessage());
+			throw new BusinessException("Upload Translation Mapping Data Failed, Reason " + e.getMessage());
 		} catch (HibernateException hExp) {
 			tx.rollback();
 			Logger.logError(MODULE, hExp.getMessage());
@@ -666,10 +576,8 @@ public class UserDaoImpl implements UserDao {
 				throw new BusinessException(sExp.getMessage(), sExp);
 			}
 		}
-		return new Response(ResultCode.SUCCESS_200.code,
-				ResultCode.SUCCESS_200.name, "Inserted Record:"
-						+ successDataCount + "\nSkipped Record:"
-						+ failedDataConunt, null, null);
+		return new Response(ResultCode.SUCCESS_200.code, ResultCode.SUCCESS_200.name,
+				"Inserted Record:" + successDataCount + "\nSkipped Record:" + failedDataConunt, null, null);
 	}
 
 	@Override
@@ -689,13 +597,10 @@ public class UserDaoImpl implements UserDao {
 			for (Object[] obj : object) {
 				counter = 0;
 				MandalYuvak mandalYuvak = new MandalYuvak();
-				mandalYuvak.setName(AkdmUtils.getObject(obj[counter++],
-						String.class));
+				mandalYuvak.setName(AkdmUtils.getObject(obj[counter++], String.class));
 				mandalYuvak.setImage("1.png");
-				mandalYuvak.setSector(AkdmUtils.getObject(obj[counter++],
-						String.class));
-				mandalYuvak.setUser_id(AkdmUtils.getObject(obj[counter++],
-						Integer.class));
+				mandalYuvak.setSector(AkdmUtils.getObject(obj[counter++], String.class));
+				mandalYuvak.setUser_id(AkdmUtils.getObject(obj[counter++], Integer.class));
 				listMandalYuvak.add(mandalYuvak);
 			}
 
@@ -741,37 +646,30 @@ public class UserDaoImpl implements UserDao {
 
 		try {
 			queryString = "SELECT MANDAL_ID,MANDAL_TITLE FROM " + TBLS.MANDAL
-					+ " WHERE MANDAL_ID = (SELECT MANDAL_ID FROM " + TBLS.SABHA
-					+ " WHERE SABHA_ID=" + sabha_id + ")";
+					+ " WHERE MANDAL_ID = (SELECT MANDAL_ID FROM " + TBLS.SABHA + " WHERE SABHA_ID=" + sabha_id + ")";
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> list = query.list();
 
 			for (Object[] obj : list) {
 				counter = 0;
 				Mandals mandals = new Mandals();
-				mandals.setMandalId(AkdmUtils.getObject(obj[counter++],
-						Integer.class));
-				mandals.setMandalTitle(AkdmUtils.getObject(obj[counter++],
-						String.class));
+				mandals.setMandalId(AkdmUtils.getObject(obj[counter++], Integer.class));
+				mandals.setMandalTitle(AkdmUtils.getObject(obj[counter++], String.class));
 				mandalList.add(mandals);
 			}
-			return new Response(ResultCode.SUCCESS_200.code,
-					"Successfully get records", null, null, mandalList);
+			return new Response(ResultCode.SUCCESS_200.code, "Successfully get records", null, null, mandalList);
 
 		} catch (InfrastructureException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					ex.getMessage(), null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, null);
 		} catch (BusinessException ex) {
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					ex.getMessage(), null, null, null);
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, null);
 		} finally {
 			session.close();
 		}
 	}
 
 	@Override
-	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id,
-			Integer mandal_id) {
+	public List<CreateSabhaData> getSabhaYuvakList(Integer sabha_id, Integer mandal_id) {
 		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		String queryString = "";
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -779,34 +677,19 @@ public class UserDaoImpl implements UserDao {
 
 		try {
 			queryString = "SELECT u.user_name,y.mandal_id,y.sabha_id,y.user_id,y.is_attended FROM "
-					+ TBLS.YUVAATTENDANCE
-					+ " y LEFT JOIN "
-					+ TBLS.USER
-					+ " u ON y.user_id=u.id where y."
-					+ CLMS.MANDAL_ID
-					+ "="
-					+ mandal_id
-					+ " AND y."
-					+ CLMS.SABHA_ID
-					+ "="
-					+ sabha_id
-					+ "";
+					+ TBLS.YUVAATTENDANCE + " y LEFT JOIN " + TBLS.USER + " u ON y.user_id=u.id where y."
+					+ CLMS.MANDAL_ID + "=" + mandal_id + " AND y." + CLMS.SABHA_ID + "=" + sabha_id + "";
 			Query query = session.createSQLQuery(queryString);
 			List<Object[]> list = query.list();
 
 			for (Object[] object : list) {
 				counter = 0;
 				CreateSabhaData createSabhaData = new CreateSabhaData();
-				createSabhaData.setYuvak_name(AkdmUtils.getObject(
-						object[counter++], String.class));
-				createSabhaData.setMandal_id(AkdmUtils.getObject(
-						object[counter++], Long.class));
-				createSabhaData.setSabhaId(AkdmUtils.getObject(
-						object[counter++], Long.class));
-				createSabhaData.setUser_id(AkdmUtils.getObject(
-						object[counter++], Long.class));
-				createSabhaData.setIs_Attended(AkdmUtils.getObject(
-						object[counter++], Boolean.class));
+				createSabhaData.setYuvak_name(AkdmUtils.getObject(object[counter++], String.class));
+				createSabhaData.setMandal_id(AkdmUtils.getObject(object[counter++], Long.class));
+				createSabhaData.setSabhaId(AkdmUtils.getObject(object[counter++], Long.class));
+				createSabhaData.setUser_id(AkdmUtils.getObject(object[counter++], Long.class));
+				createSabhaData.setIs_Attended(AkdmUtils.getObject(object[counter++], Boolean.class));
 				userSabhaList.add(createSabhaData);
 			}
 
@@ -837,10 +720,8 @@ public class UserDaoImpl implements UserDao {
 			connection.setAutoCommit(false);
 			st = connection.createStatement();
 
-			String sql = "UPDATE " + TBLS.YUVAATTENDANCE + " SET "
-					+ CLMS.IS_ATTENDED + "=? WHERE " + CLMS.SABHA_ID
-					+ "=? AND " + CLMS.MANDAL_ID + "=? AND " + CLMS.USER_ID
-					+ "=?";
+			String sql = "UPDATE " + TBLS.YUVAATTENDANCE + " SET " + CLMS.IS_ATTENDED + "=? WHERE " + CLMS.SABHA_ID
+					+ "=? AND " + CLMS.MANDAL_ID + "=? AND " + CLMS.USER_ID + "=?";
 			ps = connection.prepareStatement(sql);
 			ps.setLong(2, request.getSabha_id());
 			ps.setLong(3, request.getMandal_id());
@@ -856,16 +737,13 @@ public class UserDaoImpl implements UserDao {
 			ps.executeBatch();
 		} catch (BatchUpdateException e) {
 			tx.rollback();
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					e.getMessage(), null, null, "rollback query");
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, "rollback query");
 		} catch (HibernateException e) {
 			tx.rollback();
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					e.getMessage(), null, null, "rollback query");
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, "rollback query");
 		} catch (Exception e) {
 			tx.rollback();
-			return new Response(ResultCode.INTERNAL_ERROR_500.code,
-					e.getMessage(), null, null, "rollback query");
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, "rollback query");
 		} finally {
 			try {
 				if (ps != null)
@@ -878,8 +756,7 @@ public class UserDaoImpl implements UserDao {
 				throw new BusinessException(sExp.getMessage(), sExp);
 			}
 		}
-		return new Response(ResultCode.SUCCESS_200.code,
-				ResultCode.SUCCESS_200.name, "Insert record successfully",
+		return new Response(ResultCode.SUCCESS_200.code, ResultCode.SUCCESS_200.name, "Insert record successfully",
 				null, null);
 	}
 
@@ -973,11 +850,9 @@ public class UserDaoImpl implements UserDao {
 			sb.append(++start_month);
 			break;
 		}
-		return "MONTH(" + com.test.ws.constant.Constants.BIRTH_DATE + ") In ("
-				+ sb + ") and DAY(" + com.test.ws.constant.Constants.BIRTH_DATE
-				+ ")>=" + start_day + " and DAY("
-				+ com.test.ws.constant.Constants.BIRTH_DATE + ")<=" + end_day
-				+ "";
+		return "MONTH(" + com.test.ws.constant.Constants.BIRTH_DATE + ") In (" + sb + ") and DAY("
+				+ com.test.ws.constant.Constants.BIRTH_DATE + ")>=" + start_day + " and DAY("
+				+ com.test.ws.constant.Constants.BIRTH_DATE + ")<=" + end_day + "";
 	}
 
 	public static Map<String, Integer> getMandalIds() {
@@ -1037,22 +912,14 @@ public class UserDaoImpl implements UserDao {
 		for (Object[] obj : list) {
 			counter = 0;
 			UsersFieldData usersFieldData = new UsersFieldData();
-			usersFieldData.setId(AkdmUtils
-					.getObject(obj[counter++], Long.class));
-			usersFieldData.setF_name(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setM_name(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setL_name(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setAddress(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setPhone(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setUser_image(AkdmUtils.getObject(obj[counter++],
-					String.class));
-			usersFieldData.setArea_title(AkdmUtils.getObject(obj[counter++],
-					String.class));
+			usersFieldData.setId(AkdmUtils.getObject(obj[counter++], Long.class));
+			usersFieldData.setF_name(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setM_name(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setL_name(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setAddress(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setPhone(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setUser_image(AkdmUtils.getObject(obj[counter++], String.class));
+			usersFieldData.setArea_title(AkdmUtils.getObject(obj[counter++], String.class));
 			usersFieldDataList.add(usersFieldData);
 		}
 
@@ -1071,21 +938,13 @@ public class UserDaoImpl implements UserDao {
 		String middle_name = userFieldsData.getM_name();
 		String last_name = userFieldsData.getL_name();
 		String address = userFieldsData.getAddress();
-		String authToken = userFieldsData.getAuth_token();
 		String phone = userFieldsData.getPhone();
 
-		Object roleId = userFieldsData.getRole_id();
 		Object birthday = userFieldsData.getBirth_date();
 		Object areaId = userFieldsData.getArea_id();
 
-		if (roleId == null) {
-			roleId = (Integer) 1;
-		} else {
-			if (roleId instanceof Integer || roleId instanceof String) {
-				roleId = (Integer) roleId;
-			}
 
-			if (birthday == null) {
+		if (birthday == null) {
 				birthday = (String) "";
 			} else {
 				if (birthday instanceof String) {
@@ -1102,17 +961,9 @@ public class UserDaoImpl implements UserDao {
 				}
 			}
 
-			if (areaId == null) {
-				areaId = (Integer) 3;
-			} else {
-				if (roleId instanceof Integer || roleId instanceof String) {
-					roleId = (Integer) roleId;
-				}
-			}
-
-			try {
+		try {
 				Query q = null;
-				String query = "insert into users(f_name,m_name,l_name,address,auth_token,phone,birth_date,role_id,area_id,mandal_id,created_at,updated_at) "
+				String query = "insert into users(f_name,m_name,l_name,address,phone,birth_date,area_id) "
 						+ "values('"
 						+ first_name
 						+ "','"
@@ -1122,17 +973,11 @@ public class UserDaoImpl implements UserDao {
 						+ "','"
 						+ address
 						+ "','"
-						+ authToken
-						+ "','"
 						+ phone
 						+ "','"
 						+ birthday
 						+ "','"
-						+ roleId
-						+ "','1','1','"
-						+ AkdmUtils.getFormatedDate()
-						+ "','"
-						+ AkdmUtils.getFormatedDate() + "')";
+						+ areaId+"')" ;
 				q = session.createSQLQuery(query);
 				q.executeUpdate();
 				tx.commit();
@@ -1148,47 +993,75 @@ public class UserDaoImpl implements UserDao {
 			} finally {
 				session.close();
 			}
-		}
 		return null;
+
 	}
 
 	@Override
 	public Response getExtraData() throws CommandException {
-
-		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		List<Object[]> list = null;
-		List<Sectors> sectorDataList = new ArrayList<Sectors>();
-
-		try {
-
-			String userDataQuery = "select area_id,area_title from areas";
-			Query crt = session.createSQLQuery(userDataQuery);
-			list = crt.list();
-			sectorDataList = fillExtraData(list);
-
-		} catch (InfrastructureException ex) {
-			throw new InfrastructureException(ex);
-		} catch (BusinessException ex) {
-			throw new BusinessException(ex);
-		} finally {
-			session.close();
-		}
-		return new Response(ResultCode.SUCCESS_200.code,
-				"successfully get data", null, null, sectorDataList);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	private List<Sectors> fillExtraData(List<Object[]> list) {
+	@Override
+	public Map<String,List<Ssp>> getDependentData() throws CommandException {
+		
+	List<Ssp> str = new ArrayList<Ssp>();
+		
+	Ssp ssp = new Ssp();
+	ssp.setSspId(1);
+	ssp.setSspTitle("Praranbh");
+	
+	Ssp ssp1 = new Ssp();
+	ssp1.setSspId(2);
+	ssp1.setSspTitle("Pravesh");
+	
+	Ssp ssp2 = new Ssp();
+	ssp2.setSspId(3);
+	ssp2.setSspTitle("Parichay");
 
-		List<Sectors> sectorList = new ArrayList<Sectors>();
-		for (Object[] newList : list) {
-			counter = 0;
-			Sectors sectors = new Sectors();
-			sectors.setId(AkdmUtils.getObject(newList[counter++], String.class));
-			sectors.setName(AkdmUtils.getObject(newList[counter++],
-					String.class));
-			sectorList.add(sectors);
-		}
-		return sectorList;
+	Ssp ssp3 = new Ssp();
+	ssp3.setSspId(4);
+	ssp3.setSspTitle("Pravin");
+
+	
+	str.add(ssp1);
+	str.add(ssp);
+	str.add(ssp2);
+	str.add(ssp3);
+	
+	Map<String,List<Ssp>> map = new HashMap<String, List<Ssp>>();
+	map.put("sector", str);
+	return map;
 	}
+
+	/*
+	 * @Override public <Sectors> Response getExtraData() throws
+	 * CommandException {
+	 * 
+	 * Logger.logInfo(MODULE, AkdmUtils.getMethodName()); Session session =
+	 * HibernateUtil.getSessionFactory().openSession(); List<Object[]> list =
+	 * null; List<Sectors> sectorDataList = new ArrayList<Sectors>();
+	 * 
+	 * try {
+	 * 
+	 * String userDataQuery = "select area_id,area_title from areas"; Query crt
+	 * = session.createSQLQuery(userDataQuery); list = crt.list();
+	 * sectorDataList = fillExtraData(list);
+	 * 
+	 * } catch (InfrastructureException ex) { throw new
+	 * InfrastructureException(ex); } catch (BusinessException ex) { throw new
+	 * BusinessException(ex); } finally { session.close(); } return new
+	 * Response(ResultCode.SUCCESS_200.code, "successfully get data", null,
+	 * null, sectorDataList); }
+	 * 
+	 * private List<Sectors> fillExtraData(List<Object[]> list) {
+	 * 
+	 * List<Sectors> sectorList = new ArrayList<Sectors>(); for (Object[]
+	 * newList : list) { counter = 0; Sectors sectors = new Sectors();
+	 * sectors.setId(AkdmUtils.getObject(newList[counter++], String.class));
+	 * sectors.setName(AkdmUtils.getObject(newList[counter++], String.class));
+	 * sectorList.add(sectors); } return sectorList;
+	 */
 }
+// }

@@ -3,7 +3,9 @@ package com.test.ws.entities;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
+
 
 public class UsersFieldData  implements Comparable<UsersFieldData>{
 
@@ -16,18 +18,10 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
     private String f_name;
     private String m_name;
     private String whatsapp_number;
-    private boolean email_verified;
     private String user_image;
-    private double latitude;
-    private double longitude;
     private String address;
     private int area_id;
     private int mandal_id;
-    private String auth_token;
-    private String relationship_status;
-    private int device_type;
-    private boolean status;
-    private String device_token;
     public String getL_name() {
 		return l_name;
 	}
@@ -52,6 +46,7 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
 		this.m_name = m_name;
 	}
 
+	@JsonIgnore
 	private int badge_count;
     private String created_at;
     private String updated_at;
@@ -129,21 +124,6 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
         this.user_image=user_image;
     }
 
-    public double getLatitude(){
-        return latitude;
-    }
-
-    public void setLatitude(double latitude){
-        this.latitude=latitude;
-    }
-
-    public double getLongitude(){
-        return longitude;
-    }
-
-    public void setLongitude(double longitude){
-        this.longitude=longitude;
-    }
 
     public String getAddress(){
         return address;
@@ -169,37 +149,6 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
         this.mandal_id=mandal_id;
     }
 
-    public String getAuth_token(){
-        return auth_token;
-    }
-
-    public void setAuth_token(String auth_token){
-        this.auth_token=auth_token;
-    }
-
-    public String getRelationship_status(){
-        return relationship_status;
-    }
-
-    public void setRelationship_status(String relationship_status){
-        this.relationship_status=relationship_status;
-    }
-
-    public int getDevice_type(){
-        return device_type;
-    }
-
-    public void setDevice_type(int device_type){
-        this.device_type=device_type;
-    }
-
-    public String getDevice_token(){
-        return device_token;
-    }
-
-    public void setDevice_token(String device_token){
-        this.device_token=device_token;
-    }
 
     public int getBadge_count(){
         return badge_count;
@@ -239,22 +188,6 @@ public class UsersFieldData  implements Comparable<UsersFieldData>{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public boolean getEmail_verified() {
-        return email_verified;
-    }
-
-    public void setEmail_verified(boolean email_verified) {
-        this.email_verified = email_verified;
     }
 
     public String getRole_name() {

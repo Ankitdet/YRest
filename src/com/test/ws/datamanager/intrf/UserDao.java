@@ -1,15 +1,17 @@
 package com.test.ws.datamanager.intrf;
 
 import java.util.List;
+import java.util.Map;
+
+import org.codehaus.jettison.json.JSONObject;
 
 import com.test.ws.entities.AttendanceRequest;
 import com.test.ws.entities.CreateSabhaData;
 import com.test.ws.entities.MandalYuvak;
-import com.test.ws.entities.Mandals;
 import com.test.ws.entities.SabhaData;
+import com.test.ws.entities.Ssp;
 import com.test.ws.entities.UsersFieldData;
 import com.test.ws.exception.CommandException;
-import com.test.ws.requestobject.LoginResponse;
 import com.test.ws.requestobject.Response;
 
 public interface UserDao {
@@ -47,4 +49,6 @@ public interface UserDao {
 	public Response registerYuvakDetail(UsersFieldData userFieldsData)  throws CommandException;
 
 	public Response getExtraData()  throws CommandException;
+
+	public Map<String, List<Ssp>> getDependentData()  throws CommandException;
 }
