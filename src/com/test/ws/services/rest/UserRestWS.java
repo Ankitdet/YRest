@@ -423,8 +423,8 @@ public class UserRestWS {
 	        try {
 	            response = blManager.getYuvakList();
 	        } catch (Exception e) {
-	            return new Response(ResultCode.INPUT_PARAMETER_MISSING_401.code,
-	                    ResultCode.INPUT_PARAMETER_MISSING_401.name, null,
+	            return new Response(ResultCode.INTERNAL_ERROR_500.code,
+	                    ResultCode.INTERNAL_ERROR_500.name, null,
 	                    e.getMessage(), null);
 	        }
 	        return response;

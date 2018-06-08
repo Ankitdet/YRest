@@ -301,7 +301,8 @@ public class UserDaoImpl implements UserDao {
 			 * usersFieldData.setEmail_verified(AkdmUtils.getObject(
 			 * obj[counter++], Boolean.class));
 			 */
-//			usersFieldData.setBirth_date(AkdmUtils.getObject(obj[counter++], Date.class));
+			// usersFieldData.setBirth_date(AkdmUtils.getObject(obj[counter++],
+			// Date.class));
 			usersFieldData.setUser_image(AkdmUtils.getObject(obj[counter++], String.class));
 			/*
 			 * usersFieldData.setLatitude(AkdmUtils.getObject(obj[counter++],
@@ -990,8 +991,7 @@ public class UserDaoImpl implements UserDao {
 			} finally {
 				session.close();
 			}
-		return null;
-
+		return new Response(, message, date, reason, list);
 	}
 
 	@Override
@@ -1001,64 +1001,32 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public Map<String,List<Ssp>> getDependentData() throws CommandException {
-		
-	List<Ssp> str = new ArrayList<Ssp>();
-		
-	Ssp ssp = new Ssp();
-	ssp.setSspId(1);
-	ssp.setSspTitle("Praranbh");
-	
-	Ssp ssp1 = new Ssp();
-	ssp1.setSspId(2);
-	ssp1.setSspTitle("Pravesh");
-	
-	Ssp ssp2 = new Ssp();
-	ssp2.setSspId(3);
-	ssp2.setSspTitle("Parichay");
+	public Map<String, List<Ssp>> getDependentData() throws CommandException {
 
-	Ssp ssp3 = new Ssp();
-	ssp3.setSspId(4);
-	ssp3.setSspTitle("Pravin");
+		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		List<Object[]> list = null;
+		List<Sectors> sectorDataList = new ArrayList<Sectors>();
+		String userDataQuery = "select area_id,area_title from areas";
+		Query crt = session.createSQLQuery(userDataQuery);
+		list = crt.list();
+		sectorDataList = fillExtraData(list);
 
-	
-	str.add(ssp1);
-	str.add(ssp);
-	str.add(ssp2);
-	str.add(ssp3);
-	
-	Map<String,List<Ssp>> map = new HashMap<String, List<Ssp>>();
-	map.put("sector", str);
-	return map;
+		Map<String, List<Ssp>> map = new HashMap<String, List<Ssp>>();
+		map.put("sector", sectorDataList);
+		return map;
 	}
 
-	/*
-	 * @Override public <Sectors> Response getExtraData() throws
-	 * CommandException {
-	 * 
-	 * Logger.logInfo(MODULE, AkdmUtils.getMethodName()); Session session =
-	 * HibernateUtil.getSessionFactory().openSession(); List<Object[]> list =
-	 * null; List<Sectors> sectorDataList = new ArrayList<Sectors>();
-	 * 
-	 * try {
-	 * 
-	 * String userDataQuery = "select area_id,area_title from areas"; Query crt
-	 * = session.createSQLQuery(userDataQuery); list = crt.list();
-	 * sectorDataList = fillExtraData(list);
-	 * 
-	 * } catch (InfrastructureException ex) { throw new
-	 * InfrastructureException(ex); } catch (BusinessException ex) { throw new
-	 * BusinessException(ex); } finally { session.close(); } return new
-	 * Response(ResultCode.SUCCESS_200.code, "successfully get data", null,
-	 * null, sectorDataList); }
-	 * 
-	 * private List<Sectors> fillExtraData(List<Object[]> list) {
-	 * 
-	 * List<Sectors> sectorList = new ArrayList<Sectors>(); for (Object[]
-	 * newList : list) { counter = 0; Sectors sectors = new Sectors();
-	 * sectors.setId(AkdmUtils.getObject(newList[counter++], String.class));
-	 * sectors.setName(AkdmUtils.getObject(newList[counter++], String.class));
-	 * sectorList.add(sectors); } return sectorList;
-	 */
+	private List<Sectors> fillExtraData(List<Object[]> list) {
+
+		List<Sectors> sectorList = new ArrayList<Sectors>();
+		for (Object[] newList : list) {
+			counter = 0;
+			Sectors sectors = new Sectors();
+			sectors.setId(AkdmUtils.getObject(newList[counter++], String.class));
+			sectors.setName(AkdmUtils.getObject(newList[counter++], String.class));
+			sectorList.add(sectors);
+		}
+		return sectorList;
+	}
 }
-// }
