@@ -50,5 +50,5 @@ public interface UserDao {
 
 	public Response getExtraData()  throws CommandException;
 
-	public Map<String, List<Ssp>> getDependentData()  throws CommandException;
+	public Response getDependentData()  throws CommandException;
 }

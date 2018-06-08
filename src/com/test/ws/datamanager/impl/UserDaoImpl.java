@@ -929,8 +929,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public Response registerYuvakDetail(UsersFieldData userFieldsData)
-			throws CommandException {
+	public Response registerYuvakDetail(UsersFieldData userFieldsData) throws CommandException {
 
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
@@ -944,54 +943,41 @@ public class UserDaoImpl implements UserDao {
 		Object birthday = userFieldsData.getBirth_date();
 		Object areaId = userFieldsData.getArea_id();
 
-
 		if (birthday == null) {
-				birthday = (String) "";
-			} else {
-					SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
-					java.util.Date date;
-					try {
-						date = sdf1.parse((String)birthday);
-						birthday = new java.sql.Date(date.getTime());
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+			birthday = (String) "";
+		} else {
+			SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
+			java.util.Date date;
+			try {
+				date = sdf1.parse((String) birthday);
+				birthday = new java.sql.Date(date.getTime());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		try {
-				Query q = null;
-				String query = "insert into users(f_name,m_name,l_name,address,phone,birth_date,area_id) "
-						+ "values('"
-						+ first_name
-						+ "','"
-						+ middle_name
-						+ "','"
-						+ last_name
-						+ "','"
-						+ address
-						+ "','"
-						+ phone
-						+ "','"
-						+ birthday
-						+ "','"
-						+ areaId+"')" ;
-				q = session.createSQLQuery(query);
-				q.executeUpdate();
-				tx.commit();
-			} catch (InfrastructureException ex) {
-				tx.rollback();
-				throw new CommandException(ex);
-			} catch (BusinessException ex) {
-				tx.rollback();
-				throw new CommandException(ex);
-			} catch (Exception ex) {
-				tx.rollback();
-				throw new CommandException(ex);
-			} finally {
-				session.close();
-			}
-		return new Response(, message, date, reason, list);
+			Query q = null;
+			String query = "insert into users(f_name,m_name,l_name,address,phone,birth_date,area_id) " + "values('"
+					+ first_name + "','" + middle_name + "','" + last_name + "','" + address + "','" + phone + "','"
+					+ birthday + "','" + areaId + "')";
+			q = session.createSQLQuery(query);
+			q.executeUpdate();
+			tx.commit();
+		} catch (InfrastructureException ex) {
+			tx.rollback();
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, "rollback query");
+		} catch (BusinessException ex) {
+			tx.rollback();
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, "rollback query");
+		} catch (Exception ex) {
+			tx.rollback();
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, ex.getMessage(), null, null, "rollback query");
+		} finally {
+			session.close();
+		}
+		return new Response(ResultCode.SUCCESS_200.code, ResultCode.SUCCESS_200.name, null, null, null);
 	}
 
 	@Override
@@ -1001,20 +987,26 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public Map<String, List<Ssp>> getDependentData() throws CommandException {
+	public Response getDependentData() throws CommandException {
 
 		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		List<Object[]> list = null;
 		List<Sectors> sectorDataList = new ArrayList<Sectors>();
-		String userDataQuery = "select area_id,area_title from areas";
-		Query crt = session.createSQLQuery(userDataQuery);
-		list = crt.list();
-		sectorDataList = fillExtraData(list);
-
 		Map<String, List<Ssp>> map = new HashMap<String, List<Ssp>>();
-		map.put("sector", sectorDataList);
-		return map;
+		
+		try {
+
+			String userDataQuery = "select area_id,area_title from areas";
+			Query crt = session.createSQLQuery(userDataQuery);
+			list = crt.list();
+			sectorDataList = fillExtraData(list);
+			map.put("sector", sectorDataList);
+			
+		} catch (Exception e) {
+			return new Response(ResultCode.INTERNAL_ERROR_500.code, e.getMessage(), null, null, "rollback query");
+		}
+		return new Response(ResultCode.SUCCESS_200.code, ResultCode.SUCCESS_200.name, null, null, map);
 	}
 
 	private List<Sectors> fillExtraData(List<Object[]> list) {

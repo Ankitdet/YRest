@@ -12,7 +12,7 @@
         
          <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">root</property>
-        <property name="hibernate.connection.url">jdbc:mysql://<host_name>:<port>/<database_name></property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/akshardh_ms</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
         <property name="show_sql">true</property> 
         <property name="connection.pool_size">1</property>

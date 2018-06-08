@@ -322,10 +322,10 @@ public class UserServiceImpl implements UserService {
 
 		UserDao loginDao = new UserDaoImpl();
 		Logger.logInfo(MODULE, AkdmUtils.getMethodName());
-		Map<String, List<Ssp>> Jsonresponse  = null;
+		Response response  = null;
 		
 		try {
-			Jsonresponse = loginDao.getDependentData();
+			response = loginDao.getDependentData();
 			
 		} catch (InfrastructureException ex) {
 			return new Response(ResultCode.INTERNAL_ERROR_500.code, ResultCode.INTERNAL_ERROR_500.name, null, null, ex.getMessage());
